@@ -1,0 +1,5 @@
+# IDE Dateien
+.idea
+
+# Cache Dateien
+__pycache__
