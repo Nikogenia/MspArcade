@@ -19,5 +19,6 @@ Libraries: _Pygame, ..._
 - Linus
 - ...
 
+\
 **MAKER SPACE © 2022**\
 ![Bogy Logo](./resourcen/bilder/bogy_logo.jpg)
