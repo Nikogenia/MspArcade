@@ -3,3 +3,6 @@
 
 # Cache Dateien
 __pycache__
+
+# Daten Verzeichnis
+daten

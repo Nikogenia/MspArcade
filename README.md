@@ -1,7 +1,7 @@
 # MAKER SPACE ARCADE
 Ein MAKER SPACE Projekt für den Arcade Spielautomaten der Schule
 
-### Kurzbeschreibung
+### Beschreibung
 _Dieses Projekt beinhaltet die Kernsoftware für den Spielautomaten
 des Bodensee Gymnasiums Lindau.
 Sie soll die einzelnen Spiele verwalten und
@@ -11,7 +11,7 @@ die Schüler auf den Automaten aufmerksam machen._
 Projekt Version: _Alpha 1.1.1_\
 Programmiersprache: _Python_\
 Sprachen Version: _1.10.5_\
-Libraries: _Pygame, ..._
+Bibliotheken: _Pygame, ..._
 
 ### Entwickler
 - Nikolas (aka Nikocraft)
@@ -21,4 +21,4 @@ Libraries: _Pygame, ..._
 
 \
 **MAKER SPACE © 2022**\
-![Bogy Logo](./resourcen/bilder/bogy_logo.jpg)
+![Bogy Logo](ressourcen/bilder/bogy_logo.jpg)
