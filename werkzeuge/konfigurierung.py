@@ -8,7 +8,7 @@ class Konfigurierung:
     # Konstruktor
     def __init__(self, pfad):
 
-        # Speichere den pfad
+        # Speichere den Pfad
         self.pfad = pfad
 
         # Definiere Inhalt
@@ -30,7 +30,7 @@ class Konfigurierung:
                 self.inhalt = json.load(file)
 
         # Bei einem Fehler
-        except IOError | json.JSONDecodeError:
+        except (IOError, json.JSONDecodeError):
 
             # Setze den Inhalt zu einem leeren Dictionary
             self.inhalt = {}

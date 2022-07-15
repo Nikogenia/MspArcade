@@ -14,3 +14,52 @@ PFAD_DATEN = "./daten"
 PFAD_PROTOKOLLE = f"{PFAD_DATEN}/protokolle"
 PFAD_SPIELE = f"{PFAD_DATEN}/spiele"
 PFAD_KONFIGURATIONEN = f"{PFAD_DATEN}/konfigurationen"
+
+# GUI
+GUI_WIDTH = 1920
+GUI_HEIGHT = 1080
+GUI_DIMENSION = [GUI_WIDTH, GUI_HEIGHT]
+GUI_FPS = 60
+
+# Farben
+class Farben:
+
+    # Grautöne
+    DUNKEL_SCHWARZ = (0, 0, 0)
+    SCHWARZ = (20, 20, 20)
+    DUNKEL_GRAU = (60, 60, 60)
+    GRAU = (110, 110, 110)
+    HELL_GRAU = (190, 190, 190)
+    WEISS = (230, 230, 230)
+    HELL_WEISS = (255, 255, 255)
+
+    # Rottöne
+    HELL_GELB = (252, 255, 163)
+    GELB = (255, 255, 25)
+    DUNKEL_GELB = (224, 217, 0)
+    ORANGE = (255, 187, 51)
+    DUNKEL_ORANGE = (230, 153, 0)
+    HELL_ROT = (255, 136, 77)
+    ROT = (255, 0, 0)
+    DUNKEL_ROT = (204, 0, 0)
+    PINK = (255, 102, 255)
+    HELL_VIOLETT = (196, 77, 255)
+    VIOLETT = (115, 0, 230)
+    DUNKEL_VIOLETT = (64, 0, 128)
+    BRAUN = (117, 0, 0)
+    DUNKEL_BRAUN = (74, 0, 0)
+
+    # Blautöne
+    HELL_CYAN = (153, 255, 255)
+    CYAN = (0, 255, 255)
+    DUNKEL_CYAN = (0, 179, 179)
+    HELL_BLAU = (128, 170, 255)
+    BLAU = (0, 42, 255)
+    DUNKEL_BLAU = (0, 0, 179)
+
+    # Grüntöne
+    HELL_LIMONE = (179, 255, 179)
+    LIMONE = (128, 255, 149)
+    DUNKEL_LIMONE = (0, 255, 0)
+    GRUEN = (0, 204, 0)
+    DUNKEL_GRUEN = (0, 128, 0)

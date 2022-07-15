@@ -8,6 +8,7 @@ import threading
 from konstanten import *
 from werkzeuge.konfigurierung import Konfigurierung
 from werkzeuge import zeit
+from gui.verwaltung import GUIVerwaltung
 
 
 # Main Klasse
@@ -16,28 +17,11 @@ class Main:
     # Konstruktor
     def __init__(self, args):
 
-        # Gebe Projekt Details in der Konsole aus
-        print(PROJEKT_NAME.upper())
-        print("-" * len(PROJEKT_NAME))
-        print()
-        print(PROJEKT_KURZ_BESCHREIBUNG)
-        print()
-        print("BESCHREIBUNG")
-        print(PROJEKT_BESCHREIBUNG)
-        print()
-        print("DETAILS")
-        print(f"Projekt Version: {PROJEKT_VERSION}")
-        print("Projekt Autoren:")
-        for autor in PROJEKT_AUTOREN:
-            print(f"- {autor}")
-        print(f"Python Version: {PYTHON_VERSION}")
-        print("Python Bibliotheken:")
-        for bibliothek in PYTHON_BIBLIOTHEKEN:
-            print(f"- {bibliothek}")
-        print()
-
         # Prüfe für Konsolen Argumente
         self.debug = "-d" in args
+
+        # Definiere Protokolldateipfad
+        protokoll_pfad = f"{PFAD_PROTOKOLLE}/protokoll_{zeit.protokollierung()}.log"
 
         # Erstelle Verzeichnisse
         for pfad in [PFAD_PROTOKOLLE, PFAD_SPIELE, PFAD_KONFIGURATIONEN]:
@@ -54,9 +38,14 @@ class Main:
             for i in range(10, len(protokoll_dateien)):
                 os.remove(protokoll_dateien[i - 10])
 
+        # Gebe Projekt Details aus
+        print(projekt_details())
+        with open(protokoll_pfad, "w", encoding="utf-8") as file:
+            file.write(projekt_details() + "\n")
+
         # Definiere Protokollierung
         self.protokollierung_format = logging.Formatter("[%(asctime)s] [%(name)s - %(threadName)s] [%(levelname)s] %(message)s", '%d/%b/%y %H:%M:%S')
-        self.protokollierung_datei = logging.FileHandler(f"{PFAD_PROTOKOLLE}/protokoll_{zeit.protokollierung()}.log")
+        self.protokollierung_datei = logging.FileHandler(protokoll_pfad, encoding="utf-8")
         self.protokollierung_konsole = logging.StreamHandler(sys.stdout)
         self.protokollierung_datei.setFormatter(self.protokollierung_format)
         self.protokollierung_konsole.setFormatter(self.protokollierung_format)
@@ -70,18 +59,59 @@ class Main:
         self.protokollierung.info(f"Ressourcen Pfad: {os.path.abspath(PFAD_RESSOURCEN)}")
         self.protokollierung.info(f"Daten Pfad: {os.path.abspath(PFAD_DATEN)}")
 
-    # Run Funktion
-    def run(self):
-        pass
+        # Lade Konfigurierungen
+        self.protokollierung.info("Lade Konfigurierungen ...")
+        self.main_konfigurierung = Konfigurierung(f"{PFAD_KONFIGURATIONEN}/main.json")
+        self.spiele_konfigurierung = Konfigurierung(f"{PFAD_KONFIGURATIONEN}/spiele.json")
+
+        # Initialisiere GUI
+        self.protokollierung.info("Initialisiere GUI ...")
+        self.gui = GUIVerwaltung(self)
+
+    # Starten Funktion
+    def starten(self):
+
+        # Starte GUI
+        self.protokollierung.info("Starte GUI ...")
+        self.gui.starten()
+
+    # Beenden Funktion
+    def beenden(self):
+
+        # Beende GUI
+        self.protokollierung.info("Beende GUI ...")
+        self.gui.beenden()
+
+        # Speichere Konfigurierungen
+        self.protokollierung.info("Speichere Konfigurierungen ...")
+        self.main_konfigurierung.speichern()
+        self.spiele_konfigurierung.speichern()
 
 
-# MAIN
+# Projekt Details
+def projekt_details():
+
+    # Baue den Text
+    text = f"{PROJEKT_NAME.upper()}\n{'-' * len(PROJEKT_NAME)}\n\n{PROJEKT_KURZ_BESCHREIBUNG}\n\nBESCHREIBUNG\n{PROJEKT_BESCHREIBUNG}\n\n"
+    text += f"DETAILS\nProjekt Version: {PROJEKT_VERSION}\nProjekt Autoren:\n"
+    for autor in PROJEKT_AUTOREN:
+        text += f"- {autor}\n"
+    text += f"Python Version: {PYTHON_VERSION}\nPython Bibliotheken:\n"
+    for bibliothek in PYTHON_BIBLIOTHEKEN:
+        text += f"- {bibliothek}\n"
+
+    # Gebe den Text zurück
+    return text
+
+
+# Main
 if __name__ == '__main__':
 
+    # Setze den Namen des Main Threads
     threading.main_thread().name = "Main"
 
     # Definiere Main Objekt
     main = Main(sys.argv)
 
     # Führe die Main aus
-    main.run()
+    main.starten()
