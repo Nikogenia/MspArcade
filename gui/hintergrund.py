@@ -14,8 +14,9 @@ class Hintergrund:
         # Speichere die GUI
         self.gui = gui
 
-        # Definiere bild
+        # Definiere Bild
         self.bild = pg.Surface(GUI_DIMENSION)
+        self.bild.set_colorkey(Farben.DUNKEL_SCHWARZ)
 
         # Lade Bilder
         self.retro = pg.image.load(f"{PFAD_BILDER}/retro_hintergrund.jpg")

@@ -8,7 +8,7 @@ import threading
 from konstanten import *
 from werkzeuge.konfigurierung import Konfigurierung
 from werkzeuge import zeit
-from gui.verwaltung import GUIVerwaltung
+from gui.verwaltung import GUI
 
 
 # Main Klasse
@@ -66,7 +66,7 @@ class Main:
 
         # Initialisiere GUI
         self.protokollierung.info("Initialisiere GUI ...")
-        self.gui = GUIVerwaltung(self)
+        self.gui = GUI(self)
 
     # Starten Funktion
     def starten(self):

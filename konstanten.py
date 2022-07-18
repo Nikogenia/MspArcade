@@ -10,6 +10,7 @@ PYTHON_BIBLIOTHEKEN = ["Pygame"]
 # Datei Pfade
 PFAD_RESSOURCEN = "./ressourcen"
 PFAD_BILDER = f"{PFAD_RESSOURCEN}/bilder"
+PFAD_SCHRIFTARTEN = f"{PFAD_RESSOURCEN}/schriftarten"
 PFAD_DATEN = "./daten"
 PFAD_PROTOKOLLE = f"{PFAD_DATEN}/protokolle"
 PFAD_SPIELE = f"{PFAD_DATEN}/spiele"
@@ -20,6 +21,30 @@ GUI_WIDTH = 1920
 GUI_HEIGHT = 1080
 GUI_DIMENSION = [GUI_WIDTH, GUI_HEIGHT]
 GUI_FPS = 60
+
+# Szenen
+SZENEN = {
+    "lade": ("gui.szenen.lade", "LadeSzene")
+}
+
+
+# Übergänge
+class Uebergaenge:
+
+    # Keine
+    KEINE = 0
+
+    # Blende
+    BLENDE_NORMAL = 1
+    BLENDE_SCHNELL = 2
+    BLENDE_LANGSAM = 3
+
+    # Wischen
+    WISCHEN_LINKS = 4
+    WISCHEN_RECHTS = 5
+    WISCHEN_OBEN = 6
+    WISCHEN_UNTEN = 7
+
 
 # Farben
 class Farben:

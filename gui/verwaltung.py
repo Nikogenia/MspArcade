@@ -1,13 +1,14 @@
 # Eigene Module
 from konstanten import *
 from gui.hintergrund import Hintergrund
+from gui.szenen.lade import LadeSzene
 
 # Externe Bibliotheken
 import pygame as pg
 
 
 # GUI Verwaltung Klasse
-class GUIVerwaltung:
+class GUI:
 
     # Konstruktor
     def __init__(self, main):
@@ -23,8 +24,18 @@ class GUIVerwaltung:
         pg.display.set_caption("Maker Space Arcade")
         pg.mouse.set_visible(False)
 
+        # Lade Schriftarten
+        self.schriftart_standard_normal = pg.font.Font(f"{PFAD_SCHRIFTARTEN}/standard.ttf", 60)
+        self.schriftart_standard_klein = pg.font.Font(f"{PFAD_SCHRIFTARTEN}/standard.ttf", 40)
+        self.schriftart_standard_gross = pg.font.Font(f"{PFAD_SCHRIFTARTEN}/standard.ttf", 100)
+        self.schriftart_standard_extrem_gross = pg.font.Font(f"{PFAD_SCHRIFTARTEN}/standard.ttf", 160)
+
         # Initialisiere Hintergrund
         self.hintergrund = Hintergrund(self)
+
+        # Definiere Szenen
+        self.szene = LadeSzene(self)
+        self.letzte_szene = LadeSzene(self)
 
     # Starten Funktion
     def starten(self):
@@ -38,6 +49,12 @@ class GUIVerwaltung:
 
             # Warte auf Uhr
             self.uhr.tick(GUI_FPS)
+
+            # Verarbeite Szenen
+            if self.szene.szenenwechsel_name != "":
+                exec(f"from {SZENEN[self.szene.szenenwechsel_name][0]} import {SZENEN[self.szene.szenenwechsel_name][1]}")
+                self.letzte_szene = self.szene
+                self.szene = exec(SZENEN[self.szene.szenenwechsel_name][1])(self)
 
             # Verarbeite Events
             self.verarbeite_events()
@@ -60,6 +77,10 @@ class GUIVerwaltung:
         # Render Hintergrund
         self.hintergrund.render()
         self.bildschirm.blit(self.hintergrund.bild, (0, 0))
+
+        # Render Szene
+        self.szene.render()
+        self.bildschirm.blit(self.szene.bild, (0, 0))
 
         # Aktualisiere den Bildschirm
         pg.display.flip()
