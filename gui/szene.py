@@ -12,10 +12,13 @@ import pygame as pg
 class Szene(ABC):
 
     # Konstruktor
-    def __init__(self, gui):
+    def __init__(self, gui, daten):
 
         # Speichere die GUI
         self.gui = gui
+
+        # Speichere die Daten
+        self.daten = daten
 
         # Definiere Bild
         self.bild = pg.Surface(GUI_DIMENSION)
@@ -24,6 +27,7 @@ class Szene(ABC):
         # Definiere Szenenwechsel
         self.szenenwechsel_name = ""
         self.szenenwechsel_uebergang = Uebergaenge.KEINE
+        self.szenenwechsel_daten = {}
 
     # Starten
     @abstractmethod
@@ -46,8 +50,9 @@ class Szene(ABC):
         pass
 
     # Wechsel Szene
-    def wechsel_szene(self, name, uebergang):
+    def wechsel_szene(self, name, uebergang, daten):
 
         # Setze Szenenwechsel
         self.szenenwechsel_name = name
         self.szenenwechsel_uebergang = uebergang
+        self.szenenwechsel_daten = daten

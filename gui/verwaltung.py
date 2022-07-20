@@ -2,6 +2,8 @@
 from konstanten import *
 from gui.hintergrund import Hintergrund
 from gui.szenen.lade import LadeSzene
+from gui import uebergaenge
+from gui.schriftarten import Schriftarten
 
 # Externe Bibliotheken
 import pygame as pg
@@ -24,18 +26,16 @@ class GUI:
         pg.display.set_caption("Maker Space Arcade")
         pg.mouse.set_visible(False)
 
-        # Lade Schriftarten
-        self.schriftart_standard_normal = pg.font.Font(f"{PFAD_SCHRIFTARTEN}/standard.ttf", 60)
-        self.schriftart_standard_klein = pg.font.Font(f"{PFAD_SCHRIFTARTEN}/standard.ttf", 40)
-        self.schriftart_standard_gross = pg.font.Font(f"{PFAD_SCHRIFTARTEN}/standard.ttf", 100)
-        self.schriftart_standard_extrem_gross = pg.font.Font(f"{PFAD_SCHRIFTARTEN}/standard.ttf", 160)
+        # Definiere Schriftarten
+        self.schriftarten = Schriftarten(self)
 
         # Initialisiere Hintergrund
         self.hintergrund = Hintergrund(self)
 
         # Definiere Szenen
-        self.szene = LadeSzene(self)
-        self.letzte_szene = LadeSzene(self)
+        self.szene = LadeSzene(self, {})
+        self.letzte_szene = None
+        self.uebergang_daten = {}
 
     # Starten Funktion
     def starten(self):
@@ -51,16 +51,23 @@ class GUI:
             self.uhr.tick(GUI_FPS)
 
             # Verarbeite Szenen
+            self.szene.aktualisieren()
             if self.szene.szenenwechsel_name != "":
                 exec(f"from {SZENEN[self.szene.szenenwechsel_name][0]} import {SZENEN[self.szene.szenenwechsel_name][1]}")
                 self.letzte_szene = self.szene
-                self.szene = exec(SZENEN[self.szene.szenenwechsel_name][1])(self)
+                exec(f"self.szene = {SZENEN[self.szene.szenenwechsel_name][1]}(self, self.szene.szenenwechsel_daten)")
+
+            # Verarbeite Uebergang
+            if self.letzte_szene:
+                uebergaenge.verarbeite(self)
 
             # Verarbeite Events
             self.verarbeite_events()
 
             # Render Bildschirm
             self.render_bildschirm()
+
+            self.main.protokollierung.debug(self.schriftarten.cache)
 
         # Beende Main
         self.main.beenden()
@@ -79,8 +86,22 @@ class GUI:
         self.bildschirm.blit(self.hintergrund.bild, (0, 0))
 
         # Render Szene
-        self.szene.render()
-        self.bildschirm.blit(self.szene.bild, (0, 0))
+        if self.letzte_szene:
+            uebergaenge.render(self)
+        else:
+            self.szene.render()
+            self.bildschirm.blit(self.szene.bild, (0, 0))
+
+        # Zeichne Debug Informationen
+        if self.main.debug:
+            name = self.schriftarten.standard(40).render(PROJEKT_NAME, False, Farben.HELL_WEISS)
+            self.bildschirm.blit(name, (10, 10))
+            version = self.schriftarten.standard(40).render(PROJEKT_VERSION, False, Farben.HELL_WEISS)
+            self.bildschirm.blit(version, (10, 40))
+            fps = self.schriftarten.standard(40).render(f"FPS: {self.uhr.get_fps():.1f}", False, Farben.HELL_WEISS)
+            self.bildschirm.blit(fps, (10, 90))
+            szene = self.schriftarten.standard(40).render(f"Szene: {self.szene.__class__.__name__}", False, Farben.HELL_WEISS)
+            self.bildschirm.blit(szene, (10, 120))
 
         # Aktualisiere den Bildschirm
         pg.display.flip()

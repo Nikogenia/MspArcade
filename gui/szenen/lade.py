@@ -10,10 +10,13 @@ import pygame as pg
 class LadeSzene(Szene):
 
     # Konstruktor
-    def __init__(self, gui):
+    def __init__(self, gui, daten):
 
         # Initialisiere Szene
-        Szene.__init__(self, gui)
+        Szene.__init__(self, gui, daten)
+
+        # Definiere Frame
+        self.frame = 0
 
     # Starten
     def starten(self):
@@ -26,14 +29,26 @@ class LadeSzene(Szene):
         self.bild.fill(Farben.DUNKEL_SCHWARZ)
 
         # Zeichne Texte
-        titel = self.gui.schriftart_standard_extrem_gross.render(PROJEKT_NAME, False, Farben.WEISS)
+        titel = self.gui.schriftarten.standard(160).render(PROJEKT_NAME, True, Farben.WEISS)
         self.bild.blit(titel, ((self.bild.get_width() - titel.get_width()) // 2, (self.bild.get_height() - titel.get_height()) // 2 - 50))
-        loading = self.gui.schriftart_standard_normal.render("Loading ...", False, Farben.WEISS)
-        self.bild.blit(loading, ((self.bild.get_width() - loading.get_width()) // 2, (self.bild.get_height() - loading.get_height()) // 2 + 40))
+        laden = self.gui.schriftarten.standard(60).render(self.daten["text"] if "text" in self.daten else "Laden", True, Farben.WEISS)
+        self.bild.blit(laden, ((self.bild.get_width() - laden.get_width()) // 2, (self.bild.get_height() - laden.get_height()) // 2 + 40))
+
+        # Zeichne Laden
+        punkte = self.gui.schriftarten.standard(200).render("." * (self.frame // 25), True, Farben.WEISS)
+        self.bild.blit(punkte, ((self.bild.get_width() - punkte.get_width()) // 2, (self.bild.get_height() - punkte.get_height()) // 2 + 100))
 
     # Aktualisieren
     def aktualisieren(self):
-        pass
+
+        # Erhöhe Frame
+        self.frame += 1
+
+        # Setze Frame zurück
+        if self.frame >= 100:
+            self.frame = 0
+
+            self.wechsel_szene("idle", Uebergaenge.BLENDE_NORMAL, {})
 
     # Beenden
     def beenden(self):

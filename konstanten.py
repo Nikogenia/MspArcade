@@ -1,3 +1,6 @@
+# System Module
+from enum import Enum
+
 # Projekt Details
 PROJEKT_NAME = "Maker Space Arcade"
 PROJEKT_VERSION = "Alpha 1.1.1"
@@ -24,12 +27,13 @@ GUI_FPS = 60
 
 # Szenen
 SZENEN = {
-    "lade": ("gui.szenen.lade", "LadeSzene")
+    "lade": ("gui.szenen.lade", "LadeSzene"),
+    "idle": ("gui.szenen.idle", "IdleSzene")
 }
 
 
 # Übergänge
-class Uebergaenge:
+class Uebergaenge(Enum):
 
     # Keine
     KEINE = 0
