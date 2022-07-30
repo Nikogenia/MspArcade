@@ -30,7 +30,7 @@ class IdleSzene(Szene):
         self.bild.fill(Farben.DUNKEL_SCHWARZ)
 
         # Zeichne Texte
-        deutsch = self.gui.schriftarten.standard(110 + int(self.frame)).render("Druecke eine beliebige Taste", True, Farben.WEISS)
+        deutsch = self.gui.schriftarten.standard(110Klei).render("Druecke eine beliebige Taste", True, Farben.WEISS)
         self.bild.blit(deutsch, ((self.bild.get_width() - deutsch.get_width()) // 2, self.bild.get_height() - 200))
 
     # Aktualisieren
