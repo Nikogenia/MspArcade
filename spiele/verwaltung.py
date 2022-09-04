@@ -1,16 +1,9 @@
 # Eigene Module
 from konstanten import *
-from gui.hintergrund import Hintergrund
-from gui.szenen.lade import LadeSzene
-from gui import uebergaenge
-from gui.schriftarten import Schriftarten
-
-# Externe Bibliotheken
-import pygame as pg
 
 
-# GUI Verwaltung Klasse
-class GUI:
+# Spiele Verwaltung Klasse
+class Spiele:
 
     # Konstruktor
     def __init__(self, main):
@@ -18,24 +11,8 @@ class GUI:
         # Speichere die Main
         self.main = main
 
-        # Initialisiere GUI
-        self.bildschirm = pg.Surface(GUI_DIMENSION)
-        self.uhr = pg.time.Clock()
-        self.aktiv = False
-        pg.init()
-        pg.display.set_caption("Maker Space Arcade")
-        pg.mouse.set_visible(False)
-
-        # Definiere Schriftarten
-        self.schriftarten = Schriftarten(self)
-
-        # Initialisiere Hintergrund
-        self.hintergrund = Hintergrund(self)
-
-        # Definiere Szenen
-        self.szene = LadeSzene(self, {})
-        self.letzte_szene = None
-        self.uebergang_daten = {}
+        # Aktuelles Spiel
+        self.aktuelles_spiel = None
 
     # Starten Funktion
     def starten(self):

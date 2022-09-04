@@ -8,6 +8,7 @@ import threading
 from konstanten import *
 from werkzeuge.konfigurierung import Konfigurierung
 from werkzeuge import zeit
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = ""
 from gui.verwaltung import GUI
 
 
