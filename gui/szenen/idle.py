@@ -17,7 +17,7 @@ class IdleSzene(Szene):
 
         # Definiere Frame
         self.frame = 0
-        self.richtung = 0.3
+        self.richtung = 0.4
 
     # Starten
     def starten(self):
@@ -30,8 +30,9 @@ class IdleSzene(Szene):
         self.bild.fill(Farben.DUNKEL_SCHWARZ)
 
         # Zeichne Texte
-        deutsch = self.gui.schriftarten.standard(110).render("Druecke eine beliebige Taste", True, Farben.WEISS)
-        self.bild.blit(deutsch, ((self.bild.get_width() - deutsch.get_width()) // 2, self.bild.get_height() - 200))
+        hinweis = self.gui.schriftarten.standard(110).render("Druecke eine beliebige Taste", True, Farben.WEISS)
+        hinweis = pg.transform.scale(hinweis, (hinweis.get_width() + self.frame * 2, hinweis.get_height() + self.frame))
+        self.bild.blit(hinweis, ((self.bild.get_width() - hinweis.get_width()) // 2, self.bild.get_height() - 200))
 
     # Aktualisieren
     def aktualisieren(self):
@@ -40,11 +41,18 @@ class IdleSzene(Szene):
         self.frame += self.richtung
 
         # Setze Frame zurück
-        if self.frame >= 10:
-            self.richtung = -0.3
+        if self.frame >= 15:
+            self.richtung = -0.4
         elif self.frame <= 0:
-            self.richtung = 0.3
+            self.richtung = 0.4
 
     # Beenden
     def beenden(self):
         pass
+
+    # Event
+    def event(self, event):
+
+        # Wenn eine beliebige Taste gedrückt wurde, Gehe zu Menu
+        if event.type == pg.KEYDOWN:
+            self.wechsel_szene("menu", Uebergaenge.BLENDE_NORMAL, {})

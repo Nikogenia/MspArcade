@@ -33,7 +33,7 @@ class GUI:
         self.hintergrund = Hintergrund(self)
 
         # Definiere Szenen
-        self.szene = LadeSzene(self, {})
+        self.szene = LadeSzene(self, {"fertig": self.main.spielverwaltung.ist_initialisiert, "folge_szene": "idle", "folge_uebergang": Uebergaenge.BLENDE_NORMAL, "folge_argumente": {}})
         self.letzte_szene = None
         self.uebergang_daten = {}
 
@@ -124,3 +124,6 @@ class GUI:
 
                     # Beende
                     self.aktiv = False
+
+            # Leite Event an Szene weiter
+            self.szene.event(event)

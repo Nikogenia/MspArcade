@@ -16,8 +16,25 @@ class Spiel(ABC):
         self.name = daten["name"]
         self.kurz_beschreibung = daten["kurz_beschreibung"]
         self.beschreibung = daten["beschreibung"]
+        self.autor = daten["autor"]
+        self.bild = daten["bild"]
 
     # Abstrakte Ausführen Funktion
     @abstractmethod
-    def ausführen(self):
+    def ausfuehren(self):
+        pass
+
+    # Abstrakte Aktiv Funktion
+    @abstractmethod
+    def aktiv(self):
+        pass
+
+    # Abstrakte Beenden Funktion
+    @abstractmethod
+    def beenden(self):
+        pass
+
+    # Abstrakte Menü Funktion
+    @abstractmethod
+    def menue(self):
         pass

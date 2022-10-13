@@ -23,12 +23,18 @@ PFAD_KONFIGURATIONEN = f"{PFAD_DATEN}/konfigurationen"
 GUI_WIDTH = 1920
 GUI_HEIGHT = 1080
 GUI_DIMENSION = [GUI_WIDTH, GUI_HEIGHT]
-GUI_FPS = 60
+GUI_FPS = 30
 
 # Szenen
 SZENEN = {
     "lade": ("gui.szenen.lade", "LadeSzene"),
+    "menu": ("gui.szenen.menu", "MenuSzene"),
     "idle": ("gui.szenen.idle", "IdleSzene")
+}
+
+# Spielarten
+SPIELARTEN = {
+    "web": ("spiele.web", "WebSpiel")
 }
 
 

@@ -2,7 +2,7 @@
 import sys
 import os
 import logging
-import threading
+import threading as th
 
 # Eigene Module
 from konstanten import *
@@ -10,6 +10,7 @@ from werkzeuge.konfigurierung import Konfigurierung
 from werkzeuge import zeit
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = ""
 from gui.verwaltung import GUI
+from spiele.verwaltung import SpielVerwaltung
 
 
 # Main Klasse
@@ -65,12 +66,20 @@ class Main:
         self.main_konfigurierung = Konfigurierung(f"{PFAD_KONFIGURATIONEN}/main.json")
         self.spiele_konfigurierung = Konfigurierung(f"{PFAD_KONFIGURATIONEN}/spiele.json")
 
+        # Initialisiere Spiel Verwaltung
+        self.protokollierung.info("Initialisiere Spiele ...")
+        self.spielverwaltung = SpielVerwaltung(self)
+
         # Initialisiere GUI
         self.protokollierung.info("Initialisiere GUI ...")
         self.gui = GUI(self)
 
     # Starten Funktion
     def starten(self):
+
+        # Starte Spiel Verwaltung
+        self.protokollierung.info("Lade GUI ...")
+        th.Thread(target=self.spielverwaltung.starten, name="Spiele Laden").start()
 
         # Starte GUI
         self.protokollierung.info("Starte GUI ...")
@@ -109,7 +118,7 @@ def projekt_details():
 if __name__ == '__main__':
 
     # Setze den Namen des Main Threads
-    threading.main_thread().name = "Main"
+    th.main_thread().name = "Main"
 
     # Definiere Main Objekt
     main = Main(sys.argv)

@@ -49,6 +49,11 @@ class Szene(ABC):
     def beenden(self):
         pass
 
+    # Event
+    @abstractmethod
+    def event(self, event):
+        pass
+
     # Wechsel Szene
     def wechsel_szene(self, name, uebergang, daten):
 

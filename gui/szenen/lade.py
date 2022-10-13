@@ -18,6 +18,14 @@ class LadeSzene(Szene):
         # Definiere Frame
         self.frame = 0
 
+        # Lade Fertig Bedingung
+        self.fertig = daten["fertig"]
+
+        # Lade Folge Szene
+        self.folge_szene = daten["folge_szene"]
+        self.folge_uebergang = daten["folge_uebergang"]
+        self.folge_argumente = daten["folge_argumente"]
+
     # Starten
     def starten(self):
         pass
@@ -48,8 +56,14 @@ class LadeSzene(Szene):
         if self.frame >= 100:
             self.frame = 0
 
-            self.wechsel_szene("idle", Uebergaenge.BLENDE_NORMAL, {})
+        # Ist fertig
+        if self.fertig():
+            self.wechsel_szene(self.folge_szene, self.folge_uebergang, self.folge_argumente)
 
     # Beenden
     def beenden(self):
+        pass
+
+    # Event
+    def event(self, event):
         pass
