@@ -17,6 +17,7 @@ Bibliotheken: _Pygame, ..._
 - Nikolas (aka Nikocraft)
 - Samuel (aka MakerSam)
 - Linus
+- Valentin
 - ...
 
 \
