@@ -22,6 +22,10 @@ class Main:
         # Prüfe für Konsolen Argumente
         self.debug = "-d" in args
 
+        # Definiere Status
+        self._initialisiert = False
+        self._laufen = True
+
         # Definiere Protokolldateipfad
         protokoll_pfad = f"{PFAD_PROTOKOLLE}/protokoll_{zeit.protokollierung()}.log"
 
@@ -74,19 +78,44 @@ class Main:
         self.protokollierung.info("Initialisiere GUI ...")
         self.gui = GUI(self)
 
+        # Definiere tasks
+        self.tasks = []
+
     # Starten Funktion
     def starten(self):
 
-        # Starte Spiel Verwaltung
-        self.protokollierung.info("Lade GUI ...")
-        th.Thread(target=self.spielverwaltung.starten, name="Spiele Laden").start()
+        # Öffne GUI
+        self.protokollierung.info("Öffne GUI ...")
+        self.gui.start()
 
-        # Starte GUI
-        self.protokollierung.info("Starte GUI ...")
-        self.gui.starten()
+        # Starte Spiel Verwaltung
+        self.protokollierung.info("Lade Spiel Verwaltung ...")
+        self.spielverwaltung.starten()
+
+        # Setze initialisiert auf true
+        self._initialisiert = True
+
+        # Task Verarbeitung
+        while self._laufen:
+
+            # Führe alle Tasks aus
+            for task in self.tasks:
+                task()
+
+            # Leere die Tasks
+            self.tasks.clear()
+
+            # Warte 0,2 Sekunden
+            zeit.warte(0.2)
 
     # Beenden Funktion
     def beenden(self):
+
+        # Setze laufen auf false
+        self._laufen = False
+
+        # Leere die Tasks
+        self.tasks.clear()
 
         # Beende GUI
         self.protokollierung.info("Beende GUI ...")
@@ -96,6 +125,10 @@ class Main:
         self.protokollierung.info("Speichere Konfigurierungen ...")
         self.main_konfigurierung.speichern()
         self.spiele_konfigurierung.speichern()
+
+    # Initialisiert Funktion
+    def initialisiert(self):
+        return self._initialisiert
 
 
 # Projekt Details
@@ -116,9 +149,6 @@ def projekt_details():
 
 # Main
 if __name__ == '__main__':
-
-    # Setze den Namen des Main Threads
-    th.main_thread().name = "Main"
 
     # Definiere Main Objekt
     main = Main(sys.argv)

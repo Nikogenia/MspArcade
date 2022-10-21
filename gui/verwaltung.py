@@ -1,3 +1,6 @@
+# System Module
+import threading as th
+
 # Eigene Module
 from konstanten import *
 from gui.hintergrund import Hintergrund
@@ -10,10 +13,12 @@ import pygame as pg
 
 
 # GUI Verwaltung Klasse
-class GUI:
+class GUI(th.Thread):
 
     # Konstruktor
     def __init__(self, main):
+
+        th.Thread.__init__(self, name="GUI")
 
         # Speichere die Main
         self.main = main
@@ -33,12 +38,12 @@ class GUI:
         self.hintergrund = Hintergrund(self)
 
         # Definiere Szenen
-        self.szene = LadeSzene(self, {"fertig": self.main.spielverwaltung.ist_initialisiert, "folge_szene": "idle", "folge_uebergang": Uebergaenge.BLENDE_NORMAL, "folge_argumente": {}})
+        self.szene = LadeSzene(self, {"fertig": self.main.initialisiert, "folge_szene": "idle", "folge_uebergang": Uebergaenge.BLENDE_NORMAL, "folge_argumente": {}})
         self.letzte_szene = None
         self.uebergang_daten = {}
 
     # Starten Funktion
-    def starten(self):
+    def run(self):
 
         # Öffne GUI
         self.bildschirm = pg.display.set_mode(GUI_DIMENSION, pg.FULLSCREEN)

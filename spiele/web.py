@@ -4,6 +4,9 @@ import subprocess
 # Eigene Module
 from spiele.spiel import Spiel
 
+# Externe Bibliotheken
+import webview
+
 # Web Spiel Klasse
 class WebSpiel(Spiel):
 
@@ -16,26 +19,21 @@ class WebSpiel(Spiel):
         # Lade daten
         self.url = daten["url"]
 
-        # Definiere Prozess
-        self.prozess = None
+        # Definiere Fenster
+        self.fenster = None
 
     # Ausführen Funktion
     def ausfuehren(self):
-
-        # Führe Prozess aus
-        self.prozess = subprocess.Popen([self.main.main_konfigurierung.inhalt["browser"], "--start-fullscreen", self.url])
-        self.prozess.wait()
-        self.prozess = None
+        self.fenster = webview.create_window(self.name, url="https://www.google.com/")
+        webview.start(gui="cef")
 
     # Aktiv Funktion
     def aktiv(self):
-        return self.prozess is not None
+        return not self.fenster.closed
 
     # Beenden Funktion
     def beenden(self):
-
-        # Prozess beenden
-        self.prozess.terminate()
+        self.fenster.destroy()
 
     # Menü Funktion
     def menue(self):

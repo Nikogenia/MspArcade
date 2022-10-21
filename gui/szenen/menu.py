@@ -1,6 +1,3 @@
-# System Module
-import threading as th
-
 # Eigene Module
 from konstanten import *
 from gui.szene import Szene
@@ -65,6 +62,6 @@ class MenuSzene(Szene):
         if len(self.gui.main.spielverwaltung.spiele) > 0:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:
-                    th.Thread(target=self.gui.main.spielverwaltung.spiele[self.index].ausfuehren, name="Web Process").start()
-                    zeit.warte(6)
+                    self.gui.main.tasks.append(self.gui.main.spielverwaltung.spiele[self.index].ausfuehren)
+                    zeit.warte(20)
                     self.gui.main.spielverwaltung.spiele[self.index].beenden()
