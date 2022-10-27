@@ -3,6 +3,7 @@ import sys
 import os
 import logging
 import threading as th
+import ctypes
 
 # Eigene Module
 from konstanten import *
@@ -21,6 +22,9 @@ class Main:
 
         # Prüfe für Konsolen Argumente
         self.debug = "-d" in args
+
+        # Deaktiviere Betriebssystem Skalierung
+        ctypes.windll.user32.SetProcessDPIAware()
 
         # Definiere Protokolldateipfad
         protokoll_pfad = f"{PFAD_PROTOKOLLE}/protokoll_{zeit.protokollierung()}.log"
@@ -63,8 +67,11 @@ class Main:
 
         # Lade Konfigurierungen
         self.protokollierung.info("Lade Konfigurierungen ...")
-        self.main_konfigurierung = Konfigurierung(f"{PFAD_KONFIGURATIONEN}/main.json")
-        self.spiele_konfigurierung = Konfigurierung(f"{PFAD_KONFIGURATIONEN}/spiele.json")
+        self.main_konfigurierung = Konfigurierung(f"{PFAD_KONFIGURATIONEN}/main.json", {"hintergrund": "$DATEN/hintergrund.mp4"})
+        self.spiele_konfigurierung = Konfigurierung(f"{PFAD_KONFIGURATIONEN}/spiele.json",
+                                                    {"spiele": [{"typ": "web", "name": "Template", "kurz_beschreibung": "-",
+                                                                 "beschreibung": "-", "autor": "MAKER SPACE",
+                                                                 "bild": "$SPIELE/template.png", "url": "https://bodensee-gymnasium.de/"}]})
 
         # Initialisiere Spiel Verwaltung
         self.protokollierung.info("Initialisiere Spiele ...")

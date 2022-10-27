@@ -29,6 +29,7 @@ class SpielVerwaltung:
             for spiel in self.main.spiele_konfigurierung.inhalt["spiele"]:
                 exec(f"from {SPIELARTEN[spiel['typ']][0]} import {SPIELARTEN[spiel['typ']][1]}")
                 exec(f"self.spiele.append({SPIELARTEN[spiel['typ']][1]}(self.main, spiel))")
+                self.spiele[-1].menue()
 
         zeit.warte(1)
 

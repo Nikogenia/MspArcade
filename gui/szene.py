@@ -41,7 +41,7 @@ class Szene(ABC):
 
     # Aktualisieren
     @abstractmethod
-    def aktualisieren(self):
+    def aktualisieren(self, no_input=False):
         pass
 
     # Beenden

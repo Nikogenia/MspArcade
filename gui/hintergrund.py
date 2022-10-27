@@ -1,8 +1,10 @@
 # Eigene Module
 from konstanten import *
+from werkzeuge import bild
 
 # Externe Bibliotheken
 import pygame as pg
+import cv2
 
 
 # Hintergrund Klasse
@@ -16,17 +18,18 @@ class Hintergrund:
 
         # Definiere Bild
         self.bild = pg.Surface(GUI_DIMENSION)
-        self.bild.set_colorkey(Farben.DUNKEL_SCHWARZ)
 
-        # Lade Bilder
-        self.retro = pg.image.load(f"{PFAD_BILDER}/retro_hintergrund.jpg")
-        self.retro = pg.transform.scale(self.retro, GUI_DIMENSION)
+        # Lade Capture
+        self.capture = cv2.VideoCapture(self.gui.main.main_konfigurierung.inhalt["hintergrund"].replace("$DATEN", PFAD_DATEN))
+
+        # Definiere Frame
+        self.frame = pg.Surface(GUI_DIMENSION)
 
     # Render
     def render(self):
 
         # Projiziere Bild
-        self.bild.blit(self.retro, dest=((GUI_WIDTH - self.retro.get_width()) / 2, (GUI_HEIGHT - self.retro.get_height()) / 2))
+        self.bild.blit(self.frame, (0, 0))
 
         # Bild verdunkeln
         schwarz = pg.Surface(GUI_DIMENSION)
@@ -35,4 +38,15 @@ class Hintergrund:
 
     # Aktualisieren
     def aktualisieren(self):
-        pass
+
+        _, frame = self.capture.read()
+
+        if not _:
+
+            self.capture.release()
+
+            self.capture = cv2.VideoCapture(self.gui.main.main_konfigurierung.inhalt["hintergrund"].replace("$DATEN", PFAD_DATEN))
+
+            _, frame = self.capture.read()
+
+        self.frame = bild.cv_zu_pygame(frame)
