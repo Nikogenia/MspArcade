@@ -1,0 +1,30 @@
+MAKER SPACE ARCADE
+------------------
+
+Ein MAKER SPACE Projekt für den Arcade Spielautomaten der Schule
+
+BESCHREIBUNG
+Dieses Projekt beinhaltet die Kernsoftware für den Spielautomaten des Bodensee Gymnasiums Lindau. Sie soll die einzelnen Spiele verwalten und die Schüler auf den Automaten aufmerksam machen.
+
+DETAILS
+Projekt Version: Alpha 1.1.1
+Projekt Autoren:
+- Nikolas (aka Nikocraft)
+- Samuel (aka MakerSam)
+- Linus
+- Valentin
+Python Version: 1.10.5
+Python Bibliotheken:
+- Pygame
+
+[27/Oct/22 20:05:53] [MAKER SPACE ARCADE - Main] [INFO] Debug Modus: Ja
+[27/Oct/22 20:05:53] [MAKER SPACE ARCADE - Main] [INFO] Laufzeit Pfad: C:\Users\Nikocraft\Dev\Python\MakerSpaceArcade
+[27/Oct/22 20:05:53] [MAKER SPACE ARCADE - Main] [INFO] Ressourcen Pfad: C:\Users\Nikocraft\Dev\Python\MakerSpaceArcade\ressourcen
+[27/Oct/22 20:05:53] [MAKER SPACE ARCADE - Main] [INFO] Daten Pfad: C:\Users\Nikocraft\Dev\Python\MakerSpaceArcade\daten
+[27/Oct/22 20:05:53] [MAKER SPACE ARCADE - Main] [INFO] Lade Konfigurierungen ...
+[27/Oct/22 20:05:53] [MAKER SPACE ARCADE - Main] [INFO] Initialisiere Spiele ...
+[27/Oct/22 20:05:53] [MAKER SPACE ARCADE - Main] [INFO] Initialisiere GUI ...
+[27/Oct/22 20:05:54] [MAKER SPACE ARCADE - Main] [INFO] Lade GUI ...
+[27/Oct/22 20:05:54] [MAKER SPACE ARCADE - Main] [INFO] Starte GUI ...
+[27/Oct/22 20:07:01] [MAKER SPACE ARCADE - Main] [INFO] Beende GUI ...
+[27/Oct/22 20:07:01] [MAKER SPACE ARCADE - Main] [INFO] Speichere Konfigurierungen ...
