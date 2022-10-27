@@ -28,7 +28,9 @@ class MenuSzene(Szene):
 
     # Starten
     def starten(self):
-        pass
+
+        # Rendere Spiele Panels
+        self.render_spiele()
 
     # Render
     def render(self):

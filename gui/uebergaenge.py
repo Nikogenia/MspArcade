@@ -20,6 +20,7 @@ def verarbeite(gui):
 
     # Wenn der Übergang beendet ist
     if beendet:
+        gui.letzte_szene.beenden()
         gui.letzte_szene = None
         gui.uebergang_daten.clear()
 

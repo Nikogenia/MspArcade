@@ -56,6 +56,7 @@ class GUI:
                 exec(f"from {SZENEN[self.szene.szenenwechsel_name][0]} import {SZENEN[self.szene.szenenwechsel_name][1]}")
                 self.letzte_szene = self.szene
                 exec(f"self.szene = {SZENEN[self.szene.szenenwechsel_name][1]}(self, self.szene.szenenwechsel_daten)")
+                self.szene.starten()
 
             # Verarbeite Uebergang
             if self.letzte_szene:
