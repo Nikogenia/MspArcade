@@ -7,7 +7,7 @@ PROJEKT_VERSION = "Alpha 1.1.1"
 PROJEKT_KURZ_BESCHREIBUNG = "Ein MAKER SPACE Projekt für den Arcade Spielautomaten der Schule"
 PROJEKT_BESCHREIBUNG = "Dieses Projekt beinhaltet die Kernsoftware für den Spielautomaten des Bodensee Gymnasiums Lindau. Sie soll die einzelnen Spiele verwalten und die Schüler auf den Automaten aufmerksam machen."
 PROJEKT_AUTOREN = ["Nikolas (aka Nikocraft)", "Samuel (aka MakerSam)", "Linus", "Valentin"]
-PYTHON_VERSION = "1.10.5"
+PYTHON_VERSION = "3.10"
 PYTHON_BIBLIOTHEKEN = ["Pygame"]
 
 # Datei Pfade
