@@ -18,9 +18,6 @@ class SpielVerwaltung:
         # Definiere Spiele
         self.spiele = []
 
-        # Definiere initialisiert
-        self.initialisiert = False
-
     # Starten Funktion
     def starten(self):
 
@@ -32,13 +29,6 @@ class SpielVerwaltung:
 
         zeit.warte(1)
 
-        # Setze initialisiert auf true
-        self.initialisiert = True
-
     # Beenden Funktion
     def beenden(self):
         pass
-
-    # Ist initialisiert Funktion
-    def ist_initialisiert(self):
-        return self.initialisiert

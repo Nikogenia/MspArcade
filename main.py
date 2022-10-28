@@ -24,7 +24,11 @@ class Main:
         self.debug = "-d" in args
 
         # Deaktiviere Betriebssystem Skalierung
-        ctypes.windll.user32.SetProcessDPIAware()
+        if os.name == "nt":
+            ctypes.windll.user32.SetProcessDPIAware()
+
+        # Definiere Status
+        self._initialisiert = False
 
         # Definiere Protokolldateipfad
         protokoll_pfad = f"{PFAD_PROTOKOLLE}/protokoll_{zeit.protokollierung()}.log"
@@ -84,13 +88,16 @@ class Main:
     # Starten Funktion
     def starten(self):
 
-        # Starte Spiel Verwaltung
-        self.protokollierung.info("Lade GUI ...")
-        th.Thread(target=self.spielverwaltung.starten, name="Spiele Laden").start()
+        # Öffne GUI
+        self.protokollierung.info("Öffne GUI ...")
+        self.gui.start()
 
-        # Starte GUI
-        self.protokollierung.info("Starte GUI ...")
-        self.gui.starten()
+        # Starte Spiel Verwaltung
+        self.protokollierung.info("Lade Spiel Verwaltung ...")
+        self.spielverwaltung.starten()
+
+        # Setze initialisiert auf true
+        self._initialisiert = True
 
     # Beenden Funktion
     def beenden(self):
@@ -103,6 +110,10 @@ class Main:
         self.protokollierung.info("Speichere Konfigurierungen ...")
         self.main_konfigurierung.speichern()
         self.spiele_konfigurierung.speichern()
+
+    # Initialisiert Funktion
+    def initialisiert(self):
+        return self._initialisiert
 
 
 # Projekt Details
