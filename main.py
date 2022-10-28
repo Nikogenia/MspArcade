@@ -24,7 +24,8 @@ class Main:
         self.debug = "-d" in args
 
         # Deaktiviere Betriebssystem Skalierung
-        ctypes.windll.user32.SetProcessDPIAware()
+        if os.name == "nt":
+            ctypes.windll.user32.SetProcessDPIAware()
 
         # Definiere Status
         self._initialisiert = False
