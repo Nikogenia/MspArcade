@@ -61,6 +61,7 @@ class GUI(th.Thread):
                 exec(f"from {SZENEN[self.szene.szenenwechsel_name][0]} import {SZENEN[self.szene.szenenwechsel_name][1]}")
                 self.letzte_szene = self.szene
                 exec(f"self.szene = {SZENEN[self.szene.szenenwechsel_name][1]}(self, self.szene.szenenwechsel_daten)")
+                self.szene.starten()
 
             # Verarbeite Uebergang
             if self.letzte_szene:
@@ -68,6 +69,9 @@ class GUI(th.Thread):
 
             # Verarbeite Events
             self.verarbeite_events()
+
+            # Aktualisiere Hintergrund
+            self.hintergrund.aktualisieren()
 
             # Render Bildschirm
             self.render_bildschirm()
@@ -97,13 +101,13 @@ class GUI(th.Thread):
 
         # Zeichne Debug Informationen
         if self.main.debug:
-            name = self.schriftarten.standard(40).render(PROJEKT_NAME, False, Farben.HELL_WEISS)
+            name = self.schriftarten.standard(28).render(PROJEKT_NAME, False, Farben.HELL_WEISS)
             self.bildschirm.blit(name, (10, 10))
-            version = self.schriftarten.standard(40).render(PROJEKT_VERSION, False, Farben.HELL_WEISS)
+            version = self.schriftarten.standard(28).render(PROJEKT_VERSION, False, Farben.HELL_WEISS)
             self.bildschirm.blit(version, (10, 40))
-            fps = self.schriftarten.standard(40).render(f"FPS: {self.uhr.get_fps():.1f}", False, Farben.HELL_WEISS)
+            fps = self.schriftarten.standard(28).render(f"FPS: {self.uhr.get_fps():.1f}", False, Farben.HELL_WEISS)
             self.bildschirm.blit(fps, (10, 90))
-            szene = self.schriftarten.standard(40).render(f"Szene: {self.szene.__class__.__name__}", False, Farben.HELL_WEISS)
+            szene = self.schriftarten.standard(28).render(f"Szene: {self.szene.__class__.__name__}", False, Farben.HELL_WEISS)
             self.bildschirm.blit(szene, (10, 120))
 
         # Aktualisiere den Bildschirm

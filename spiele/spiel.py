@@ -2,6 +2,9 @@
 from abc import ABC
 from abc import abstractmethod
 
+# Externe Bibliotheken
+from pygame import Surface
+
 
 # Abstrakte Spiel Klasse
 class Spiel(ABC):
@@ -18,6 +21,9 @@ class Spiel(ABC):
         self.beschreibung = daten["beschreibung"]
         self.autor = daten["autor"]
         self.bild = daten["bild"]
+
+        self.ui_groesse = (800, 900)
+        self.ui = Surface((800, 900))
 
     # Abstrakte Ausführen Funktion
     @abstractmethod

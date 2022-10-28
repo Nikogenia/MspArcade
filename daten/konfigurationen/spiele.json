@@ -1,0 +1,31 @@
+{
+    "spiele": [
+        {
+            "typ": "web",
+            "name": "Template",
+            "kurz_beschreibung": "-",
+            "beschreibung": "-",
+            "autor": "MAKER SPACE",
+            "bild": "$SPIELE/template.png",
+            "url": "https://bodensee-gymnasium.de/"
+        },
+        {
+            "typ": "web",
+            "name": "Slither",
+            "kurz_beschreibung": "-",
+            "beschreibung": "-",
+            "autor": "MAKER SPACE",
+            "bild": "$SPIELE/slither.png",
+            "url": "https://bodensee-gymnasium.de/"
+        },
+        {
+            "typ": "web",
+            "name": "Minecraft",
+            "kurz_beschreibung": "-",
+            "beschreibung": "-",
+            "autor": "MAKER SPACE",
+            "bild": "$SPIELE/minecraft.png",
+            "url": "https://bodensee-gymnasium.de/"
+        }
+    ]
+}

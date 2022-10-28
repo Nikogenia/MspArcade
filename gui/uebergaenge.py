@@ -16,8 +16,11 @@ def verarbeite(gui):
     else:
         beendet = True
 
+    gui.letzte_szene.aktualisieren(True)
+
     # Wenn der Übergang beendet ist
     if beendet:
+        gui.letzte_szene.beenden()
         gui.letzte_szene = None
         gui.uebergang_daten.clear()
 

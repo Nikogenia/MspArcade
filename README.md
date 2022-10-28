@@ -10,7 +10,7 @@ die Schüler auf den Automaten aufmerksam machen._
 ### Details
 Projekt Version: _Alpha 1.1.1_\
 Programmiersprache: _Python_\
-Sprachen Version: _1.10.5_\
+Sprachen Version: _3.10_\
 Bibliotheken: _Pygame, ..._
 
 ### Entwickler

@@ -6,13 +6,16 @@ import json
 class Konfigurierung:
 
     # Konstruktor
-    def __init__(self, pfad):
+    def __init__(self, pfad, standard=None):
 
         # Speichere den Pfad
         self.pfad = pfad
 
         # Definiere Inhalt
         self.inhalt = {}
+
+        # Speichere Standard
+        self.standard = standard
 
         # Lade Inhalt
         self.laden()
@@ -32,8 +35,8 @@ class Konfigurierung:
         # Bei einem Fehler
         except (IOError, json.JSONDecodeError):
 
-            # Setze den Inhalt zu einem leeren Dictionary
-            self.inhalt = {}
+            # Setze Inhalt auf ein leeres Dictionary oder Standard
+            self.inhalt = {} if not self.standard else self.standard
 
     # Speichern
     def speichern(self):
