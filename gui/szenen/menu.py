@@ -26,6 +26,9 @@ class MenuSzene(Szene):
         self.frame = 0
         self.richtung = 0.6
 
+        # Definiere Timeout Zeit
+        self.timeout = zeit.laufzeit_zeit()
+
     # Starten
     def starten(self):
 
@@ -64,6 +67,9 @@ class MenuSzene(Szene):
         elif self.frame <= 0:
             self.richtung = 0.6
 
+        if self.timeout + GUI_MENU_TIMEOUT < zeit.laufzeit_zeit():
+            self.wechsel_szene("idle", Uebergaenge.BLENDE_NORMAL, {})
+
     # Beenden
     def beenden(self):
         pass
@@ -80,20 +86,23 @@ class MenuSzene(Szene):
                     else:
                         self.index -= 1
                     self.render_spiele()
+                    self.timeout = zeit.laufzeit_zeit()
                 if event.key == pg.K_RIGHT:
                     if self.index == len(self.gui.main.spielverwaltung.spiele) - 1:
                         self.index = 0
                     else:
                         self.index += 1
                     self.render_spiele()
+                    self.timeout = zeit.laufzeit_zeit()
 
         # Ausführen
         if len(self.gui.main.spielverwaltung.spiele) > 0:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:
-                    th.Thread(target=self.gui.main.spielverwaltung.spiele[self.index].ausfuehren, name="Web Process").start()
-                    zeit.warte(6)
-                    self.hole_spiel(self.index).beenden()
+                    self.wechsel_szene("login", Uebergaenge.BLENDE_NORMAL, {})
+                    #th.Thread(target=self.gui.main.spielverwaltung.spiele[self.index].ausfuehren, name="Web Process").start()
+                    #zeit.warte(6)
+                    #self.hole_spiel(self.index).beenden()
 
     # Hole Spiel
     def hole_spiel(self, index):

@@ -24,11 +24,13 @@ GUI_WIDTH = 1920
 GUI_HEIGHT = 1080
 GUI_DIMENSION = [GUI_WIDTH, GUI_HEIGHT]
 GUI_FPS = 30
+GUI_MENU_TIMEOUT = 30
 
 # Szenen
 SZENEN = {
     "lade": ("gui.szenen.lade", "LadeSzene"),
     "menu": ("gui.szenen.menu", "MenuSzene"),
+    "login": ("gui.szenen.login", "LoginSzene"),
     "idle": ("gui.szenen.idle", "IdleSzene")
 }
 

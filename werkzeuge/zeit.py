@@ -11,3 +11,8 @@ def warte(dauer: float):
 # Protokollierung
 def protokollierung():
     return _dt.datetime.now().strftime("%Y-%m-%d_%Hh-%Mm-%Ss")
+
+
+# Laufzeit Zeit
+def laufzeit_zeit():
+    return _tm.perf_counter()

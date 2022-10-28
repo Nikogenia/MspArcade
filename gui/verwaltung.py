@@ -39,6 +39,7 @@ class GUI(th.Thread):
 
         # Definiere Szenen
         self.szene = LadeSzene(self, {"fertig": self.main.initialisiert, "folge_szene": "idle", "folge_uebergang": Uebergaenge.BLENDE_NORMAL, "folge_argumente": {}})
+        self.szene.starten()
         self.letzte_szene = None
         self.uebergang_daten = {}
 

@@ -56,8 +56,8 @@ class WebSpiel(Spiel):
             self.ui.fill(Farben.GRAU)
 
         # Zeichne Titel
-        title = self.main.gui.schriftarten.standard(80).render(self.name, True, Farben.WEISS)
-        self.ui.blit(title, ((self.ui.get_width() - title.get_width()) // 2, 100))
+        #title = self.main.gui.schriftarten.standard(80).render(self.name, True, Farben.WEISS)
+        #self.ui.blit(title, ((self.ui.get_width() - title.get_width()) // 2, 100))
 
         # Zeichne Rahmen
         pg.draw.rect(self.ui, Farben.WEISS, (0, 0, self.ui.get_width(), self.ui.get_height()), 5)

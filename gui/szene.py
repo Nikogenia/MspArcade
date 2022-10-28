@@ -29,6 +29,9 @@ class Szene(ABC):
         self.szenenwechsel_uebergang = Uebergaenge.KEINE
         self.szenenwechsel_daten = {}
 
+        # Definiere Hintergrund Helligkeit
+        self.hintergrund_helligkeit = 180
+
     # Starten
     @abstractmethod
     def starten(self):

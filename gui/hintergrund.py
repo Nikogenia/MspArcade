@@ -25,6 +25,9 @@ class Hintergrund:
         # Definiere Frame
         self.frame = pg.Surface(GUI_DIMENSION)
 
+        # Aktuelle Hintergrund Helligkeit
+        self.aktuelle_helligkeit = 100
+
     # Render
     def render(self):
 
@@ -33,11 +36,16 @@ class Hintergrund:
 
         # Bild verdunkeln
         schwarz = pg.Surface(GUI_DIMENSION)
-        schwarz.set_alpha(200)
+        schwarz.set_alpha(self.aktuelle_helligkeit)
         self.bild.blit(schwarz, dest=(0, 0))
 
     # Aktualisieren
     def aktualisieren(self):
+
+        if self.aktuelle_helligkeit > self.gui.szene.hintergrund_helligkeit:
+            self.aktuelle_helligkeit -= 5
+        elif self.aktuelle_helligkeit < self.gui.szene.hintergrund_helligkeit:
+            self.aktuelle_helligkeit += 5
 
         _, frame = self.capture.read()
 

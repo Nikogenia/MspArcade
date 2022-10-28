@@ -28,7 +28,8 @@ class LadeSzene(Szene):
 
     # Starten
     def starten(self):
-        pass
+
+        self.hintergrund_helligkeit = 100
 
     # Render
     def render(self):
