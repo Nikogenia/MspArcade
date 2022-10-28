@@ -31,7 +31,7 @@ class IdleSzene(Szene):
 
         # Zeichne Texte
         hinweis = self.gui.schriftarten.standard(60).render("Drücke eine beliebige Taste", True, Farben.WEISS)
-        hinweis = pg.transform.scale(hinweis, (hinweis.get_width() + self.frame * 2, hinweis.get_height() + self.frame))
+        hinweis = pg.transform.scale(hinweis, (hinweis.get_width() + self.frame * 4, hinweis.get_height() + self.frame * 0.2))
         self.bild.blit(hinweis, ((self.bild.get_width() - hinweis.get_width()) // 2, self.bild.get_height() - 200 - hinweis.get_height() // 2))
 
     # Aktualisieren

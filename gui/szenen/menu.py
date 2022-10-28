@@ -49,7 +49,7 @@ class MenuSzene(Szene):
 
         # Zeichne Hinweis
         hinweis = self.gui.schriftarten.standard(40).render("Drücke START zum Spielen", True, Farben.WEISS)
-        hinweis = pg.transform.scale(hinweis, (hinweis.get_width() + self.frame * 2, hinweis.get_height() + self.frame))
+        hinweis = pg.transform.scale(hinweis, (hinweis.get_width() + self.frame * 4, hinweis.get_height() + self.frame * 0.2))
         self.bild.blit(hinweis, ((self.bild.get_width() - hinweis.get_width()) // 2, self.bild.get_height() - 70 - hinweis.get_height() // 2))
 
     # Aktualisieren
