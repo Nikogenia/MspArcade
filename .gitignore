@@ -1,8 +1,11 @@
-# IDE Dateien
+# Jetbrains IDE files
 .idea
 
-# Cache Dateien
+# Python cache files
 __pycache__
 
-# Daten Verzeichnis
+# Data directory
+data
+
+# TODO temp
 daten/protokolle

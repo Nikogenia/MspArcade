@@ -10,8 +10,8 @@ die Schüler auf den Automaten aufmerksam machen._
 ### Details
 Projekt Version: _Alpha 1.1.1_\
 Programmiersprache: _Python_\
-Sprachen Version: _3.10_\
-Bibliotheken: _Pygame, ..._
+Sprachen Version: _3.11_\
+Bibliotheken: _Nikocraft, Pygame, ..._
 
 ### Entwickler
 - Nikolas (aka Nikocraft)
@@ -21,5 +21,5 @@ Bibliotheken: _Pygame, ..._
 - ...
 
 \
-**MAKER SPACE © 2022**\
-![Bogy Logo](ressourcen/bilder/bogy_logo.jpg)
+**MAKER SPACE © 2023**\
+![Bogy Logo](resources/images/bogy_logo.jpg)
