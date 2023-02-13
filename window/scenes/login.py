@@ -13,9 +13,10 @@ import numpy as np
 
 # Local
 from constants import *
-import cv_utils
+from window import cv_utils
+
 if TYPE_CHECKING:
-    from window import Window
+    from window.window import Window
 
 
 class LoginScene(nc.Scene):
@@ -53,13 +54,11 @@ class LoginScene(nc.Scene):
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 80))
 
         # QR-Code scanner
-        self.screen.blit(self.camera_frame, (100, 300))
-        pg.draw.rect(self.screen, nc.RGB.WHITE, (100, 300, 800, 460), 3)
-
-        # Scanner description
         font = self.window.font.get("text", 30)
         text = font.render("QR-CODE SCANNER", True, nc.RGB.WHITE)
-        self.screen.blit(text, (500 - text.get_width() / 2, 770))
+        self.screen.blit(text, (500 - text.get_width() / 2, 260))
+        self.screen.blit(self.camera_frame, (100, 300))
+        pg.draw.rect(self.screen, nc.RGB.WHITE, (100, 300, 800, 460), 3)
 
         # Register info box
         pg.draw.rect(self.screen, nc.RGB.BLACK, (1150, 250, 650, 600))
@@ -125,7 +124,7 @@ class LoginScene(nc.Scene):
 
             # Read camera
             _, frame = self.camera.read()
-            self.camera_size = nc.Vec(frame.shape[0], frame.shape[1])
+            self.camera_size = nc.Vec(frame.shape[1], frame.shape[0])
 
             # Decode
             self.decode_qr(frame)

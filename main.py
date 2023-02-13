@@ -8,7 +8,7 @@ import nikocraft as nc
 # Local
 from constants import *
 from configs import MainConfig, GameConfig, UserConfig
-from window import Window
+from window.window import Window
 
 
 class Main(nc.App):

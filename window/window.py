@@ -8,10 +8,10 @@ import pygame as pg
 
 # Local
 from constants import *
-from scenes.loading import LoadingScene
-from scenes.idle import IdleScene
-from scenes.menu import MenuScene
-from scenes.login import LoginScene
+from window.scenes.loading import LoadingScene
+from window.scenes.idle import IdleScene
+from window.scenes.menu import MenuScene
+from window.scenes.login import LoginScene
 if TYPE_CHECKING:
     from main import Main
 

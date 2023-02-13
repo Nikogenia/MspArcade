@@ -9,7 +9,7 @@ import pygame as pg
 # Local
 from constants import *
 if TYPE_CHECKING:
-    from window import Window
+    from window.window import Window
 
 
 class LoadingScene(nc.Scene):
