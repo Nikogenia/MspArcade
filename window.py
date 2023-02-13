@@ -26,11 +26,11 @@ class Window(nc.Window):
                                      height=GUI_HEIGHT,
                                      flags=pg.FULLSCREEN,
                                      scene_mode=True,
-                                     start_scene="login")
+                                     start_scene="loading")
 
         self.main: Main = main
 
-        self.disable_resolution_scaling()
+        #self.disable_resolution_scaling()
 
         # Register scenes
         self.register_scene("loading", LoadingScene)
@@ -44,6 +44,9 @@ class Window(nc.Window):
 
         # Debug screen
         self.debug_screen: nc.DebugScreen = nc.DebugScreen(self)
+        self.debug_screen_left: list[str] = []
+        self.debug_screen_right: list[str] = []
+        self.debug_screen_active: bool = False
 
         # Load background
         if self.main.main_config.background_mode == "image":
@@ -74,10 +77,15 @@ class Window(nc.Window):
 
         self.render_scene()
 
-        self.debug_screen.render()
+        if self.debug_screen_active:
+            self.debug_screen.render(self.debug_screen_left, self.debug_screen_right)
+            self.debug_screen_left = self.debug_screen.left_content()
+            self.debug_screen_right = self.debug_screen.right_content()
 
     def event(self, event: pg.event.Event) -> None:
 
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 self.running = False
+            if event.key == pg.K_F3:
+                self.debug_screen_active = not self.debug_screen_active

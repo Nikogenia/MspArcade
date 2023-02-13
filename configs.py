@@ -38,3 +38,16 @@ class GameConfig(nc.Config):
                 "url": "https://www.bodensee-gymnasium.de/"
             }
         ]
+
+
+class UserConfig(nc.Config):
+
+    def __init__(self, logger):
+
+        super(UserConfig, self).__init__(f"{PATH_CONFIG}/user.json", logger)
+
+        self.users: list[dict[str, Any]] = []
+
+        self.time_changes: list[dict[str, Any]] = []
+        self.rating_changes: list[dict[str, Any]] = []
+        self.last_login_changes: list[dict[str, Any]] = []

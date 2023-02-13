@@ -18,6 +18,8 @@ class LoadingScene(nc.Scene):
 
         super(LoadingScene, self).__init__(window, args)
 
+        self.window: Window = window
+
         self.brightness: int = 180
 
         self.tick: int = 0
@@ -42,3 +44,7 @@ class LoadingScene(nc.Scene):
 
         if self.tick > 40:
             self.window.change_scene("idle")
+
+        # Debug screen
+        self.window.debug_screen_left.append("")
+        self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")

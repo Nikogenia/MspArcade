@@ -7,7 +7,7 @@ import nikocraft as nc
 
 # Local
 from constants import *
-from configs import MainConfig, GameConfig
+from configs import MainConfig, GameConfig, UserConfig
 from window import Window
 
 
@@ -35,17 +35,18 @@ class Main(nc.App):
         self.logger.info("Load configs ...")
         self.main_config: MainConfig = MainConfig(self.logger)
         self.game_config: GameConfig = GameConfig(self.logger)
+        self.user_config: UserConfig = UserConfig(self.logger)
         self.main_config.load()
         self.game_config.load()
-
-        # TODO Initialize game manager
+        self.user_config.load()
+        self.main_config.save()
+        self.game_config.save()
+        self.user_config.save()
 
         # Initialize window
         self.window = Window(self)
 
     def run(self):
-
-        # TODO Initialize game manager
 
         # Open window
         self.window.open()
@@ -54,8 +55,7 @@ class Main(nc.App):
 
         # Save configs
         self.logger.info("Save configs ...")
-        self.main_config.save()
-        self.game_config.save()
+        self.user_config.save()
 
 
 # Main

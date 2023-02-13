@@ -19,6 +19,8 @@ class IdleScene(nc.Scene):
 
         super(IdleScene, self).__init__(window, args)
 
+        self.window: Window = window
+
         self.brightness: int = 100
 
         self.tick: int = 0
@@ -44,6 +46,10 @@ class IdleScene(nc.Scene):
     def update(self) -> None:
 
         self.tick += self.dt
+
+        # Debug screen
+        self.window.debug_screen_left.append("")
+        self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
 
     def event(self, event: pg.event.Event) -> None:
 

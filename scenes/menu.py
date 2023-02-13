@@ -19,6 +19,8 @@ class MenuScene(nc.Scene):
 
         super(MenuScene, self).__init__(window, args)
 
+        self.window: Window = window
+
         self.brightness: int = 180
 
         self.tick: int = 0
@@ -34,10 +36,14 @@ class MenuScene(nc.Scene):
     def update(self) -> None:
 
         self.tick += self.dt
-        self.timeout += self.dt
 
-        if self.timeout > 150:
+        if self.tick - self.timeout > 150:
             self.window.change_scene("idle")
+
+        # Debug screen
+        self.window.debug_screen_left.append("")
+        self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
+        self.window.debug_screen_left.append(f"Timeout: {self.tick - self.timeout:.1f}")
 
     def event(self, event: pg.event.Event) -> None:
 
