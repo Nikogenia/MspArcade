@@ -58,7 +58,6 @@ class Window(nc.Window):
                 self.background.fill(nc.RGB.BLACK)
 
         elif self.main.main_config.background_mode == "video":
-            # TODO Video background
             raise ValueError("The video background is not available yet!")
 
         else:
@@ -89,3 +88,20 @@ class Window(nc.Window):
                 self.running = False
             if event.key == pg.K_F3:
                 self.debug_screen_active = not self.debug_screen_active
+
+    def update(self) -> None:
+
+        self.debug_screen_right.append("")
+        self.debug_screen_right.append("Database Update")
+        if self.main.user_manager.last_update == 0:
+            self.debug_screen_right.append(f"-")
+        else:
+            self.debug_screen_right.append(f"{nc.time.epoch_time() - self.main.user_manager.last_update:.1f} seconds")
+
+        if SHOW_USERS_IN_DEBUG_SCREEN:
+            self.debug_screen_right.append("")
+            self.debug_screen_right.append("Players")
+            for player in self.main.user_manager.players:
+                self.debug_screen_right.append("")
+                self.debug_screen_right.append(player.auth_id)
+                self.debug_screen_right.append(f"{player.time} - {player.name}")

@@ -37,7 +37,7 @@ class MenuScene(nc.Scene):
 
         self.tick += self.dt
 
-        if self.tick - self.timeout > 150:
+        if self.tick - self.timeout > GUI_MENU_TIMEOUT:
             self.window.change_scene("idle")
 
         # Debug screen

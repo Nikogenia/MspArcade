@@ -12,6 +12,7 @@ import requests as rq
 from constants import *
 from user.user import User
 from user.player import Player
+from window.scenes.login import LoginScene
 if TYPE_CHECKING:
     from main import Main
 
@@ -51,12 +52,17 @@ class UserManager(th.Thread):
 
         while self.running:
 
+            if isinstance(self.main.window.scene, LoginScene):
+                self.handle_login()
+
             if (nc.time.epoch_time() - self.last_update > AUTO_UPDATE) or (nc.time.epoch_time() - self.last_update > FAST_UPDATE and self.fast_update):
                 self.fast_update = False
                 data = self.get_entries()
                 self.online = data is not None
                 if self.online:
                     self.update(data)
+                    if isinstance(self.main.window.scene, LoginScene):
+                        self.main.window.scene.invalid.clear()
                 self.last_update = nc.time.epoch_time()
 
             nc.time.wait(1)
@@ -216,3 +222,29 @@ class UserManager(th.Thread):
         for user in self.users:
             if user.id == user_id:
                 return user
+
+    def handle_login(self) -> None:
+
+        scene: LoginScene = self.main.window.scene
+
+        if scene.status == 3:
+            return
+
+        for value in scene.input:
+
+            if self.get_player_by_auth_id(value) is not None:
+                scene.success = value
+                scene.status = 3
+                scene.status_update = scene.tick
+                continue
+
+            self.fast_update = True
+
+            if value in scene.invalid:
+                continue
+
+            scene.invalid.append(value)
+            scene.status = 2
+            scene.status_update = scene.tick
+
+        scene.input.clear()

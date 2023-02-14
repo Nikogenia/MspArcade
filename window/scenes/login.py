@@ -45,8 +45,8 @@ class LoginScene(nc.Scene):
         self.running: bool = True
 
         self.input: list[str] = []
-        self.invalid: list[str] = ["0025dc18-7172-4fb0-9020-10746cf7840b"]
-        self.success: str = "04ea044a-a23a-4a1b-8bdf-2a329d393191"
+        self.invalid: list[str] = []
+        self.success: str = ""
 
         self.status: int = 0
         self.status_update: int = 0
@@ -156,7 +156,7 @@ class LoginScene(nc.Scene):
 
         self.tick += self.dt
 
-        if self.tick - self.timeout > 10000:
+        if self.tick - self.timeout > GUI_MENU_TIMEOUT:
             self.window.change_scene("idle")
 
         if self.tick - self.status_update > 60 and self.status not in (0, 3):
@@ -195,9 +195,6 @@ class LoginScene(nc.Scene):
     def quit(self) -> None:
 
         self.running = False
-
-        self.logger.debug(self.input)
-        self.logger.debug(self.invalid)
 
     def init(self) -> None:
 
