@@ -1,7 +1,5 @@
 ### General
-- Database sync
-- User manager
-- Login system
+- Database sync (missing time update)
 - User overview
 - Game manager
 - Game loading
