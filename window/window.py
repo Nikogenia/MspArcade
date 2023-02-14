@@ -26,7 +26,7 @@ class Window(nc.Window):
                                      height=GUI_HEIGHT,
                                      flags=pg.FULLSCREEN,
                                      scene_mode=True,
-                                     start_scene="loading")
+                                     start_scene="login")
 
         self.main: Main = main
 
@@ -79,8 +79,8 @@ class Window(nc.Window):
 
         if self.debug_screen_active:
             self.debug_screen.render(self.debug_screen_left, self.debug_screen_right)
-            self.debug_screen_left = self.debug_screen.left_content()
-            self.debug_screen_right = self.debug_screen.right_content()
+        self.debug_screen_left = self.debug_screen.left_content()
+        self.debug_screen_right = self.debug_screen.right_content()
 
     def event(self, event: pg.event.Event) -> None:
 

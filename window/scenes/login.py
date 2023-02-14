@@ -39,12 +39,21 @@ class LoginScene(nc.Scene):
         self.camera_frame: pg.Surface = pg.Surface((800, 460))
         self.camera_frame.fill(nc.RGB.BLACK)
         font = self.window.font.get("title", 80)
-        text = font.render("LOADING", True, nc.RGB.WHITE)
+        text = font.render("LADE KAMERA", True, nc.RGB.WHITE)
         self.camera_frame.blit(text, (400 - text.get_width() / 2, 230 - text.get_height() / 2))
 
         self.input: list[str] = []
         self.invalid: list[str] = ["0025dc18-7172-4fb0-9020-10746cf7840b"]
         self.success: str = "04ea044a-a23a-4a1b-8bdf-2a329d393191"
+
+        self.status: int = 0
+        self.status_update: int = 0
+        self.status_index: dict[int, tuple[nc.RGBColor, str]] = {
+            0: (nc.RGB.GRAY70, "Suche QR-Code ..."),
+            1: (nc.RGB.ORANGE, "Überprüfe gefundenen QR-Code ..."),
+            2: (nc.RGB.RED1, "Ungültiger QR-Code! Login fehlgeschlagen!"),
+            3: (nc.RGB.GREEN1, "Verifizierung erfolgreich! Willkommen!")
+        }
 
     def render(self) -> None:
 
@@ -54,11 +63,16 @@ class LoginScene(nc.Scene):
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 80))
 
         # QR-Code scanner
-        font = self.window.font.get("text", 30)
+        font = self.window.font.get("title", 65)
         text = font.render("QR-CODE SCANNER", True, nc.RGB.WHITE)
         self.screen.blit(text, (500 - text.get_width() / 2, 260))
-        self.screen.blit(self.camera_frame, (100, 300))
-        pg.draw.rect(self.screen, nc.RGB.WHITE, (100, 300, 800, 460), 3)
+        self.screen.blit(self.camera_frame, (100, 310))
+        pg.draw.rect(self.screen, nc.RGB.WHITE, (100, 310, 800, 460), 3)
+        font = self.window.font.get("text", 22)
+        text = font.render(self.status_index[self.status][1], True, self.status_index[self.status][0])
+        pg.draw.rect(self.screen, nc.RGB.BLACK, (500 - text.get_width() / 2 - 13, 776, text.get_width() + 20, 37))
+        pg.draw.rect(self.screen, nc.RGB.WHITE, (500 - text.get_width() / 2 - 13, 776, text.get_width() + 20, 37), 1)
+        self.screen.blit(text, (500 - text.get_width() / 2, 784))
 
         # Register info box
         pg.draw.rect(self.screen, nc.RGB.BLACK, (1150, 250, 650, 600))
@@ -143,6 +157,10 @@ class LoginScene(nc.Scene):
         if self.tick - self.timeout > 10000:
             self.window.change_scene("idle")
 
+        if self.tick - self.status_update > 60 and self.status not in (0, 3):
+            self.status_update = 0
+            self.status = 0
+
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
@@ -166,6 +184,11 @@ class LoginScene(nc.Scene):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_BACKSPACE:
                 self.window.change_scene("menu")
+            if event.key == pg.K_SPACE:
+                self.status += 1
+                self.status_update = self.tick
+                if self.status > 3:
+                    self.status = 0
 
     def quit(self) -> None:
 
@@ -176,7 +199,7 @@ class LoginScene(nc.Scene):
 
     def init(self) -> None:
 
-        th.Thread(target=self.init_camera, name="Init camera").start()
+        th.Thread(target=self.init_camera, name="Camera Initializer").start()
 
     def init_camera(self) -> None:
 
@@ -195,10 +218,18 @@ class LoginScene(nc.Scene):
             color = (0, 128, 255)
             if data not in self.input:
                 self.input.append(data)
+
             if data == self.success:
                 color = (0, 255, 0)
-            if data in self.invalid:
+            elif data in self.invalid:
+                if self.status != 3:
+                    self.status = 2
+                    self.status_update = self.tick
                 color = (0, 0, 255)
+            else:
+                if self.status in (0, 1):
+                    self.status = 1
+                    self.status_update = self.tick
 
             points = code.polygon
             pts = np.array(points, np.int32)
