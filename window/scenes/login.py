@@ -41,6 +41,8 @@ class LoginScene(nc.Scene):
         font = self.window.font.get("title", 80)
         text = font.render("LADE KAMERA", True, nc.RGB.WHITE)
         self.camera_frame.blit(text, (400 - text.get_width() / 2, 230 - text.get_height() / 2))
+        
+        self.running: bool = True
 
         self.input: list[str] = []
         self.invalid: list[str] = ["0025dc18-7172-4fb0-9020-10746cf7840b"]
@@ -192,18 +194,25 @@ class LoginScene(nc.Scene):
 
     def quit(self) -> None:
 
-        self.camera.release()
+        self.running = False
 
         self.logger.debug(self.input)
         self.logger.debug(self.invalid)
 
     def init(self) -> None:
 
-        th.Thread(target=self.init_camera, name="Camera Initializer").start()
+        th.Thread(target=self.init_camera, name="Camera").start()
 
     def init_camera(self) -> None:
 
+        self.logger.info("Setup camera ...")
         self.camera: cv2.VideoCapture = cv2.VideoCapture(0)
+        
+        while self.running:
+            nc.time.wait(0.1)
+
+        self.logger.info("Release camera ...")
+        self.camera.release()
 
     def decode_qr(self, image: np.ndarray) -> None:
 

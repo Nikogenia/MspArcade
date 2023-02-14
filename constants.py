@@ -13,7 +13,9 @@ GUI_HEIGHT = 1080
 GUI_FPS = 30
 GUI_MENU_TIMEOUT = 30
 
-# TODO Spielarten
-#SPIELARTEN = {
-#    "web": ("spiele.web", "WebSpiel")
-#}
+# User
+DEFAULT_TIME = 300
+TIME_RESET_TIMEOUT = 1000
+
+AUTO_UPDATE = 60
+FAST_UPDATE = 20

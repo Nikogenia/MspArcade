@@ -9,6 +9,7 @@ import nikocraft as nc
 from constants import *
 from configs import MainConfig, GameConfig, UserConfig
 from window.window import Window
+from user.user_manager import UserManager
 
 
 class Main(nc.App):
@@ -16,7 +17,7 @@ class Main(nc.App):
     def __init__(self, args):
 
         super(Main, self).__init__(args,
-                                   name="Maker Space Arcade",
+                                   name="Arcade",
                                    author="MakerSpace",
                                    version="Alpha 1.1.1",
                                    short_description="A Maker Space project for an arcade machine in the school",
@@ -24,7 +25,8 @@ class Main(nc.App):
                                    "all games and provides a menu. The gaming machine is a project of the Maker " +
                                    "Space for the Bodensee Gymnasium Lindau in Germany.",
                                    details="Developers:\n- Nikocraft (aka Nikolas)\n- MakerSam (aka Samuel)\n- Valentin\n- Linus",
-                                   log_path=PATH_LOG)
+                                   log_path=PATH_LOG,
+                                   log_thread=True)
 
         # Create directories
         for path in [PATH_CONFIG, PATH_GAME]:
@@ -46,12 +48,22 @@ class Main(nc.App):
         # Initialize window
         self.window = Window(self)
 
+        # Initialize user manager
+        self.user_manager: UserManager = UserManager(self)
+
     def run(self):
+
+        # Start user manager
+        self.user_manager.start()
 
         # Open window
         self.window.open()
 
     def quit(self):
+
+        # Quit user manager
+        self.user_manager.running = False
+        self.user_manager.join()
 
         # Save configs
         self.logger.info("Save configs ...")
@@ -60,6 +72,9 @@ class Main(nc.App):
 
 # Main
 if __name__ == '__main__':
+
+    # Set main thread name
+    th.main_thread().name = "Main"
 
     # Initialize main
     main = Main(sys.argv)

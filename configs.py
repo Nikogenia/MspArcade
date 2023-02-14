@@ -20,6 +20,8 @@ class MainConfig(nc.Config):
         self.background_mode: str = "image"
         self.background_file_name: str = "background.png"
 
+        self.admin_users: list[int] = []
+
 
 class GameConfig(nc.Config):
 
@@ -47,7 +49,4 @@ class UserConfig(nc.Config):
         super(UserConfig, self).__init__(f"{PATH_CONFIG}/user.json", logger)
 
         self.users: list[dict[str, Any]] = []
-
-        self.time_changes: list[dict[str, Any]] = []
-        self.rating_changes: list[dict[str, Any]] = []
-        self.last_login_changes: list[dict[str, Any]] = []
+        self.players: list[dict[str, Any]] = []
