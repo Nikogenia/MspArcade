@@ -14,6 +14,7 @@ import numpy as np
 # Local
 from constants import *
 from window import cv_utils
+from window.draw_utils import black_rect
 
 if TYPE_CHECKING:
     from window.window import Window
@@ -72,13 +73,12 @@ class LoginScene(nc.Scene):
         pg.draw.rect(self.screen, nc.RGB.WHITE, (100, 310, 800, 460), 3)
         font = self.window.font.get("text", 22)
         text = font.render(self.status_index[self.status][1], True, self.status_index[self.status][0])
-        pg.draw.rect(self.screen, nc.RGB.BLACK, (500 - text.get_width() / 2 - 13, 776, text.get_width() + 20, 37))
-        pg.draw.rect(self.screen, nc.RGB.WHITE, (500 - text.get_width() / 2 - 13, 776, text.get_width() + 20, 37), 1)
+        black_rect(self.screen, 500 - text.get_width() / 2 - 13, 776, text.get_width() + 20, 37, 120, True, 1)
         self.screen.blit(text, (500 - text.get_width() / 2, 784))
 
         # Register info box
-        pg.draw.rect(self.screen, nc.RGB.BLACK, (1150, 250, 650, 600))
-        pg.draw.rect(self.screen, nc.RGB.WHITE, (1150, 250, 650, 600), 3)
+        black_rect(self.screen, 1150, 250, 650, 246, 70, True)
+        black_rect(self.screen, 1150, 493, 650, 355, 220, True)
 
         # Mebis QR-Code
         pg.draw.rect(self.screen, nc.RGB.BLACK, (1000, 575, 250, 250))
@@ -100,7 +100,6 @@ class LoginScene(nc.Scene):
         self.screen.blit(text, (1475 - text.get_width() / 2, 420))
         text = font.render("So funktioniert es ...", True, nc.RGB.WHITE)
         self.screen.blit(text, (1475 - text.get_width() / 2, 455))
-        pg.draw.line(self.screen, nc.RGB.WHITE, (1150, 495), (1799, 495), 3)
 
         # Register guide
         font = self.window.font.get("text", 16)
@@ -136,27 +135,9 @@ class LoginScene(nc.Scene):
 
     def update(self) -> None:
 
-        if self.camera is not None:
-
-            # Read camera
-            _, frame = self.camera.read()
-            self.camera_size = nc.Vec(frame.shape[1], frame.shape[0])
-
-            # Decode
-            self.decode_qr(frame)
-
-            # Transform
-            pg_frame = cv_utils.cv_to_pygame(frame)
-            pg_frame = pg.transform.flip(pg_frame, True, False)
-            factor = 800 / pg_frame.get_width()
-            pg_frame = pg.transform.scale_by(pg_frame, factor)
-
-            # Render
-            self.camera_frame.blit(pg_frame, (0, 230 - pg_frame.get_height() / 2))
-
         self.tick += self.dt
 
-        if self.tick - self.timeout > GUI_MENU_TIMEOUT:
+        if self.tick - self.timeout > 1500:
             self.window.change_scene("idle")
 
         if self.tick - self.status_update > 60 and self.status not in (0, 3):
@@ -166,7 +147,7 @@ class LoginScene(nc.Scene):
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
-        self.window.debug_screen_left.append(f"Timeout: {self.tick - self.timeout:.1f}")
+        self.window.debug_screen_left.append(f"Timeout: {1500 - (self.tick - self.timeout):.1f}")
         self.window.debug_screen_left.append("")
         if self.camera_size is None:
             self.window.debug_screen_left.append(f"Camera: <off>")
@@ -198,15 +179,30 @@ class LoginScene(nc.Scene):
 
     def init(self) -> None:
 
-        th.Thread(target=self.init_camera, name="Camera").start()
+        th.Thread(target=self.camera_thread, name="Camera").start()
 
-    def init_camera(self) -> None:
+    def camera_thread(self) -> None:
 
         self.logger.info("Setup camera ...")
         self.camera: cv2.VideoCapture = cv2.VideoCapture(0)
         
         while self.running:
-            nc.time.wait(0.1)
+
+            # Read camera
+            _, frame = self.camera.read()
+            self.camera_size = nc.Vec(frame.shape[1], frame.shape[0])
+
+            # Decode
+            self.decode_qr(frame)
+
+            # Transform
+            pg_frame = cv_utils.cv_to_pygame(frame)
+            pg_frame = pg.transform.flip(pg_frame, True, False)
+            factor = 800 / pg_frame.get_width()
+            pg_frame = pg.transform.scale_by(pg_frame, factor)
+
+            # Render
+            self.camera_frame.blit(pg_frame, (0, 230 - pg_frame.get_height() / 2))
 
         self.logger.info("Release camera ...")
         self.camera.release()

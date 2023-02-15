@@ -8,7 +8,6 @@
 - More animations
 - Credit screen
 - Help popup
-- Video background
 - Controller input
 - Game menu
 - Arrows for navigation
@@ -16,3 +15,6 @@
 ### Ideas
 - Add rating data to database
 - Add last login field to database
+
+### Moodle Tests
+- Check page loading (limit of entries per request?)

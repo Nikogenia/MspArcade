@@ -1,10 +1,12 @@
 # Standard
 from __future__ import annotations
 from typing import TYPE_CHECKING
+import threading as th
 
 # External
 import nikocraft as nc
 import pygame as pg
+import cv2
 
 # Local
 from constants import *
@@ -12,6 +14,7 @@ from window.scenes.loading import LoadingScene
 from window.scenes.idle import IdleScene
 from window.scenes.menu import MenuScene
 from window.scenes.login import LoginScene
+from window import cv_utils
 if TYPE_CHECKING:
     from main import Main
 
@@ -50,15 +53,21 @@ class Window(nc.Window):
 
         # Load background
         if self.main.main_config.background_mode == "image":
+            self.logger.info("Load background image ...")
             if nc.file.exists(f"{PATH_DATA}/{self.main.main_config.background_file_name}"):
                 self.background: pg.Surface = pg.image.load(f"{PATH_DATA}/{self.main.main_config.background_file_name}")
             else:
                 self.logger.warning(f"Couldn't load background image at '{PATH_DATA}/{self.main.main_config.background_file_name}'! Use black ...")
                 self.background: pg.Surface = pg.Surface(self.dimension)
-                self.background.fill(nc.RGB.BLACK)
 
         elif self.main.main_config.background_mode == "video":
-            raise ValueError("The video background is not available yet!")
+            self.logger.info("Load background video ...")
+            if nc.file.exists(f"{PATH_DATA}/{self.main.main_config.background_file_name}"):
+                self.background: pg.Surface = pg.Surface(self.dimension)
+                self.video: cv2.VideoCapture = cv2.VideoCapture(f"{PATH_DATA}/{self.main.main_config.background_file_name}")
+            else:
+                self.logger.warning(f"Couldn't load background video at '{PATH_DATA}/{self.main.main_config.background_file_name}'! Use black ...")
+                self.background: pg.Surface = pg.Surface(self.dimension)
 
         else:
             raise ValueError("Invalid background mode in config! Please use 'image' or 'video' ...")
@@ -105,3 +114,24 @@ class Window(nc.Window):
                 self.debug_screen_right.append("")
                 self.debug_screen_right.append(player.auth_id)
                 self.debug_screen_right.append(f"{player.time} - {player.name}")
+
+    def init(self) -> None:
+
+        if self.main.main_config.background_mode == "video":
+            th.Thread(target=self.background_thread, name="Background").start()
+
+    def background_thread(self) -> None:
+
+        while self.running:
+
+            _, frame = self.video.read()
+
+            if not _:
+                self.video.release()
+                self.video: cv2.VideoCapture = cv2.VideoCapture(f"{PATH_DATA}/{self.main.main_config.background_file_name}")
+                _, frame = self.video.read()
+
+            self.background = cv_utils.cv_to_pygame(frame)
+
+        self.logger.info("Release background video ...")
+        self.video.release()

@@ -38,6 +38,8 @@ class UserManager(th.Thread):
 
         self.online: bool = True
 
+        self.current: str = ""
+
     # PROPERTIES
 
     @property
@@ -233,6 +235,7 @@ class UserManager(th.Thread):
         for value in scene.input:
 
             if self.get_player_by_auth_id(value) is not None:
+                self.current = value
                 scene.success = value
                 scene.status = 3
                 scene.status_update = scene.tick

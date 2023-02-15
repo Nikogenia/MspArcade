@@ -10,6 +10,7 @@ from constants import *
 from configs import MainConfig, GameConfig, UserConfig
 from window.window import Window
 from user.user_manager import UserManager
+from game.game_manager import GameManager
 
 
 class Main(nc.App):
@@ -51,15 +52,25 @@ class Main(nc.App):
         # Initialize user manager
         self.user_manager: UserManager = UserManager(self)
 
+        # Initialize game manager
+        self.game_manager: GameManager = GameManager(self)
+
     def run(self):
 
         # Start user manager
         self.user_manager.start()
 
+        # Start game manager
+        self.game_manager.start()
+
         # Open window
         self.window.open()
 
     def quit(self):
+
+        # Quit game manager
+        self.game_manager.running = False
+        self.game_manager.join()
 
         # Quit user manager
         self.user_manager.running = False

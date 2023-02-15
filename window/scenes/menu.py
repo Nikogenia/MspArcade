@@ -9,6 +9,7 @@ import pygame as pg
 
 # Local
 from constants import *
+from window.draw_utils import black_rect
 if TYPE_CHECKING:
     from window.window import Window
 
@@ -37,13 +38,13 @@ class MenuScene(nc.Scene):
 
         self.tick += self.dt
 
-        if self.tick - self.timeout > GUI_MENU_TIMEOUT:
+        if self.tick - self.timeout > 600:
             self.window.change_scene("idle")
 
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
-        self.window.debug_screen_left.append(f"Timeout: {self.tick - self.timeout:.1f}")
+        self.window.debug_screen_left.append(f"Timeout: {600 - (self.tick - self.timeout):.1f}")
 
     def event(self, event: pg.event.Event) -> None:
 
