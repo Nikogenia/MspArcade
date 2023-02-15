@@ -49,25 +49,30 @@ class Window(nc.Window):
         self.debug_screen: nc.DebugScreen = nc.DebugScreen(self)
         self.debug_screen_left: list[str] = []
         self.debug_screen_right: list[str] = []
-        self.debug_screen_active: bool = False
+        self.debug_screen_active: bool = SHOW_FPS_DEFAULT
 
         # Load background
         if self.main.main_config.background_mode == "image":
             self.logger.info("Load background image ...")
             if nc.file.exists(f"{PATH_DATA}/{self.main.main_config.background_file_name}"):
                 self.background: pg.Surface = pg.image.load(f"{PATH_DATA}/{self.main.main_config.background_file_name}")
+                self.background_mode: str = "image"
             else:
                 self.logger.warning(f"Couldn't load background image at '{PATH_DATA}/{self.main.main_config.background_file_name}'! Use black ...")
                 self.background: pg.Surface = pg.Surface(self.dimension)
+                self.background_mode: str = "error"
 
         elif self.main.main_config.background_mode == "video":
             self.logger.info("Load background video ...")
             if nc.file.exists(f"{PATH_DATA}/{self.main.main_config.background_file_name}"):
                 self.background: pg.Surface = pg.Surface(self.dimension)
                 self.video: cv2.VideoCapture = cv2.VideoCapture(f"{PATH_DATA}/{self.main.main_config.background_file_name}")
+                self.background_mode: str = "video"
+                self.background_update: float = 0
             else:
                 self.logger.warning(f"Couldn't load background video at '{PATH_DATA}/{self.main.main_config.background_file_name}'! Use black ...")
                 self.background: pg.Surface = pg.Surface(self.dimension)
+                self.background_mode: str = "error"
 
         else:
             raise ValueError("Invalid background mode in config! Please use 'image' or 'video' ...")
@@ -75,6 +80,8 @@ class Window(nc.Window):
         # Load background brightness
         self.background_black: pg.Surface = pg.Surface(self.dimension)
         self.background_black.fill(nc.RGB.BLACK)
+
+        self.fps_log = []
 
     def render(self) -> None:
 
@@ -100,6 +107,9 @@ class Window(nc.Window):
 
     def update(self) -> None:
 
+        self.debug_screen_left.append("")
+        self.debug_screen_left.append(f"Background Update: {self.background_update * 1000:.2f} ms")
+
         self.debug_screen_right.append("")
         self.debug_screen_right.append("Database Update")
         if self.main.user_manager.last_update == 0:
@@ -115,14 +125,30 @@ class Window(nc.Window):
                 self.debug_screen_right.append(player.auth_id)
                 self.debug_screen_right.append(f"{player.time} - {player.name}")
 
+        if FPS_LOG:
+            self.fps_log.append((f"{self.clock.available_fps:.2f}", f"{self.clock.available_fps_low:.2f}", f"{self.clock.available_fps_lazy:.2f}"))
+
     def init(self) -> None:
 
-        if self.main.main_config.background_mode == "video":
+        self.running = True
+
+        if self.background_mode == "video":
             th.Thread(target=self.background_thread, name="Background").start()
+
+    def quit(self) -> None:
+
+        for normal, low, lazy in self.fps_log:
+            print(f"{normal:<10} {low:<10} {lazy:<10}")
 
     def background_thread(self) -> None:
 
+        clock = pg.time.Clock()
+
         while self.running:
+
+            clock.tick(30)
+
+            start = nc.time.bench_time()
 
             _, frame = self.video.read()
 
@@ -132,6 +158,9 @@ class Window(nc.Window):
                 _, frame = self.video.read()
 
             self.background = cv_utils.cv_to_pygame(frame)
+
+            end = nc.time.bench_time()
+            self.background_update = end - start
 
         self.logger.info("Release background video ...")
         self.video.release()

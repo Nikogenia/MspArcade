@@ -1,0 +1,13 @@
+------------------
+Maker Space Arcade
+------------------
+
+
+ARCHITECTURE
+
+Threads:
+- Main (Window)
+  - Background
+  - Camera
+- User Manager
+- Game Manager

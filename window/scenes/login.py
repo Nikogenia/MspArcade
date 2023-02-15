@@ -38,9 +38,9 @@ class LoginScene(nc.Scene):
         self.camera: cv2.VideoCapture | None = None
         self.camera_size: nc.Vec | None = None
         self.camera_frame: pg.Surface = pg.Surface((800, 460))
-        self.camera_frame.fill(nc.RGB.BLACK)
         font = self.window.font.get("title", 80)
         text = font.render("LADE KAMERA", True, nc.RGB.WHITE)
+        self.camera_update: float = 0
         self.camera_frame.blit(text, (400 - text.get_width() / 2, 230 - text.get_height() / 2))
         
         self.running: bool = True
@@ -153,6 +153,7 @@ class LoginScene(nc.Scene):
             self.window.debug_screen_left.append(f"Camera: <off>")
         else:
             self.window.debug_screen_left.append(f"Camera: {self.camera_size.x} x {self.camera_size.y}")
+            self.window.debug_screen_left.append(f"Camera Update: {self.camera_update * 1000:.2f} ms")
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"QR Input:")
         for data in self.input:
@@ -185,8 +186,14 @@ class LoginScene(nc.Scene):
 
         self.logger.info("Setup camera ...")
         self.camera: cv2.VideoCapture = cv2.VideoCapture(0)
-        
+
+        clock = pg.time.Clock()
+
         while self.running:
+
+            clock.tick(30)
+
+            start = nc.time.bench_time()
 
             # Read camera
             _, frame = self.camera.read()
@@ -203,6 +210,9 @@ class LoginScene(nc.Scene):
 
             # Render
             self.camera_frame.blit(pg_frame, (0, 230 - pg_frame.get_height() / 2))
+
+            end = nc.time.bench_time()
+            self.camera_update = end - start
 
         self.logger.info("Release camera ...")
         self.camera.release()
