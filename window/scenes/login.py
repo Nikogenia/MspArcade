@@ -30,8 +30,8 @@ class LoginScene(nc.Scene):
 
         self.brightness: int = 180
 
-        self.tick: int = 0
-        self.timeout: int = 0
+        self.tick: float = 0
+        self.timeout: float = 0
 
         self.mebis_qr_code: pg.Surface = pg.image.load(f"{PATH_IMAGE}/mebis.png")
 

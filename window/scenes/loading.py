@@ -22,7 +22,7 @@ class LoadingScene(nc.Scene):
 
         self.brightness: int = 180
 
-        self.tick: int = 0
+        self.tick: float = 0
 
     def render(self) -> None:
 

@@ -23,7 +23,7 @@ class IdleScene(nc.Scene):
 
         self.brightness: int = 100
 
-        self.tick: int = 0
+        self.tick: float = 0
 
     def render(self) -> None:
 
@@ -54,4 +54,5 @@ class IdleScene(nc.Scene):
     def event(self, event: pg.event.Event) -> None:
 
         if event.type == pg.KEYDOWN:
-            self.window.change_scene("menu")
+            if event.key in (pg.K_RETURN, pg.K_SPACE):
+                self.window.change_scene("menu")
