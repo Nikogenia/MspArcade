@@ -48,6 +48,7 @@ class MenuScene(nc.Scene):
         self.SIZE2: nc.Vec = nc.Vec(700, 700)
         self.SIZE3: nc.Vec = nc.Vec(800, 800)
 
+        # self.ANIMATION_DURATION: int = 30
         self.ANIMATION_DURATION: int = 12
 
     def render(self) -> None:
@@ -60,14 +61,9 @@ class MenuScene(nc.Scene):
             self.screen.blit(self.get_surf(self.position), self.POS3 - self.SIZE3 / 2)
             black_rect(self.screen, *(self.POS3 - self.SIZE3 / 2), *self.SIZE3, 90, True)
         else:
-            img_alpha = int(255 - 20 / (self.ANIMATION_DURATION - self.ANIMATION_DURATION / 2) * (self.tick - self.animation_start))
             for surf, pos, size, p_start, p_end, s_start, s_end, alpha, a_start, a_end in self.slots:
-                surf.set_alpha(img_alpha)
                 self.screen.blit(pg.transform.scale(surf, size), pos - size / 2)
-                black = pg.Surface(size)
-                black.set_alpha(alpha - 235 + img_alpha)
-                pg.draw.rect(black, nc.RGB.WHITE, (0, 0, black.get_width(), black.get_height()), 3)
-                self.screen.blit(black, pos - size / 2)
+                black_rect(self.screen, *(pos - size / 2), *size, alpha, True)
 
         font = self.window.font.get("text", 35)
         height = math.sin(self.tick / 10) * 15 + 970
@@ -90,9 +86,10 @@ class MenuScene(nc.Scene):
                     surf.set_alpha(255)
 
             if self.tick - self.animation_start >= self.ANIMATION_DURATION / 2 and not self.animation_switched:
-                slot3 = self.slots[3]
-                self.slots[3] = self.slots[1]
-                self.slots[1] = slot3
+                slot1 = self.slots[1]
+                self.slots[1] = self.slots[2]
+                self.slots[2] = self.slots[3]
+                self.slots[3] = slot1
                 self.animation_switched = True
 
             for index, slot in enumerate(self.slots):
@@ -117,9 +114,9 @@ class MenuScene(nc.Scene):
                 self.animation_start = self.tick
                 self.animation_switched = False
                 self.slots.clear()
-                self.slots.append([self.get_surf(self.position - 1), self.POS1, self.SIZE1, self.POS1, self.POS2, self.SIZE1, self.SIZE2, 210, 210, 180])
+                self.slots.append([self.get_surf(self.position - 1), self.POS1, self.SIZE1, self.POS1, self.POS2, self.SIZE1, self.SIZE2, 230, 230, 180])
                 self.slots.append([self.get_surf(self.position), self.POS2, self.SIZE2, self.POS2, self.POS3, self.SIZE2, self.SIZE3, 180, 180, 90])
-                self.slots.append([self.get_surf(self.position + 2), self.POS4, self.SIZE2, self.POS4, self.POS5, self.SIZE2, self.SIZE1, 180, 180, 210])
+                self.slots.append([self.get_surf(self.position + 2), self.POS4, self.SIZE2, self.POS4, self.POS5, self.SIZE2, self.SIZE1, 180, 180, 230])
                 self.slots.append([self.get_surf(self.position + 1), self.POS3, self.SIZE3, self.POS3, self.POS4, self.SIZE3, self.SIZE2, 90, 90, 180])
             if event.key == pg.K_RIGHT:
                 self.position += 1
@@ -128,9 +125,9 @@ class MenuScene(nc.Scene):
                 self.animation_start = self.tick
                 self.animation_switched = False
                 self.slots.clear()
-                self.slots.append([self.get_surf(self.position + 1), self.POS5, self.SIZE1, self.POS5, self.POS4, self.SIZE1, self.SIZE2, 210, 210, 180])
+                self.slots.append([self.get_surf(self.position + 1), self.POS5, self.SIZE1, self.POS5, self.POS4, self.SIZE1, self.SIZE2, 230, 230, 180])
                 self.slots.append([self.get_surf(self.position), self.POS4, self.SIZE2, self.POS4, self.POS3, self.SIZE2, self.SIZE3, 180, 180, 90])
-                self.slots.append([self.get_surf(self.position - 2), self.POS2, self.SIZE2, self.POS2, self.POS1, self.SIZE2, self.SIZE1, 180, 180, 210])
+                self.slots.append([self.get_surf(self.position - 2), self.POS2, self.SIZE2, self.POS2, self.POS1, self.SIZE2, self.SIZE1, 180, 180, 230])
                 self.slots.append([self.get_surf(self.position - 1), self.POS3, self.SIZE3, self.POS3, self.POS2, self.SIZE3, self.SIZE2, 90, 90, 180])
 
     def init(self) -> None:
@@ -139,7 +136,7 @@ class MenuScene(nc.Scene):
 
         for game in self.window.main.game_manager.games:
             if nc.file.exists(f"{PATH_GAME}/{game.image_name}"):
-                image = pg.image.load(f"{PATH_GAME}/{game.image_name}")
+                image = pg.image.load(f"{PATH_GAME}/{game.image_name}").convert()
             else:
                 self.logger.warning(f"Couldn't load game image at '{PATH_GAME}/{game.image_name}'! Use black ...")
                 image = pg.Surface((800, 800))
