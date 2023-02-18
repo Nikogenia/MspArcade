@@ -55,6 +55,16 @@ class MenuScene(nc.Scene):
         # Author data
         self.author: str = ""
 
+        # Description data
+        self.description1: str = ""
+        self.description2: str = ""
+        self.description_height: int = 0
+        self.description_height_start: int = 0
+        self.description_height_end: int = 0
+        self.description_width: int = 0
+        self.description_width_start: int = 0
+        self.description_width_end: int = 0
+
         # Game image positions
         self.POS1: nc.Vec = nc.Vec(-260, 490)
         self.POS2: nc.Vec = nc.Vec(360, 490)
@@ -111,16 +121,30 @@ class MenuScene(nc.Scene):
             text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 290))
 
+        # Render description
+        font = self.window.font.get("text", 32)
+        text1 = font.render(self.description1, True, nc.RGB.WHITE)
+        text2 = font.render(self.description2, True, nc.RGB.WHITE)
+        if self.animation_type != 0:
+            text1.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+            text2.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+        black_rect(self.screen, (self.width - self.description_width) / 2 - 22, 705 - self.description_height, self.description_width + 40, 70 + self.description_height, 80, True, 1)
+        if self.description2 != "":
+            self.screen.blit(text1, ((self.width - text1.get_width()) / 2, 670))
+            self.screen.blit(text2, ((self.width - text2.get_width()) / 2, 725))
+        else:
+            self.screen.blit(text1, ((self.width - text1.get_width()) / 2, 725))
+
         # Render more details
-        font = self.window.font.get("text", 22)
+        font = self.window.font.get("text", 20)
         text = font.render("Mehr Details", True, nc.RGB.BLACK)
         if self.animation_type != 0:
             text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
-        self.screen.blit(text, ((self.width - text.get_width()) / 2 + 2, 812))
+        self.screen.blit(text, ((self.width - text.get_width()) / 2 + 2, 817))
         text = font.render("Mehr Details", True, nc.RGB.WHITE)
         if self.animation_type != 0:
             text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
-        self.screen.blit(text, ((self.width - text.get_width()) / 2, 810))
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, 815))
         if self.animation_type != 0:
             self.down_arrow.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
         self.screen.blit(self.down_arrow, ((self.width - self.down_arrow.get_width()) / 2, 835))
@@ -165,8 +189,11 @@ class MenuScene(nc.Scene):
                 font = self.window.font.get("title", 120)
                 size = font.size(self.images[self.position % len(self.images)][1].name)
                 self.title_width = size[0]
+                font = self.window.font.get("text", 32)
+                self.description_width = max(font.size(self.description1)[0], font.size(self.description2)[0])
+                self.description_height = 55 if self.description2 != "" else 0
 
-            # Switch slot render order
+            # Switch slot render order and update text fields
             if self.tick - self.animation_start >= self.ANIMATION_DURATION / 2 and not self.animation_switched:
                 slot1 = self.slots[1]
                 self.slots[1] = self.slots[2]
@@ -174,6 +201,13 @@ class MenuScene(nc.Scene):
                 self.slots[3] = slot1
                 self.title = self.images[self.position % len(self.images)][1].name
                 self.author = self.images[self.position % len(self.images)][1].author
+                split = self.images[self.position % len(self.images)][1].short_description_split
+                if split == 0:
+                    self.description1 = self.images[self.position % len(self.images)][1].short_description
+                    self.description2 = ""
+                else:
+                    self.description1 = self.images[self.position % len(self.images)][1].short_description[:split]
+                    self.description2 = self.images[self.position % len(self.images)][1].short_description[split + 1:]
                 self.animation_switched = True
 
             # Update slot position, size and alpha
@@ -185,6 +219,8 @@ class MenuScene(nc.Scene):
             # Update title width
             if self.animation_type != 0:
                 self.title_width = int(self.title_width_start + (self.title_width_end - self.title_width_start) / self.ANIMATION_DURATION * (self.tick - self.animation_start))
+                self.description_width = int(self.description_width_start + (self.description_width_end - self.description_width_start) / self.ANIMATION_DURATION * (self.tick - self.animation_start))
+                self.description_height = int(self.description_height_start + (self.description_height_end - self.description_height_start) / self.ANIMATION_DURATION * (self.tick - self.animation_start))
 
         # Debug screen
         self.window.debug_screen_left.append("")
@@ -205,7 +241,6 @@ class MenuScene(nc.Scene):
                 self.animation_start = self.tick
                 self.animation_switched = False
                 self.slots.clear()
-                self.title_width_start = self.title_width
                 if self.animation_type != 0:
                     self.title = self.images[self.position % len(self.images)][1].name
 
@@ -217,9 +252,6 @@ class MenuScene(nc.Scene):
                 self.slots.append([self.get_surf(self.position), self.POS2, self.SIZE2, self.POS2, self.POS3, self.SIZE2, self.SIZE3, 190, 190, 110])
                 self.slots.append([self.get_surf(self.position + 2), self.POS4, self.SIZE2, self.POS4, self.POS5, self.SIZE2, self.SIZE1, 190, 190, 240])
                 self.slots.append([self.get_surf(self.position + 1), self.POS3, self.SIZE3, self.POS3, self.POS4, self.SIZE3, self.SIZE2, 110, 110, 190])
-                font = self.window.font.get("title", 120)
-                size = font.size(self.images[self.position % len(self.images)][1].name)
-                self.title_width_end = size[0]
 
             # Scroll to right
             if event.key == pg.K_RIGHT:
@@ -229,9 +261,26 @@ class MenuScene(nc.Scene):
                 self.slots.append([self.get_surf(self.position), self.POS4, self.SIZE2, self.POS4, self.POS3, self.SIZE2, self.SIZE3, 190, 190, 110])
                 self.slots.append([self.get_surf(self.position - 2), self.POS2, self.SIZE2, self.POS2, self.POS1, self.SIZE2, self.SIZE1, 190, 190, 240])
                 self.slots.append([self.get_surf(self.position - 1), self.POS3, self.SIZE3, self.POS3, self.POS2, self.SIZE3, self.SIZE2, 110, 110, 190])
+
+            # Scroll
+            if event.key in (pg.K_LEFT, pg.K_RIGHT):
+                self.title_width_start = self.title_width
+                self.description_width_start = self.description_width
+                self.description_height_start = self.description_height
                 font = self.window.font.get("title", 120)
                 size = font.size(self.images[self.position % len(self.images)][1].name)
                 self.title_width_end = size[0]
+                font = self.window.font.get("text", 32)
+                split = self.images[self.position % len(self.images)][1].short_description_split
+                if split == 0:
+                    description = self.images[self.position % len(self.images)][1].short_description
+                    self.description_width_end = font.size(description)[0]
+                    self.description_height_end = 0
+                else:
+                    description1 = self.images[self.position % len(self.images)][1].short_description[:split]
+                    description2 = self.images[self.position % len(self.images)][1].short_description[split + 1:]
+                    self.description_width_end = max(font.size(description1)[0], font.size(description2)[0])
+                    self.description_height_end = 55
 
     def init(self) -> None:
 
@@ -254,6 +303,19 @@ class MenuScene(nc.Scene):
         self.title_width = size[0]
 
         self.author = self.images[self.position % len(self.images)][1].author
+
+        split = self.images[self.position % len(self.images)][1].short_description_split
+        font = self.window.font.get("text", 32)
+        if split == 0:
+            self.description1 = self.images[self.position % len(self.images)][1].short_description
+            self.description2 = ""
+            self.description_width = font.size(self.description1)[0]
+            self.description_height = 0
+        else:
+            self.description1 = self.images[self.position % len(self.images)][1].short_description[:split]
+            self.description2 = self.images[self.position % len(self.images)][1].short_description[split + 1:]
+            self.description_width = max(font.size(self.description1)[0], font.size(self.description2)[0])
+            self.description_height = 55
 
     def get_surf(self, pos: int) -> pg.Surface:
         return self.images[pos % len(self.images)][0]

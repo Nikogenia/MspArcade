@@ -34,6 +34,7 @@ class GameConfig(nc.Config):
                 "name": "Template",
                 "type": "web",
                 "short_description": "Hello World",
+                "short_description_split": 0,
                 "description": "This is a cool game!",
                 "author": "Maker Space",
                 "image_name": "template.png",
