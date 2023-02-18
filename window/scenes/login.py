@@ -33,8 +33,12 @@ class LoginScene(nc.Scene):
         self.tick: float = 0
         self.timeout: float = 0
 
-        self.mebis_qr_code: pg.Surface = pg.image.load(f"{PATH_IMAGE}/mebis.png")
+        self.running: bool = True
 
+        # Mebis QR Code image
+        self.mebis_qr_code: pg.Surface = pg.image.load(f"{PATH_IMAGE}/mebis.png").convert()
+
+        # Camera data
         self.camera: cv2.VideoCapture | None = None
         self.camera_size: nc.Vec | None = None
         self.camera_frame: pg.Surface = pg.Surface((800, 460))
@@ -42,13 +46,13 @@ class LoginScene(nc.Scene):
         text = font.render("LADE KAMERA", True, nc.RGB.WHITE)
         self.camera_update: float = 0
         self.camera_frame.blit(text, (400 - text.get_width() / 2, 230 - text.get_height() / 2))
-        
-        self.running: bool = True
 
+        # QR code input
         self.input: list[str] = []
         self.invalid: list[str] = []
         self.success: str = ""
 
+        # Scan status
         self.status: int = 0
         self.status_update: int = 0
         self.status_index: dict[int, tuple[nc.RGBColor, str]] = {
@@ -137,9 +141,11 @@ class LoginScene(nc.Scene):
 
         self.tick += self.dt
 
+        # Scene switching
         if self.tick - self.timeout > 1500:
             self.window.change_scene("idle")
 
+        # Status reset
         if self.tick - self.status_update > 60 and self.status not in (0, 3):
             self.status_update = 0
             self.status = 0
@@ -168,11 +174,6 @@ class LoginScene(nc.Scene):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_BACKSPACE:
                 self.window.change_scene("menu")
-            if event.key == pg.K_SPACE:
-                self.status += 1
-                self.status_update = self.tick
-                if self.status > 3:
-                    self.status = 0
 
     def quit(self) -> None:
 
@@ -191,8 +192,8 @@ class LoginScene(nc.Scene):
 
         while self.running:
 
+            # Tick and benchmark
             clock.tick(30)
-
             start = nc.time.bench_time()
 
             # Read camera
@@ -211,6 +212,7 @@ class LoginScene(nc.Scene):
             # Render
             self.camera_frame.blit(pg_frame, (0, 230 - pg_frame.get_height() / 2))
 
+            # Benchmark
             end = nc.time.bench_time()
             self.camera_update = end - start
 
@@ -219,30 +221,39 @@ class LoginScene(nc.Scene):
 
     def decode_qr(self, image: np.ndarray) -> None:
 
+        # Get gray scaled image
         gray_img = cv2.cvtColor(image, 0)
 
+        # Decode QR codes
         codes = decode(gray_img)
 
         for code in codes:
 
+            # Get content
             data = code.data.decode("utf-8")
 
+            # New
             color = (0, 128, 255)
             if data not in self.input:
                 self.input.append(data)
 
+            # Success
             if data == self.success:
                 color = (0, 255, 0)
+
+            # Error
             elif data in self.invalid:
                 if self.status != 3:
                     self.status = 2
                     self.status_update = self.tick
                 color = (0, 0, 255)
+            # New
             else:
                 if self.status in (0, 1):
                     self.status = 1
                     self.status_update = self.tick
 
+            # Draw border
             points = code.polygon
             pts = np.array(points, np.int32)
             pts = pts.reshape((-1, 1, 2))
