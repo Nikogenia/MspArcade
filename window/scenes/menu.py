@@ -28,6 +28,10 @@ class MenuScene(nc.Scene):
         self.tick: float = 0
         self.timeout: float = 0
 
+        self.left_arrow: pg.Surface = pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert()
+        self.right_arrow: pg.Surface = pg.image.load(f"{PATH_IMAGE}/right_arrow.png").convert()
+        self.down_arrow: pg.Surface = pg.transform.smoothscale(pg.image.load(f"{PATH_IMAGE}/down_arrow.png").convert(), (60, 40))
+
         # All game images
         self.images: list[tuple[pg.Surface, Game]] = []
 
@@ -42,11 +46,14 @@ class MenuScene(nc.Scene):
         # Animation slots (image, position, size, start_pos, end_pos, start_size, end_size, alpha, start_alpha, end_alpha)
         self.slots: list[list[pg.Surface, nc.Vec, nc.Vec, nc.Vec, nc.Vec, nc.Vec, nc.Vec, int, int, int]] = []
 
-        # Text width
-        self.text = ""
-        self.text_width: int = 0
-        self.text_width_start: int = 0
-        self.text_width_end: int = 0
+        # Title data
+        self.title: str = ""
+        self.title_width: int = 0
+        self.title_width_start: int = 0
+        self.title_width_end: int = 0
+
+        # Author data
+        self.author: str = ""
 
         # Game image positions
         self.POS1: nc.Vec = nc.Vec(-260, 490)
@@ -68,11 +75,11 @@ class MenuScene(nc.Scene):
         # No animation
         if self.animation_type == 0:
             self.screen.blit(pg.transform.scale(self.get_surf(self.position - 1), self.SIZE2), self.POS2 - self.SIZE2 / 2)
-            black_rect(self.screen, *(self.POS2 - self.SIZE2 / 2), *self.SIZE2, 180, True, 1)
+            black_rect(self.screen, *(self.POS2 - self.SIZE2 / 2), *self.SIZE2, 190, True, 1)
             self.screen.blit(pg.transform.scale(self.get_surf(self.position + 1), self.SIZE2), self.POS4 - self.SIZE2 / 2)
-            black_rect(self.screen, *(self.POS4 - self.SIZE2 / 2), *self.SIZE2, 180, True, 1)
+            black_rect(self.screen, *(self.POS4 - self.SIZE2 / 2), *self.SIZE2, 190, True, 1)
             self.screen.blit(self.get_surf(self.position), self.POS3 - self.SIZE3 / 2)
-            black_rect(self.screen, *(self.POS3 - self.SIZE3 / 2), *self.SIZE3, 90, True, 1)
+            black_rect(self.screen, *(self.POS3 - self.SIZE3 / 2), *self.SIZE3, 110, True, 1)
 
         # Animation running
         else:
@@ -80,12 +87,57 @@ class MenuScene(nc.Scene):
                 self.screen.blit(pg.transform.scale(surf, size), pos - size / 2)
                 black_rect(self.screen, *(pos - size / 2), *size, alpha, True, 1)
 
+        # Render title
         font = self.window.font.get("title", 120)
-        text = font.render(self.text, True, nc.RGB.WHITE)
+        text = font.render(self.title, True, nc.RGB.WHITE)
         if self.animation_type != 0:
             text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
-        black_rect(self.screen, (self.width - self.text_width) / 2 - 30, 115, self.text_width + 55, 110, 160, True, 2)
+        black_rect(self.screen, (self.width - self.title_width) / 2 - 30, 115, self.title_width + 55, 110, 150, True, 2)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 125))
+
+        # Render author
+        font = self.window.font.get("text", 25)
+        text = font.render("entwickelt von", True, nc.RGB.BLACK)
+        self.screen.blit(text, ((self.width - text.get_width()) / 2 + 5, 255))
+        text = font.render("entwickelt von", True, nc.RGB.WHITE)
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, 250))
+        font = self.window.font.get("text", 35)
+        text = font.render(self.author, True, nc.RGB.BLACK)
+        if self.animation_type != 0:
+            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+        self.screen.blit(text, ((self.width - text.get_width()) / 2 + 5, 295))
+        text = font.render(self.author, True, nc.RGB.WHITE)
+        if self.animation_type != 0:
+            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, 290))
+
+        # Render more details
+        font = self.window.font.get("text", 22)
+        text = font.render("Mehr Details", True, nc.RGB.BLACK)
+        if self.animation_type != 0:
+            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+        self.screen.blit(text, ((self.width - text.get_width()) / 2 + 2, 812))
+        text = font.render("Mehr Details", True, nc.RGB.WHITE)
+        if self.animation_type != 0:
+            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, 810))
+        if self.animation_type != 0:
+            self.down_arrow.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+        self.screen.blit(self.down_arrow, ((self.width - self.down_arrow.get_width()) / 2, 835))
+
+        # Render arrows
+        size = math.sin(self.tick / 5) * 6 + 100
+        if self.animation_type == 1:
+            offset = int(35 - abs(35 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2))
+            self.screen.blit(pg.transform.smoothscale(self.left_arrow, (size, size)), (60 - size / 2 - offset, 490 - size / 2))
+            self.screen.blit(pg.transform.smoothscale(self.right_arrow, (size, size)), (self.width - 60 - size / 2, 490 - size / 2))
+        elif self.animation_type == 2:
+            offset = int(35 - abs(35 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2))
+            self.screen.blit(pg.transform.smoothscale(self.right_arrow, (size, size)), (self.width - 60 - size / 2 + offset, 490 - size / 2))
+            self.screen.blit(pg.transform.smoothscale(self.left_arrow, (size, size)), (60 - size / 2, 490 - size / 2))
+        else:
+            self.screen.blit(pg.transform.smoothscale(self.left_arrow, (size, size)), (60 - size / 2, 490 - size / 2))
+            self.screen.blit(pg.transform.smoothscale(self.right_arrow, (size, size)), (self.width - 60 - size / 2, 490 - size / 2))
 
         # Menu prompt
         font = self.window.font.get("text", 35)
@@ -112,7 +164,7 @@ class MenuScene(nc.Scene):
                     surf.set_alpha(255)
                 font = self.window.font.get("title", 120)
                 size = font.size(self.images[self.position % len(self.images)][1].name)
-                self.text_width = size[0]
+                self.title_width = size[0]
 
             # Switch slot render order
             if self.tick - self.animation_start >= self.ANIMATION_DURATION / 2 and not self.animation_switched:
@@ -120,7 +172,8 @@ class MenuScene(nc.Scene):
                 self.slots[1] = self.slots[2]
                 self.slots[2] = self.slots[3]
                 self.slots[3] = slot1
-                self.text = self.images[self.position % len(self.images)][1].name
+                self.title = self.images[self.position % len(self.images)][1].name
+                self.author = self.images[self.position % len(self.images)][1].author
                 self.animation_switched = True
 
             # Update slot position, size and alpha
@@ -129,9 +182,9 @@ class MenuScene(nc.Scene):
                 self.slots[index][2] = slot[5] + (slot[6] - slot[5]) / self.ANIMATION_DURATION * (self.tick - self.animation_start)
                 self.slots[index][7] = slot[8] + (slot[9] - slot[8]) / self.ANIMATION_DURATION * (self.tick - self.animation_start)
 
-            # Update text width
+            # Update title width
             if self.animation_type != 0:
-                self.text_width = int(self.text_width_start + (self.text_width_end - self.text_width_start) / self.ANIMATION_DURATION * (self.tick - self.animation_start))
+                self.title_width = int(self.title_width_start + (self.title_width_end - self.title_width_start) / self.ANIMATION_DURATION * (self.tick - self.animation_start))
 
         # Debug screen
         self.window.debug_screen_left.append("")
@@ -152,33 +205,33 @@ class MenuScene(nc.Scene):
                 self.animation_start = self.tick
                 self.animation_switched = False
                 self.slots.clear()
-                self.text_width_start = self.text_width
+                self.title_width_start = self.title_width
                 if self.animation_type != 0:
-                    self.text = self.images[self.position % len(self.images)][1].name
+                    self.title = self.images[self.position % len(self.images)][1].name
 
             # Scroll to left
             if event.key == pg.K_LEFT:
                 self.position -= 1
                 self.animation_type = 1
-                self.slots.append([self.get_surf(self.position - 1), self.POS1, self.SIZE1, self.POS1, self.POS2, self.SIZE1, self.SIZE2, 230, 230, 180])
-                self.slots.append([self.get_surf(self.position), self.POS2, self.SIZE2, self.POS2, self.POS3, self.SIZE2, self.SIZE3, 180, 180, 90])
-                self.slots.append([self.get_surf(self.position + 2), self.POS4, self.SIZE2, self.POS4, self.POS5, self.SIZE2, self.SIZE1, 180, 180, 230])
-                self.slots.append([self.get_surf(self.position + 1), self.POS3, self.SIZE3, self.POS3, self.POS4, self.SIZE3, self.SIZE2, 90, 90, 180])
+                self.slots.append([self.get_surf(self.position - 1), self.POS1, self.SIZE1, self.POS1, self.POS2, self.SIZE1, self.SIZE2, 240, 240, 190])
+                self.slots.append([self.get_surf(self.position), self.POS2, self.SIZE2, self.POS2, self.POS3, self.SIZE2, self.SIZE3, 190, 190, 110])
+                self.slots.append([self.get_surf(self.position + 2), self.POS4, self.SIZE2, self.POS4, self.POS5, self.SIZE2, self.SIZE1, 190, 190, 240])
+                self.slots.append([self.get_surf(self.position + 1), self.POS3, self.SIZE3, self.POS3, self.POS4, self.SIZE3, self.SIZE2, 110, 110, 190])
                 font = self.window.font.get("title", 120)
                 size = font.size(self.images[self.position % len(self.images)][1].name)
-                self.text_width_end = size[0]
+                self.title_width_end = size[0]
 
             # Scroll to right
             if event.key == pg.K_RIGHT:
                 self.position += 1
                 self.animation_type = 2
-                self.slots.append([self.get_surf(self.position + 1), self.POS5, self.SIZE1, self.POS5, self.POS4, self.SIZE1, self.SIZE2, 230, 230, 180])
-                self.slots.append([self.get_surf(self.position), self.POS4, self.SIZE2, self.POS4, self.POS3, self.SIZE2, self.SIZE3, 180, 180, 90])
-                self.slots.append([self.get_surf(self.position - 2), self.POS2, self.SIZE2, self.POS2, self.POS1, self.SIZE2, self.SIZE1, 180, 180, 230])
-                self.slots.append([self.get_surf(self.position - 1), self.POS3, self.SIZE3, self.POS3, self.POS2, self.SIZE3, self.SIZE2, 90, 90, 180])
+                self.slots.append([self.get_surf(self.position + 1), self.POS5, self.SIZE1, self.POS5, self.POS4, self.SIZE1, self.SIZE2, 240, 240, 190])
+                self.slots.append([self.get_surf(self.position), self.POS4, self.SIZE2, self.POS4, self.POS3, self.SIZE2, self.SIZE3, 190, 190, 110])
+                self.slots.append([self.get_surf(self.position - 2), self.POS2, self.SIZE2, self.POS2, self.POS1, self.SIZE2, self.SIZE1, 190, 190, 240])
+                self.slots.append([self.get_surf(self.position - 1), self.POS3, self.SIZE3, self.POS3, self.POS2, self.SIZE3, self.SIZE2, 110, 110, 190])
                 font = self.window.font.get("title", 120)
                 size = font.size(self.images[self.position % len(self.images)][1].name)
-                self.text_width_end = size[0]
+                self.title_width_end = size[0]
 
     def init(self) -> None:
 
@@ -195,10 +248,12 @@ class MenuScene(nc.Scene):
         if not self.images:
             raise ValueError("At least one game is required for the menu!")
 
-        self.text = self.images[self.position % len(self.images)][1].name
+        self.title = self.images[self.position % len(self.images)][1].name
         font = self.window.font.get("title", 120)
-        size = font.size(self.text)
-        self.text_width = size[0]
+        size = font.size(self.title)
+        self.title_width = size[0]
+
+        self.author = self.images[self.position % len(self.images)][1].author
 
     def get_surf(self, pos: int) -> pg.Surface:
         return self.images[pos % len(self.images)][0]

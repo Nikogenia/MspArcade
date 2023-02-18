@@ -33,7 +33,7 @@ class Window(nc.Window):
 
         self.main: Main = main
 
-        #self.disable_resolution_scaling()
+        self.disable_resolution_scaling()
 
         # Register scenes
         self.register_scene("loading", LoadingScene)
