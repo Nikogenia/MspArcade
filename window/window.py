@@ -14,6 +14,7 @@ from window.scenes.loading import LoadingScene
 from window.scenes.idle import IdleScene
 from window.scenes.menu import MenuScene
 from window.scenes.login import LoginScene
+from window.scenes.details import DetailsScene
 from window import cv_utils
 if TYPE_CHECKING:
     from main import Main
@@ -33,13 +34,14 @@ class Window(nc.Window):
 
         self.main: Main = main
 
-        self.disable_resolution_scaling()
+        #self.disable_resolution_scaling()
 
         # Register scenes
         self.register_scene("loading", LoadingScene)
         self.register_scene("idle", IdleScene)
         self.register_scene("menu", MenuScene)
         self.register_scene("login", LoginScene)
+        self.register_scene("details", DetailsScene)
 
         # Define fonts
         self.font.define("title", f"{PATH_FONT}/Arcade.ttf")
@@ -82,6 +84,8 @@ class Window(nc.Window):
         self.background_black.fill(nc.RGB.BLACK)
 
         self.fps_log = []
+
+        self.reset_dt: bool = False
 
     def render(self) -> None:
 
@@ -164,3 +168,9 @@ class Window(nc.Window):
 
         self.logger.info("Release background video ...")
         self.video.release()
+
+    def early_update(self) -> None:
+
+        if self.reset_dt:
+            self.reset_dt = False
+            self.clock.delta_time = self.clock.speed_factor

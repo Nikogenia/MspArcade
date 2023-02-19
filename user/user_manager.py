@@ -175,6 +175,7 @@ class UserManager(th.Thread):
                     entry["contents"][2]["content"],
                     entry["timecreated"],
                     entry["contents"][1]["content"],
+                    {}
                 )
                 user = User(
                     entry["userid"],

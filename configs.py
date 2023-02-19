@@ -31,6 +31,7 @@ class GameConfig(nc.Config):
 
         self.games: list[dict[str, Any]] = [
             {
+                "id": 0,
                 "name": "Template",
                 "type": "web",
                 "short_description": "Hello World",

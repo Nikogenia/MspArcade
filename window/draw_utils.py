@@ -3,7 +3,8 @@ import pygame as pg
 import nikocraft as nc
 
 
-def black_rect(surf: pg.Surface, x: int | float, y: int | float, width: int | float, height: int | float, alpha: int, white_border: bool = False, border_width: int = 3) -> None:
+def black_rect(surf: pg.Surface, x: int | float, y: int | float, width: int | float, height: int | float, alpha: int,
+               border: bool = False, border_width: int = 3, border_color: nc.RGBColor = nc.RGB.WHITE) -> None:
     """Draw a black rectangle with a specific alpha value"""
 
     black = pg.Surface((width, height))
@@ -11,5 +12,5 @@ def black_rect(surf: pg.Surface, x: int | float, y: int | float, width: int | fl
 
     surf.blit(black, (x, y))
 
-    if white_border:
-        pg.draw.rect(surf, nc.RGB.WHITE, (x, y, width, height), border_width)
+    if border:
+        pg.draw.rect(surf, border_color, (x, y, width, height), border_width)

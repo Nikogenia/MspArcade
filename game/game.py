@@ -6,6 +6,7 @@ from typing import Self, Any
 @dataclass
 class Game:
 
+    id: int
     name: str
     type: str
     short_description: str
@@ -18,6 +19,7 @@ class Game:
     def json(self) -> dict:
 
         return {
+            "id": self.id,
             "name": self.name,
             "type": self.type,
             "short_description": self.short_description,
@@ -30,7 +32,7 @@ class Game:
     @classmethod
     def from_json(cls, data: dict) -> Self:
 
-        fields = {"name": str, "type": str, "short_description": str, "short_description_split": int, "description": str, "author": str, "image_name": str}
+        fields = {"id": int, "name": str, "type": str, "short_description": str, "short_description_split": int, "description": str, "author": str, "image_name": str}
         optional_fields = {"url": str}
 
         for f_name, f_type in fields.items():
@@ -47,4 +49,4 @@ class Game:
             if f_name not in fields:
                 optional[f_name] = f_value
 
-        return cls(data["name"], data["type"], data["short_description"], data["short_description_split"], data["description"], data["author"], data["image_name"], optional)
+        return cls(data["id"], data["name"], data["type"], data["short_description"], data["short_description_split"], data["description"], data["author"], data["image_name"], optional)
