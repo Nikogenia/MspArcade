@@ -8,7 +8,7 @@ from logging import Logger
 import nikocraft as nc
 
 # Local
-from constants import *
+from configs import ConfigError
 from game.game import Game
 if TYPE_CHECKING:
     from main import Main
@@ -38,11 +38,19 @@ class GameManager(th.Thread):
 
     def run(self) -> None:
 
-        self.load()
+        try:
 
-        while self.running:
+            self.load()
 
-            nc.time.wait(1)
+            while self.running:
+
+                nc.time.wait(1)
+
+        except Exception:
+            self.main.running = False
+            self.main.window.running = False
+            self.main.user_manager.running = False
+            raise
 
     def load(self) -> None:
 
@@ -50,13 +58,18 @@ class GameManager(th.Thread):
 
         self.games.clear()
 
+        ids = []
+
         for data in self.main.game_config.games:
             game = Game.from_json(data)
             if game is None:
                 self.logger.warning(f"Failed to load a game! Data: {data}")
                 continue
+            if game.id in ids:
+                raise ConfigError(f"Duplicated game ID {game.id} found in config!")
             self.logger.debug(f"Game '{game.name}' ({game.author}) [{game.type}] loaded.")
             self.games.append(game)
+            ids.append(game.id)
 
         self.logger.info(f"Successfully loaded {len(self.games)} games!")
 

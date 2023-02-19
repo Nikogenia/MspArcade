@@ -50,26 +50,34 @@ class UserManager(th.Thread):
 
     def run(self) -> None:
 
-        self.load()
+        try:
 
-        while self.running:
+            self.load()
 
-            if isinstance(self.main.window.scene, LoginScene):
-                self.handle_login()
+            while self.running:
 
-            if (nc.time.epoch_time() - self.last_update > AUTO_UPDATE) or (nc.time.epoch_time() - self.last_update > FAST_UPDATE and self.fast_update):
-                self.fast_update = False
-                data = self.get_entries()
-                self.online = data is not None
-                if self.online:
-                    self.update(data)
-                    if isinstance(self.main.window.scene, LoginScene):
-                        self.main.window.scene.invalid.clear()
-                self.last_update = nc.time.epoch_time()
+                if isinstance(self.main.window.scene, LoginScene):
+                    self.handle_login()
 
-            nc.time.wait(1)
+                if (nc.time.epoch_time() - self.last_update > AUTO_UPDATE) or (nc.time.epoch_time() - self.last_update > FAST_UPDATE and self.fast_update):
+                    self.fast_update = False
+                    data = self.get_entries()
+                    self.online = data is not None
+                    if self.online:
+                        self.update(data)
+                        if isinstance(self.main.window.scene, LoginScene):
+                            self.main.window.scene.invalid.clear()
+                    self.last_update = nc.time.epoch_time()
 
-        self.save()
+                nc.time.wait(1)
+
+            self.save()
+
+        except Exception:
+            self.main.running = False
+            self.main.window.running = False
+            self.main.game_manager.running = False
+            raise
 
     def get_entries(self) -> dict | None:
 

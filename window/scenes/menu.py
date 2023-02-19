@@ -11,6 +11,7 @@ import pygame as pg
 
 # Local
 from constants import *
+from configs import ConfigError
 from window.draw_utils import black_rect
 from game.game import Game
 if TYPE_CHECKING:
@@ -337,7 +338,7 @@ class MenuScene(nc.Scene):
                 self.position = len(self.images) - 1
 
         if not self.images:
-            raise ValueError("At least one game is required for the menu!")
+            raise ConfigError("At least one game is required for the menu!")
 
         self.title = self.images[self.position % len(self.images)][1].name
         font = self.window.font.get("title", 120)

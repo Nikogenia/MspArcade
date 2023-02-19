@@ -8,6 +8,10 @@ import nikocraft as nc
 from constants import *
 
 
+class ConfigError(Exception):
+    pass
+
+
 class MainConfig(nc.Config):
 
     def __init__(self, logger):

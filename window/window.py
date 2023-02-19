@@ -10,6 +10,7 @@ import cv2
 
 # Local
 from constants import *
+from configs import ConfigError
 from window.scenes.loading import LoadingScene
 from window.scenes.idle import IdleScene
 from window.scenes.menu import MenuScene
@@ -35,6 +36,8 @@ class Window(nc.Window):
         self.main: Main = main
 
         #self.disable_resolution_scaling()
+
+        self.running = True
 
         # Register scenes
         self.register_scene("loading", LoadingScene)
@@ -77,7 +80,7 @@ class Window(nc.Window):
                 self.background_mode: str = "error"
 
         else:
-            raise ValueError("Invalid background mode in config! Please use 'image' or 'video' ...")
+            raise ConfigError("Invalid background mode in config! Please use 'image' or 'video' ...")
 
         # Load background brightness
         self.background_black: pg.Surface = pg.Surface(self.dimension)
@@ -134,8 +137,6 @@ class Window(nc.Window):
 
     def init(self) -> None:
 
-        self.running = True
-
         if self.background_mode == "video":
             th.Thread(target=self.background_thread, name="Background").start()
 
@@ -170,6 +171,9 @@ class Window(nc.Window):
         self.video.release()
 
     def early_update(self) -> None:
+
+        if not self.main.running:
+            self.running = False
 
         if self.reset_dt:
             self.reset_dt = False

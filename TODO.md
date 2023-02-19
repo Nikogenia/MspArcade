@@ -1,7 +1,8 @@
 ### General
 - Database sync (missing time update)
 - User overview
-- Game manager
+- Game details
+- Rating request
 - Game loading
 
 ### UI
@@ -9,8 +10,8 @@
 - Credit screen
 - Help popup
 - Controller input
-- Game menu
-- Arrows for navigation
+- Navigation hints
+- Menu loading improvements
 
 ### Ideas
 - Add rating data to database

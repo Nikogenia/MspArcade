@@ -29,6 +29,8 @@ class Main(nc.App):
                                    log_path=PATH_LOG,
                                    log_thread=True)
 
+        self.running = True
+
         # Create directories
         for path in [PATH_CONFIG, PATH_GAME]:
             if not nc.file.exists(path):
@@ -63,8 +65,16 @@ class Main(nc.App):
         # Start game manager
         self.game_manager.start()
 
-        # Open window
-        self.window.open()
+        try:
+
+            # Open window
+            self.window.open()
+
+        except Exception:
+            self.running = False
+            self.game_manager.running = False
+            self.user_manager.running = False
+            raise
 
     def quit(self):
 
