@@ -260,3 +260,16 @@ class UserManager(th.Thread):
             scene.status_update = scene.tick
 
         scene.input.clear()
+
+    def get_ratings(self, game_id: int) -> tuple[float, int]:
+
+        ratings = []
+
+        for player in self.players:
+            if game_id in player.ratings:
+                ratings.append(player.ratings[game_id])
+
+        if len(ratings) == 0:
+            return 0, 0
+
+        return sum(ratings) / len(ratings), len(ratings)

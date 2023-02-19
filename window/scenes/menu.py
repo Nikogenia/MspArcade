@@ -36,7 +36,7 @@ class MenuScene(nc.Scene):
         self.down_arrow: pg.Surface = pg.transform.smoothscale(pg.image.load(f"{PATH_IMAGE}/down_arrow.png").convert(), (60, 40))
 
         # All game images
-        self.images: list[tuple[pg.Surface, Game, float]] = []
+        self.images: list[tuple[pg.Surface, Game, float, int]] = []
         self.loaded: bool = False
 
         # Current position
@@ -98,7 +98,7 @@ class MenuScene(nc.Scene):
 
         # Menu prompt
         font = self.window.font.get("text", 35)
-        height = math.sin(self.tick / 10) * 15 + 970
+        height = math.sin(self.tick / 10) * 15 + 960
         text = font.render("Wähle mit # ein Spiel aus!", True, nc.RGB.WHITE)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
 
@@ -333,7 +333,7 @@ class MenuScene(nc.Scene):
                 self.logger.warning(f"Couldn't load game image at '{PATH_GAME}/{game.image_name}'! Use black ...")
                 image = pg.Surface((800, 800))
             # TODO: Calculate Rating
-            self.images.append((image, game, rd.random() * 5))
+            self.images.append((image, game, rd.random() * 5, 0))
             if game == self.window.main.game_manager.current:
                 self.position = len(self.images) - 1
 

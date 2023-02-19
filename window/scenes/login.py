@@ -133,7 +133,7 @@ class LoginScene(nc.Scene):
 
         # Login prompt
         font = self.window.font.get("text", 35)
-        height = math.sin(self.tick / 10) * 15 + 960
+        height = math.sin(self.tick / 10) * 15 + 950
         text = font.render("Halte deinen QR-Code vor die Kamera!", True, nc.RGB.WHITE)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
 

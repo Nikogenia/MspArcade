@@ -11,6 +11,7 @@ import cv2
 # Local
 from constants import *
 from configs import ConfigError
+from window.draw_utils import black_rect
 from window.scenes.loading import LoadingScene
 from window.scenes.idle import IdleScene
 from window.scenes.menu import MenuScene
@@ -97,7 +98,14 @@ class Window(nc.Window):
         self.background_black.set_alpha(self.scene.brightness)
         self.screen.blit(self.background_black, (0, 0))
 
+        # Render scene content
         self.render_scene()
+
+        # Help info
+        font = self.font.get("text", 20)
+        text = font.render("Hilfe? Drücke #!", True, nc.RGB.WHITE)
+        black_rect(self.screen, self.width - text.get_width() - 10, self.height - 40, text.get_width() + 20, 50, 220, True, 1)
+        self.screen.blit(text, (self.width - text.get_width(), self.height - 30))
 
         if self.debug_screen_active:
             self.debug_screen.render(self.debug_screen_left, self.debug_screen_right)
