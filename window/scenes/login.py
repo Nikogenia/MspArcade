@@ -159,6 +159,8 @@ class LoginScene(nc.Scene):
         # Scene switching
         if self.tick - self.timeout > 1500:
             self.window.change_scene("idle")
+        if self.status == 3:
+            self.window.change_scene("overview", {"back": self.args["back"]})
 
         # Status reset
         if self.tick - self.status_update > 60 and self.status not in (0, 3):
@@ -190,7 +192,7 @@ class LoginScene(nc.Scene):
     def event(self, event: pg.event.Event) -> None:
 
         if event.type == pg.KEYDOWN:
-            if event.key in (pg.K_DOWN, pg.K_UP, pg.K_LEFT, pg.K_RIGHT):
+            if event.key == pg.K_LEFT:
                 self.window.change_scene(self.args["back"])
                 self.back_x = -1
 

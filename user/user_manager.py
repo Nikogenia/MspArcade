@@ -245,6 +245,7 @@ class UserManager(th.Thread):
 
             if self.get_player_by_auth_id(value) is not None:
                 self.current = value
+                self.get_user(self.get_player_by_auth_id(value).user_id).last_login = int(nc.time.epoch_time())
                 scene.success = value
                 scene.status = 3
                 scene.status_update = scene.tick

@@ -37,6 +37,7 @@ class DetailsScene(nc.Scene):
         # Star data
         img = pg.image.load(f"{PATH_IMAGE}/star.png")
         self.star_mask: pg.Mask = pg.mask.from_surface(img)
+        # TODO Calculate Rating
         self.stars: float = 0
         self.rating_count: int = 0
 
@@ -129,7 +130,7 @@ class DetailsScene(nc.Scene):
     def event(self, event: pg.event.Event) -> None:
 
         if event.type == pg.KEYDOWN:
-            if event.key in (pg.K_DOWN, pg.K_UP, pg.K_LEFT, pg.K_RIGHT):
+            if event.key == pg.K_LEFT:
                 self.window.change_scene("menu", transition_duration=7, transition_pause=3)
                 self.back_x = -1
             if event.key == pg.K_RETURN:

@@ -72,6 +72,7 @@ class Main(nc.App):
 
         except Exception:
             self.running = False
+            self.window.running = False
             self.game_manager.running = False
             self.user_manager.running = False
             raise

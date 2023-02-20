@@ -279,7 +279,7 @@ class MenuScene(nc.Scene):
             if self.loaded:
 
                 # More details
-                if event.key in (pg.K_DOWN, pg.K_UP):
+                if event.key == pg.K_DOWN:
                     self.window.change_scene("details", transition_duration=7, transition_pause=3)
                     self.details_y = 1
 
@@ -380,4 +380,5 @@ class MenuScene(nc.Scene):
         return self.images[pos % len(self.images)][0]
 
     def quit(self) -> None:
+
         self.window.main.game_manager.current = self.images[self.position % len(self.images)][1]

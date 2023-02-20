@@ -17,6 +17,7 @@ from window.scenes.idle import IdleScene
 from window.scenes.menu import MenuScene
 from window.scenes.login import LoginScene
 from window.scenes.details import DetailsScene
+from window.scenes.overview import OverviewScene
 from window import cv_utils
 if TYPE_CHECKING:
     from main import Main
@@ -46,6 +47,7 @@ class Window(nc.Window):
         self.register_scene("menu", MenuScene)
         self.register_scene("login", LoginScene)
         self.register_scene("details", DetailsScene)
+        self.register_scene("overview", OverviewScene)
 
         # Define fonts
         self.font.define("title", f"{PATH_FONT}/Arcade.ttf")
