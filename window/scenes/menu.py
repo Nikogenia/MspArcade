@@ -75,6 +75,9 @@ class MenuScene(nc.Scene):
         self.description_width_start: int = 0
         self.description_width_end: int = 0
 
+        # More details data
+        self.details_y: float = 0
+
         # Game image positions
         self.POS1: nc.Vec = nc.Vec(-260, 490)
         self.POS2: nc.Vec = nc.Vec(360, 490)
@@ -95,6 +98,10 @@ class MenuScene(nc.Scene):
         # Render menu
         if self.loaded:
             self.render_menu()
+        else:
+            black_rect(self.screen, *(self.POS2 - self.SIZE2 / 2), *self.SIZE2, 255, True, 2, nc.RGB.GRAY60)
+            black_rect(self.screen, *(self.POS4 - self.SIZE2 / 2), *self.SIZE2, 255, True, 2, nc.RGB.GRAY60)
+            black_rect(self.screen, *(self.POS3 - self.SIZE3 / 2), *self.SIZE3, 255, True, 2, nc.RGB.GRAY60)
 
         # Menu prompt
         font = self.window.font.get("text", 35)
@@ -164,26 +171,29 @@ class MenuScene(nc.Scene):
         if self.animation_type != 0:
             text1.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
             text2.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
-        black_rect(self.screen, (self.width - self.description_width) / 2 - 22, 705 - self.description_height, self.description_width + 40, 70 + self.description_height, 80, True, 2)
+        black_rect(self.screen, (self.width - self.description_width) / 2 - 22, 715 - self.description_height, self.description_width + 40, 70 + self.description_height, 80, True, 2)
         if self.description2 != "":
-            self.screen.blit(text1, ((self.width - text1.get_width()) / 2, 670))
-            self.screen.blit(text2, ((self.width - text2.get_width()) / 2, 725))
+            self.screen.blit(text1, ((self.width - text1.get_width()) / 2, 680))
+            self.screen.blit(text2, ((self.width - text2.get_width()) / 2, 735))
         else:
-            self.screen.blit(text1, ((self.width - text1.get_width()) / 2, 725))
+            self.screen.blit(text1, ((self.width - text1.get_width()) / 2, 735))
 
         # Render more details
+        size = math.sin(self.tick / 5) / 30 + 0.9
         font = self.window.font.get("text", 20)
-        text = font.render("Mehr Details", True, nc.RGB.BLACK)
+        text = pg.transform.smoothscale_by(font.render("Mehr Details", True, nc.RGB.BLACK), size)
         if self.animation_type != 0:
             text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
-        self.screen.blit(text, ((self.width - text.get_width()) / 2 + 2, 817))
-        text = font.render("Mehr Details", True, nc.RGB.WHITE)
+        self.screen.blit(text, ((self.width - text.get_width()) / 2 + 2, 827 - text.get_height() / 2 + self.details_y))
+        text = pg.transform.smoothscale_by(font.render("Mehr Details", True, nc.RGB.WHITE), size)
         if self.animation_type != 0:
             text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
-        self.screen.blit(text, ((self.width - text.get_width()) / 2, 815))
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, 825 - text.get_height() / 2 + self.details_y))
+        size = math.sin(self.tick / 5) / 20 + 0.9
         if self.animation_type != 0:
             self.down_arrow.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
-        self.screen.blit(self.down_arrow, ((self.width - self.down_arrow.get_width()) / 2, 835))
+        scaled = pg.transform.smoothscale_by(self.down_arrow, size)
+        self.screen.blit(scaled, ((self.width - scaled.get_width()) / 2, 855 - scaled.get_height() / 2 + self.details_y))
 
         # Render arrows
         size = math.sin(self.tick / 5) * 6 + 100
@@ -206,6 +216,9 @@ class MenuScene(nc.Scene):
         # Scene switching
         if self.tick - self.timeout > 600:
             self.window.change_scene("idle")
+
+        if self.details_y != 0:
+            self.details_y += self.dt * 3
 
         # Animation running
         if self.animation_type != 0:
@@ -261,13 +274,14 @@ class MenuScene(nc.Scene):
 
             # Switch scene
             if event.key == pg.K_RETURN:
-                self.window.change_scene("login")
+                self.window.change_scene("login", {"back": "menu"})
 
             if self.loaded:
 
                 # More details
-                if event.key == pg.K_DOWN:
+                if event.key in (pg.K_DOWN, pg.K_UP):
                     self.window.change_scene("details", transition_duration=7, transition_pause=3)
+                    self.details_y = 1
 
                 # Scroll
                 if event.key in (pg.K_LEFT, pg.K_RIGHT):

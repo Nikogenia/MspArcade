@@ -31,6 +31,9 @@ class DetailsScene(nc.Scene):
 
         self.running: bool = True
 
+        self.left_arrow: pg.Surface = pg.transform.smoothscale(pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert(), (60, 60))
+        self.back_x: float = 0
+
         # Star data
         img = pg.image.load(f"{PATH_IMAGE}/star.png")
         self.star_mask: pg.Mask = pg.mask.from_surface(img)
@@ -45,6 +48,15 @@ class DetailsScene(nc.Scene):
             self.image: pg.Surface = pg.Surface((650, 650))
 
     def render(self) -> None:
+
+        # Back arrow
+        size = math.sin(self.tick / 5) / 30 + 0.9
+        left_arrow = pg.transform.smoothscale_by(self.left_arrow, size)
+        self.screen.blit(left_arrow, (30 - left_arrow.get_width() / 2 + self.back_x, 40 - left_arrow.get_height() / 2))
+        size = math.sin(self.tick / 5) / 50 + 0.9
+        font = self.window.font.get("text", 45)
+        text = pg.transform.smoothscale_by(font.render("Zurück", True, nc.RGB.WHITE), size)
+        self.screen.blit(text, (190 - text.get_width() / 2 + self.back_x, 42 - text.get_height() / 2))
 
         # Render stars
         for star in range(5):
@@ -105,6 +117,9 @@ class DetailsScene(nc.Scene):
         if self.tick - self.timeout > 1200:
             self.window.change_scene("idle")
 
+        if self.back_x != 0:
+            self.back_x -= self.dt * 3
+
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
@@ -114,7 +129,8 @@ class DetailsScene(nc.Scene):
     def event(self, event: pg.event.Event) -> None:
 
         if event.type == pg.KEYDOWN:
-            if event.key == pg.K_BACKSPACE:
+            if event.key in (pg.K_DOWN, pg.K_UP, pg.K_LEFT, pg.K_RIGHT):
                 self.window.change_scene("menu", transition_duration=7, transition_pause=3)
+                self.back_x = -1
             if event.key == pg.K_RETURN:
-                self.window.change_scene("login")
+                self.window.change_scene("login", {"back": "details"})

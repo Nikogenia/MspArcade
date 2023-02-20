@@ -35,6 +35,12 @@ class LoginScene(nc.Scene):
 
         self.running: bool = True
 
+        if "back" not in self.args:
+            self.args["back"] = "menu"
+
+        self.left_arrow: pg.Surface = pg.transform.smoothscale(pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert(), (60, 60))
+        self.back_x: float = 0
+
         # Mebis QR Code image
         self.mebis_qr_code: pg.Surface = pg.image.load(f"{PATH_IMAGE}/mebis.png").convert()
 
@@ -63,6 +69,15 @@ class LoginScene(nc.Scene):
         }
 
     def render(self) -> None:
+
+        # Back arrow
+        size = math.sin(self.tick / 5) / 30 + 0.9
+        left_arrow = pg.transform.smoothscale_by(self.left_arrow, size)
+        self.screen.blit(left_arrow, (30 - left_arrow.get_width() / 2 + self.back_x, 40 - left_arrow.get_height() / 2))
+        size = math.sin(self.tick / 5) / 50 + 0.9
+        font = self.window.font.get("text", 45)
+        text = pg.transform.smoothscale_by(font.render("Zurück", True, nc.RGB.WHITE), size)
+        self.screen.blit(text, (190 - text.get_width() / 2 + self.back_x, 42 - text.get_height() / 2))
 
         # Login title
         font = self.window.font.get("title", 130)
@@ -150,6 +165,9 @@ class LoginScene(nc.Scene):
             self.status_update = 0
             self.status = 0
 
+        if self.back_x != 0:
+            self.back_x -= self.dt * 3
+
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
@@ -172,8 +190,9 @@ class LoginScene(nc.Scene):
     def event(self, event: pg.event.Event) -> None:
 
         if event.type == pg.KEYDOWN:
-            if event.key == pg.K_BACKSPACE:
-                self.window.change_scene("menu")
+            if event.key in (pg.K_DOWN, pg.K_UP, pg.K_LEFT, pg.K_RIGHT):
+                self.window.change_scene(self.args["back"])
+                self.back_x = -1
 
     def quit(self) -> None:
 
