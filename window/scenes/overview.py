@@ -59,9 +59,8 @@ class OverviewScene(nc.Scene):
         # Star data
         img = pg.transform.smoothscale(pg.image.load(f"{PATH_IMAGE}/star.png"), (50, 50))
         self.star_mask: pg.Mask = pg.mask.from_surface(img)
-        # TODO Calculate Rating
-        self.stars: float = 0
-        self.rating_count: int = 0
+        self.stars: float = self.window.main.user_manager.get_ratings(self.game.id)[0]
+        self.rating_count: int = self.window.main.user_manager.get_ratings(self.game.id)[1]
 
     def render(self) -> None:
 

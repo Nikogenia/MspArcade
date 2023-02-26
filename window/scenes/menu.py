@@ -420,8 +420,8 @@ class MenuScene(nc.Scene):
             else:
                 self.logger.warning(f"Couldn't load game image at '{PATH_GAME}/{game.image_name}'! Use black ...")
                 image = pg.Surface((800, 800))
-            # TODO: Calculate Rating
-            self.images.append((image, game, rd.random() * 5, 0))
+            stars, rating_count = self.window.main.user_manager.get_ratings(game.id)
+            self.images.append((image, game, stars, rating_count))
             if game == self.window.main.game_manager.current:
                 self.position = len(self.images) - 1
 

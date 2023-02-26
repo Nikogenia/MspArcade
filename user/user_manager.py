@@ -170,9 +170,9 @@ class UserManager(th.Thread):
 
         self.logger.info("Update and merge data into database ...")
 
-        players = []
+        deleted_players = []
         for player in self.players:
-            players.append(player.id)
+            deleted_players.append(player.id)
 
         for entry in data:
 
@@ -213,13 +213,10 @@ class UserManager(th.Thread):
                 self.players.append(player)
             else:
                 self.get_player_by_id(player.id).name = player.name
-                players.remove(player.id)
+                deleted_players.remove(player.id)
 
-        for p in players:
-            for player in self.players:
-                if player.id == p:
-                    self.players.remove(player)
-                    break
+        for player_id in deleted_players:
+            self.players.remove(self.get_player_by_id(player_id))
 
     def get_player_by_id(self, player_id: int) -> Player:
         for player in self.players:
@@ -269,10 +266,28 @@ class UserManager(th.Thread):
         ratings = []
 
         for player in self.players:
-            if game_id in player.ratings:
-                ratings.append(player.ratings[game_id])
+            if str(game_id) in player.ratings:
+                ratings.append(player.ratings[str(game_id)])
 
         if len(ratings) == 0:
             return 0, 0
 
         return sum(ratings) / len(ratings), len(ratings)
+
+    def get_rating(self, player_auth_id: str, game_id: int) -> int:
+
+        player = self.get_player_by_auth_id(player_auth_id)
+
+        if player is None or str(game_id) not in player.ratings:
+            return 0
+
+        return player.ratings[str(game_id)]
+
+    def set_rating(self, player_auth_id: str, game_id: int, value: int) -> None:
+
+        player = self.get_player_by_auth_id(player_auth_id)
+
+        if player is None:
+            return
+
+        player.ratings[str(game_id)] = value

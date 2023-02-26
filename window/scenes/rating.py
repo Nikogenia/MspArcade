@@ -46,11 +46,6 @@ class RatingScene(nc.Scene):
         self.activity_request_tick: float = 0
         self.activity_request_tick_target: float = 0
 
-        # TODO TEMP
-        nc.time.wait(2)
-        self.window.main.game_manager.current = self.window.main.game_manager.games[1]
-        self.window.main.user_manager.current = self.window.main.user_manager.players[0].auth_id
-
         self.game: Game = self.window.main.game_manager.current
         if nc.file.exists(f"{PATH_GAME}/{self.game.image_name}"):
             self.image: pg.Surface = pg.transform.scale(
@@ -65,9 +60,12 @@ class RatingScene(nc.Scene):
         # Star data
         img = pg.image.load(f"{PATH_IMAGE}/star.png")
         self.star_mask: pg.Mask = pg.mask.from_surface(img)
-        self.stars: int = 3
-        self.stars_last: float = 3
+        self.stars: int = self.window.main.user_manager.get_rating(self.player.auth_id, self.game.id)
+        self.stars_last: int = self.stars
         self.update_tick: float = 0
+
+        # Save data
+        self.save_tick = 0
 
     def render(self) -> None:
 
@@ -89,11 +87,11 @@ class RatingScene(nc.Scene):
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 220))
 
         # Rating request
-        font = self.window.font.get("text", 32)
+        font = self.window.font.get("text", 30)
         text = font.render("Nimm dir bitte kurz Zeit,", True, nc.RGB.WHITE)
-        self.screen.blit(text, (1340 - text.get_width() / 2, 345))
+        self.screen.blit(text, (1370 - text.get_width() / 2, 345))
         text = font.render("um das Spiel zu bewerten:", True, nc.RGB.WHITE)
-        self.screen.blit(text, (1340 - text.get_width() / 2, 395))
+        self.screen.blit(text, (1370 - text.get_width() / 2, 395))
 
         # Render image
         self.screen.blit(self.image, (218, 330))
@@ -126,44 +124,56 @@ class RatingScene(nc.Scene):
         self.screen.blit(text, (495 - text.get_width() / 2, 830))
 
         # Rating box
-        black_rect(self.screen, 1010, 470, 648, 380, 150, True, 2)
+        black_rect(self.screen, 1040, 465, 648, 385, 150, True, 2)
 
         # Render stars
         stars = self.stars
         if self.stars != self.stars_last:
-            stars = self.stars_last + (self.stars - self.stars_last) * (self.tick - self.update_tick) / 12
+            stars = self.stars_last + (self.stars - self.stars_last) * (self.tick - self.update_tick) / 10
         for star in range(5):
             value_mask = pg.mask.Mask((max(stars - star, 0) * 64, 64), True)
             overlap_mask = self.star_mask.overlap_mask(value_mask, (0, 0))
             self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)),
-                             (1140 + star * 80, 574))
+                             (1170 + star * 80, 574))
             self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)),
-                             (1140 + star * 80, 574))
+                             (1170 + star * 80, 574))
             outline = self.star_mask.outline(1)
             for i, p in enumerate(outline):
-                pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(1140 + star * 80, 574) + nc.Vec(*p),
-                             nc.Vec(1140 + star * 80, 574) + nc.Vec(*outline[i - 1]), 1)
+                pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(1170 + star * 80, 574) + nc.Vec(*p),
+                             nc.Vec(1170 + star * 80, 574) + nc.Vec(*outline[i - 1]), 1)
 
         # Render arrows
-        size = math.sin(self.tick / 5) / 25 + 0.9
+        size = math.sin(self.tick / 5) / 22 + 0.9
+        offset = int(15 - abs(15 * ((self.tick - self.update_tick) - 5) / 10 * 2))
         up_arrow = pg.transform.smoothscale_by(self.up_arrow, size)
         down_arrow = pg.transform.smoothscale_by(self.down_arrow, size)
-        self.screen.blit(up_arrow, (1332 - up_arrow.get_width() / 2, 515 - up_arrow.get_height() / 2))
-        self.screen.blit(down_arrow, (1332 - down_arrow.get_width() / 2, 710 - down_arrow.get_height() / 2))
+        if self.stars != self.stars_last and self.stars - self.stars_last > 0:
+            self.screen.blit(up_arrow, (1362 - up_arrow.get_width() / 2, 515 - up_arrow.get_height() / 2 - offset))
+        else:
+            self.screen.blit(up_arrow, (1362 - up_arrow.get_width() / 2, 515 - up_arrow.get_height() / 2))
+        if self.stars != self.stars_last and self.stars - self.stars_last < 0:
+            self.screen.blit(down_arrow, (1362 - down_arrow.get_width() / 2,
+                                          710 - down_arrow.get_height() / 2 + offset))
+        else:
+            self.screen.blit(down_arrow, (1362 - down_arrow.get_width() / 2, 710 - down_arrow.get_height() / 2))
 
         # Rating number
         surf = pg.Surface((150, 150))
         surf.set_colorkey((0, 0, 0))
-        surf.set_alpha(210)
+        surf.set_alpha(200)
         font = self.window.font.get("title", 190)
-        text = font.render(f"{self.stars}", True, nc.RGB.WHITE)
+        text = font.render(f"{self.stars}" if self.stars else "", True, nc.RGB.WHITE)
         surf.blit(text, (75 - text.get_width() / 2, 75 - text.get_height() / 2))
-        self.screen.blit(surf, (1340 - surf.get_width() / 2, 565))
+        self.screen.blit(surf, (1370 - surf.get_width() / 2, 565))
 
-        # Save prompt
+        # Info prompt
         font = self.window.font.get("text", 30)
-        text = font.render("Speichern #", True, nc.RGB.WHITE)
-        self.screen.blit(text, (1332 - text.get_width() / 2, 780))
+        if not self.save_tick:
+            info = "Sterne auswählen" if not self.stars else "Speichern #"
+        else:
+            info = "Feedback gespeichert"
+        text = font.render(info, True, nc.RGB.WHITE)
+        self.screen.blit(text, (1362 - text.get_width() / 2, 780))
 
         # Render activity request
         if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
@@ -187,7 +197,7 @@ class RatingScene(nc.Scene):
         self.tick += self.dt
 
         # Scene switching
-        if self.tick - self.timeout > 900:
+        if self.tick - self.timeout > 900 or (self.tick - self.save_tick > 30 and self.save_tick):
             self.window.change_scene("idle")
 
         if self.back_x != 0:
@@ -197,7 +207,7 @@ class RatingScene(nc.Scene):
         if self.tick - self.timeout > 700:
             self.activity_request_tick_target = 20
 
-        if self.tick - self.update_tick > 12:
+        if self.tick - self.update_tick > 10:
             self.stars_last = self.stars
 
         # Animate activity request
@@ -231,7 +241,9 @@ class RatingScene(nc.Scene):
                 self.window.change_scene("idle")
                 self.back_x = -1
             if event.key == pg.K_RETURN:
-                self.window.change_scene("idle")
+                if self.stars:
+                    self.window.main.user_manager.set_rating(self.player.auth_id, self.game.id, self.stars)
+                    self.save_tick = self.tick
 
             if event.key == pg.K_UP:
                 if self.stars < 5:
@@ -239,7 +251,7 @@ class RatingScene(nc.Scene):
                     self.stars += 1
                     self.update_tick = self.tick
             if event.key == pg.K_DOWN:
-                if self.stars > 0:
+                if self.stars > 1:
                     self.stars_last = self.stars
                     self.stars -= 1
                     self.update_tick = self.tick

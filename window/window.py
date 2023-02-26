@@ -35,7 +35,7 @@ class Window(nc.Window):
                                      height=GUI_HEIGHT,
                                      flags=pg.FULLSCREEN,
                                      scene_mode=True,
-                                     start_scene="rating")
+                                     start_scene="loading")
 
         self.main: Main = main
 

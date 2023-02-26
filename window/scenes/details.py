@@ -39,13 +39,6 @@ class DetailsScene(nc.Scene):
         self.activity_request_tick: float = 0
         self.activity_request_tick_target: float = 0
 
-        # Star data
-        img = pg.image.load(f"{PATH_IMAGE}/star.png")
-        self.star_mask: pg.Mask = pg.mask.from_surface(img)
-        # TODO Calculate Rating
-        self.stars: float = 0
-        self.rating_count: int = 0
-
         self.game: Game = self.window.main.game_manager.current
         if nc.file.exists(f"{PATH_GAME}/{self.game.image_name}"):
             self.image: pg.Surface = pg.transform.scale(
@@ -54,6 +47,12 @@ class DetailsScene(nc.Scene):
             self.logger.warning(f"Couldn't load game image at '{PATH_GAME}/" +
                                 f"{self.game.image_name}'! Use black ...")
             self.image: pg.Surface = pg.Surface((650, 650))
+
+        # Star data
+        img = pg.image.load(f"{PATH_IMAGE}/star.png")
+        self.star_mask: pg.Mask = pg.mask.from_surface(img)
+        self.stars: float = self.window.main.user_manager.get_ratings(self.game.id)[0]
+        self.rating_count: int = self.window.main.user_manager.get_ratings(self.game.id)[1]
 
     def render(self) -> None:
 

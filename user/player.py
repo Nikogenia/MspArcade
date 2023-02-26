@@ -15,7 +15,7 @@ class Player:
 
     time: int
 
-    ratings: dict[int, int]
+    ratings: dict[str, int]
 
     def json(self) -> dict:
 
