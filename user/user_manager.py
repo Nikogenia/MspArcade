@@ -59,7 +59,8 @@ class UserManager(th.Thread):
                 if isinstance(self.main.window.scene, LoginScene):
                     self.handle_login()
 
-                if (nc.time.epoch_time() - self.last_update > AUTO_UPDATE) or (nc.time.epoch_time() - self.last_update > FAST_UPDATE and self.fast_update):
+                if (nc.time.epoch_time() - self.last_update > AUTO_UPDATE) or \
+                        (nc.time.epoch_time() - self.last_update > FAST_UPDATE and self.fast_update):
                     self.fast_update = False
                     data = self.get_entries()
                     self.online = data is not None
@@ -206,7 +207,8 @@ class UserManager(th.Thread):
             if self.get_player_by_id(player.id) is None:
                 self.logger.debug(f"New player {player.id} [{player.auth_id}] ({player.name}) added.")
                 player.time = DEFAULT_TIME
-                if self.get_user(player.user_id) is not None and nc.time.epoch_time() - self.get_user(player.user_id).last_login < TIME_RESET_TIMEOUT:
+                if self.get_user(player.user_id) is not None and \
+                        nc.time.epoch_time() - self.get_user(player.user_id).last_login < TIME_RESET_TIMEOUT:
                     player.time = 0
                 self.players.append(player)
             else:

@@ -31,7 +31,8 @@ class DetailsScene(nc.Scene):
 
         self.running: bool = True
 
-        self.left_arrow: pg.Surface = pg.transform.smoothscale(pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert(), (60, 60))
+        self.left_arrow: pg.Surface = pg.transform.smoothscale(
+            pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert(), (60, 60))
         self.back_x: float = 0
 
         # Activity request data
@@ -47,9 +48,11 @@ class DetailsScene(nc.Scene):
 
         self.game: Game = self.window.main.game_manager.current
         if nc.file.exists(f"{PATH_GAME}/{self.game.image_name}"):
-            self.image: pg.Surface = pg.transform.scale(pg.image.load(f"{PATH_GAME}/{self.game.image_name}"), (650, 650))
+            self.image: pg.Surface = pg.transform.scale(
+                pg.image.load(f"{PATH_GAME}/{self.game.image_name}"), (650, 650))
         else:
-            self.logger.warning(f"Couldn't load game image at '{PATH_GAME}/{self.game.image_name}'! Use black ...")
+            self.logger.warning(f"Couldn't load game image at '{PATH_GAME}/" +
+                                f"{self.game.image_name}'! Use black ...")
             self.image: pg.Surface = pg.Surface((650, 650))
 
     def render(self) -> None:
@@ -67,11 +70,14 @@ class DetailsScene(nc.Scene):
         for star in range(5):
             value_mask = pg.mask.Mask((max(self.stars - star, 0) * 64, 64), True)
             overlap_mask = self.star_mask.overlap_mask(value_mask, (0, 0))
-            self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)), (self.width / 2 - 200 + star * 80, 40))
-            self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)), (self.width / 2 - 200 + star * 80, 40))
+            self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)),
+                             (self.width / 2 - 200 + star * 80, 40))
+            self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)),
+                             (self.width / 2 - 200 + star * 80, 40))
             outline = self.star_mask.outline(1)
             for i, p in enumerate(outline):
-                pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(self.width / 2 - 200 + star * 80, 40) + p, nc.Vec(self.width / 2 - 200 + star * 80, 40) + outline[i - 1], 1)
+                pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(self.width / 2 - 200 + star * 80, 40) + nc.Vec(*p),
+                             nc.Vec(self.width / 2 - 200 + star * 80, 40) + nc.Vec(*outline[i - 1]), 1)
 
         # Game title
         font = self.window.font.get("title", 120)
@@ -81,7 +87,8 @@ class DetailsScene(nc.Scene):
         # Description box
         short_description_lines = split_text(self.game.short_description, 35)
         description_lines = split_text(self.game.description, 52)
-        black_rect(self.screen, 758, 240, 1095, 45 + len(short_description_lines) * 40 + len(description_lines) * 32, 80, True, 3)
+        black_rect(self.screen, 758, 240, 1095,
+                   45 + len(short_description_lines) * 40 + len(description_lines) * 32, 80, True, 3)
 
         # Game short description
         font = self.window.font.get("text", 30)

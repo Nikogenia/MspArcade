@@ -37,9 +37,11 @@ class Window(nc.Window):
 
         self.main: Main = main
 
-        #self.disable_resolution_scaling()
-
         self.running = True
+
+        # Resolution scaling on windows
+        if DISABLE_RESOLUTION_SCALING:
+            self.disable_resolution_scaling()
 
         # Register scenes
         self.register_scene("loading", LoadingScene)
@@ -63,10 +65,12 @@ class Window(nc.Window):
         if self.main.main_config.background_mode == "image":
             self.logger.info("Load background image ...")
             if nc.file.exists(f"{PATH_DATA}/{self.main.main_config.background_file_name}"):
-                self.background: pg.Surface = pg.image.load(f"{PATH_DATA}/{self.main.main_config.background_file_name}")
+                self.background: pg.Surface = pg.image.load(
+                    f"{PATH_DATA}/{self.main.main_config.background_file_name}")
                 self.background_mode: str = "image"
             else:
-                self.logger.warning(f"Couldn't load background image at '{PATH_DATA}/{self.main.main_config.background_file_name}'! Use black ...")
+                self.logger.warning(f"Couldn't load background image at '{PATH_DATA}/" +
+                                    f"{self.main.main_config.background_file_name}'! Use black ...")
                 self.background: pg.Surface = pg.Surface(self.dimension)
                 self.background_mode: str = "error"
 
@@ -74,11 +78,13 @@ class Window(nc.Window):
             self.logger.info("Load background video ...")
             if nc.file.exists(f"{PATH_DATA}/{self.main.main_config.background_file_name}"):
                 self.background: pg.Surface = pg.Surface(self.dimension)
-                self.video: cv2.VideoCapture = cv2.VideoCapture(f"{PATH_DATA}/{self.main.main_config.background_file_name}")
+                self.video: cv2.VideoCapture = cv2.VideoCapture(
+                    f"{PATH_DATA}/{self.main.main_config.background_file_name}")
                 self.background_mode: str = "video"
                 self.background_update: float = 0
             else:
-                self.logger.warning(f"Couldn't load background video at '{PATH_DATA}/{self.main.main_config.background_file_name}'! Use black ...")
+                self.logger.warning(f"Couldn't load background video at '{PATH_DATA}/" +
+                                    f"{self.main.main_config.background_file_name}'! Use black ...")
                 self.background: pg.Surface = pg.Surface(self.dimension)
                 self.background_mode: str = "error"
 
@@ -89,9 +95,8 @@ class Window(nc.Window):
         self.background_black: pg.Surface = pg.Surface(self.dimension)
         self.background_black.fill(nc.RGB.BLACK)
 
+        # FPS log
         self.fps_log = []
-
-        self.reset_dt: bool = False
 
     def render(self) -> None:
 
@@ -106,7 +111,8 @@ class Window(nc.Window):
         # Help info
         font = self.font.get("text", 20)
         text = font.render("Hilfe? Drücke #!", True, nc.RGB.WHITE)
-        black_rect(self.screen, self.width - text.get_width() - 10, self.height - 37, text.get_width() + 20, 50, 220, True, 1)
+        black_rect(self.screen, self.width - text.get_width() - 10,
+                   self.height - 37, text.get_width() + 20, 50, 220, True, 1)
         self.screen.blit(text, (self.width - text.get_width(), self.height - 27))
 
         # Offline info
@@ -118,6 +124,7 @@ class Window(nc.Window):
             text = font.render("         Neue Registrierungen sind daher nicht verfügbar!", True, nc.RGB.RED1)
             self.screen.blit(text, (7, self.height - 22))
 
+        # Render debug screen
         if self.debug_screen_active:
             self.debug_screen.render(self.debug_screen_left, self.debug_screen_right)
         self.debug_screen_left = self.debug_screen.left_content()
@@ -126,13 +133,18 @@ class Window(nc.Window):
     def event(self, event: pg.event.Event) -> None:
 
         if event.type == pg.KEYDOWN:
+
+            # Quitting
             if event.key == pg.K_ESCAPE:
                 self.running = False
+
+            # Toggle debug screen
             if event.key == pg.K_F3:
                 self.debug_screen_active = not self.debug_screen_active
 
     def update(self) -> None:
 
+        # Debug screen information
         self.debug_screen_left.append("")
         self.debug_screen_left.append(f"Background Update: {self.background_update * 1000:.2f} ms")
 
@@ -141,7 +153,8 @@ class Window(nc.Window):
         if self.main.user_manager.last_update == 0:
             self.debug_screen_right.append(f"-")
         else:
-            self.debug_screen_right.append(f"{nc.time.epoch_time() - self.main.user_manager.last_update:.1f} seconds")
+            self.debug_screen_right.append(
+                f"{nc.time.epoch_time() - self.main.user_manager.last_update:.1f} seconds")
 
         if SHOW_USERS_IN_DEBUG_SCREEN:
             self.debug_screen_right.append("")
@@ -152,7 +165,8 @@ class Window(nc.Window):
                 self.debug_screen_right.append(f"{player.time} - {player.name}")
 
         if FPS_LOG:
-            self.fps_log.append((f"{self.clock.available_fps:.2f}", f"{self.clock.available_fps_low:.2f}", f"{self.clock.available_fps_lazy:.2f}"))
+            self.fps_log.append((f"{self.clock.available_fps:.2f}", f"{self.clock.available_fps_low:.2f}",
+                                 f"{self.clock.available_fps_lazy:.2f}"))
 
     def init(self) -> None:
 
@@ -178,7 +192,8 @@ class Window(nc.Window):
 
             if not _:
                 self.video.release()
-                self.video: cv2.VideoCapture = cv2.VideoCapture(f"{PATH_DATA}/{self.main.main_config.background_file_name}")
+                self.video: cv2.VideoCapture = cv2.VideoCapture(
+                    f"{PATH_DATA}/{self.main.main_config.background_file_name}")
                 _, frame = self.video.read()
 
             self.background = cv_utils.cv_to_pygame(frame)
@@ -193,7 +208,3 @@ class Window(nc.Window):
 
         if not self.main.running:
             self.running = False
-
-        if self.reset_dt:
-            self.reset_dt = False
-            self.clock.delta_time = self.clock.speed_factor

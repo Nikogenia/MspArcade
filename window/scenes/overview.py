@@ -37,7 +37,8 @@ class OverviewScene(nc.Scene):
         if "back" not in self.args:
             self.args["back"] = "menu"
 
-        self.left_arrow: pg.Surface = pg.transform.smoothscale(pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert(), (60, 60))
+        self.left_arrow: pg.Surface = pg.transform.smoothscale(
+            pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert(), (60, 60))
         self.back_x: float = 0
 
         # Activity request data
@@ -46,7 +47,8 @@ class OverviewScene(nc.Scene):
 
         self.game: Game = self.window.main.game_manager.current
         if nc.file.exists(f"{PATH_GAME}/{self.game.image_name}"):
-            self.image: pg.Surface = pg.transform.scale(pg.image.load(f"{PATH_GAME}/{self.game.image_name}"), (550, 550))
+            self.image: pg.Surface = pg.transform.scale(
+                pg.image.load(f"{PATH_GAME}/{self.game.image_name}"), (550, 550))
         else:
             self.logger.warning(f"Couldn't load game image at '{PATH_GAME}/{self.game.image_name}'! Use black ...")
             self.image: pg.Surface = pg.Surface((400, 400))
@@ -95,7 +97,8 @@ class OverviewScene(nc.Scene):
         text = font.render("Zeit übrig:", True, nc.RGB.WHITE)
         self.screen.blit(text, (500 - text.get_width() / 2, 490))
         font = self.window.font.get("text", 45)
-        text = font.render(f"{self.player.time // 3600:02d}:{self.player.time // 60:02d}:{self.player.time % 60:02d}", True, nc.RGB.WHITE)
+        text = font.render(f"{self.player.time // 3600:02d}:{self.player.time // 60:02d}:{self.player.time % 60:02d}",
+                           True, nc.RGB.WHITE)
         self.screen.blit(text, (500 - text.get_width() / 2, 550))
 
         # Created
@@ -103,7 +106,8 @@ class OverviewScene(nc.Scene):
         text = font.render("Beigetreten:", True, nc.RGB.WHITE)
         self.screen.blit(text, (500 - text.get_width() / 2, 690))
         font = self.window.font.get("text", 30)
-        text = font.render(f"{dt.datetime.fromtimestamp(self.player.created).strftime('%d.%m.%y %H:%M:%S')}", True, nc.RGB.WHITE)
+        text = font.render(f"{dt.datetime.fromtimestamp(self.player.created).strftime('%d.%m.%y %H:%M:%S')}",
+                           True, nc.RGB.WHITE)
         self.screen.blit(text, (500 - text.get_width() / 2, 750))
 
         # Render image
@@ -127,11 +131,14 @@ class OverviewScene(nc.Scene):
         for star in range(5):
             value_mask = pg.mask.Mask((max(self.stars - star, 0) * 50, 50), True)
             overlap_mask = self.star_mask.overlap_mask(value_mask, (0, 0))
-            self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)), (1375 - 150 + star * 60, 500))
-            self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)), (1375 - 150 + star * 60, 500))
+            self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)),
+                             (1375 - 150 + star * 60, 500))
+            self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)),
+                             (1375 - 150 + star * 60, 500))
             outline = self.star_mask.outline(1)
             for i, p in enumerate(outline):
-                pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(1375 - 150 + star * 60, 500) + p, nc.Vec(1375 - 150 + star * 60, 500) + outline[i - 1], 1)
+                pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(1375 - 150 + star * 60, 500) + nc.Vec(*p),
+                             nc.Vec(1375 - 150 + star * 60, 500) + nc.Vec(*outline[i - 1]), 1)
 
         # Game short description
         font = self.window.font.get("text", 20)

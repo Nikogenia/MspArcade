@@ -35,8 +35,10 @@ class IdleScene(nc.Scene):
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 140))
 
         # Title border
-        pg.draw.rect(self.screen, nc.RGB.BLACK, ((self.width - text.get_width() - 80) / 2 + 5, 125, text.get_width() + 80, text.get_height()), 6)
-        pg.draw.rect(self.screen, nc.RGB.WHITE, ((self.width - text.get_width() - 80) / 2, 120, text.get_width() + 80, text.get_height()), 6)
+        pg.draw.rect(self.screen, nc.RGB.BLACK, ((self.width - text.get_width() - 80) / 2 + 5, 125,
+                                                 text.get_width() + 80, text.get_height()), 6)
+        pg.draw.rect(self.screen, nc.RGB.WHITE, ((self.width - text.get_width() - 80) / 2, 120,
+                                                 text.get_width() + 80, text.get_height()), 6)
 
         # Idle prompt
         font = self.window.font.get("text", 40)

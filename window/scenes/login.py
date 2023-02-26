@@ -38,7 +38,8 @@ class LoginScene(nc.Scene):
         if "back" not in self.args:
             self.args["back"] = "menu"
 
-        self.left_arrow: pg.Surface = pg.transform.smoothscale(pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert(), (60, 60))
+        self.left_arrow: pg.Surface = pg.transform.smoothscale(
+            pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert(), (60, 60))
         self.back_x: float = 0
 
         # Activity request data

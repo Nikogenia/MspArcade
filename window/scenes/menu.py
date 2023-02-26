@@ -33,7 +33,8 @@ class MenuScene(nc.Scene):
 
         self.left_arrow: pg.Surface = pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert()
         self.right_arrow: pg.Surface = pg.image.load(f"{PATH_IMAGE}/right_arrow.png").convert()
-        self.down_arrow: pg.Surface = pg.transform.smoothscale(pg.image.load(f"{PATH_IMAGE}/down_arrow.png").convert(), (60, 40))
+        self.down_arrow: pg.Surface = pg.transform.smoothscale(
+            pg.image.load(f"{PATH_IMAGE}/down_arrow.png").convert(), (60, 40))
 
         # All game images
         self.images: list[tuple[pg.Surface, Game, float, int]] = []
@@ -47,7 +48,8 @@ class MenuScene(nc.Scene):
         self.animation_start: float = 0
         self.animation_switched: bool = False
 
-        # Animation slots (image, position, size, start_pos, end_pos, start_size, end_size, alpha, start_alpha, end_alpha)
+        # Animation slots (image, position, size, start_pos, end_pos,
+        #                  start_size, end_size, alpha, start_alpha, end_alpha)
         self.slots: list[list[pg.Surface, nc.Vec, nc.Vec, nc.Vec, nc.Vec, nc.Vec, nc.Vec, int, int, int]] = []
 
         # Star data
@@ -128,9 +130,11 @@ class MenuScene(nc.Scene):
 
         # No animation
         if self.animation_type == 0:
-            self.screen.blit(pg.transform.scale(self.get_surf(self.position - 1), self.SIZE2), self.POS2 - self.SIZE2 / 2)
+            self.screen.blit(pg.transform.scale(self.get_surf(self.position - 1), self.SIZE2),
+                             self.POS2 - self.SIZE2 / 2)
             black_rect(self.screen, *(self.POS2 - self.SIZE2 / 2), *self.SIZE2, 190, True, 2, nc.RGB.GRAY60)
-            self.screen.blit(pg.transform.scale(self.get_surf(self.position + 1), self.SIZE2), self.POS4 - self.SIZE2 / 2)
+            self.screen.blit(pg.transform.scale(self.get_surf(self.position + 1), self.SIZE2),
+                             self.POS4 - self.SIZE2 / 2)
             black_rect(self.screen, *(self.POS4 - self.SIZE2 / 2), *self.SIZE2, 190, True, 2, nc.RGB.GRAY60)
             self.screen.blit(self.get_surf(self.position), self.POS3 - self.SIZE3 / 2)
             black_rect(self.screen, *(self.POS3 - self.SIZE3 / 2), *self.SIZE3, 70, True, 2, nc.RGB.GRAY60)
@@ -145,22 +149,28 @@ class MenuScene(nc.Scene):
         if self.animation_type == 0:
             stars = self.images[self.position % len(self.images)][2]
         else:
-            stars = self.star_start + (self.star_end - self.star_start) / self.ANIMATION_DURATION * (self.tick - self.animation_start)
+            stars = self.star_start + (self.star_end - self.star_start) / \
+                    self.ANIMATION_DURATION * (self.tick - self.animation_start)
         for star in range(5):
             value_mask = pg.mask.Mask((max(stars - star, 0) * 50, 50), True)
             overlap_mask = self.star_mask.overlap_mask(value_mask, (0, 0))
-            self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)), (self.width / 2 - 150 + star * 60, 20))
-            self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)), (self.width / 2 - 150 + star * 60, 20))
+            self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)),
+                             (self.width / 2 - 150 + star * 60, 20))
+            self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)),
+                             (self.width / 2 - 150 + star * 60, 20))
             outline = self.star_mask.outline(1)
             for i, p in enumerate(outline):
-                pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(self.width / 2 - 150 + star * 60, 20) + p, nc.Vec(self.width / 2 - 150 + star * 60, 20) + outline[i - 1], 1)
+                pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(self.width / 2 - 150 + star * 60, 20) + nc.Vec(*p),
+                             nc.Vec(self.width / 2 - 150 + star * 60, 20) + nc.Vec(*outline[i - 1]), 1)
 
         # Render title
         font = self.window.font.get("title", 120)
         text = font.render(self.title, True, nc.RGB.WHITE)
         if self.animation_type != 0:
-            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
-        black_rect(self.screen, (self.width - self.title_width) / 2 - 30, 115, self.title_width + 55, 110, 130, True, 2)
+            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) -
+                                          self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+        black_rect(self.screen, (self.width - self.title_width) / 2 - 30, 115,
+                   self.title_width + 55, 110, 130, True, 2)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 125))
 
         # Render author
@@ -172,11 +182,13 @@ class MenuScene(nc.Scene):
         font = self.window.font.get("text", 35)
         text = font.render(self.author, True, nc.RGB.BLACK)
         if self.animation_type != 0:
-            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) -
+                                          self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
         self.screen.blit(text, ((self.width - text.get_width()) / 2 + 5, 295))
         text = font.render(self.author, True, nc.RGB.WHITE)
         if self.animation_type != 0:
-            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) -
+                                          self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 290))
 
         # Render description
@@ -184,9 +196,12 @@ class MenuScene(nc.Scene):
         text1 = font.render(self.description1, True, nc.RGB.WHITE)
         text2 = font.render(self.description2, True, nc.RGB.WHITE)
         if self.animation_type != 0:
-            text1.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
-            text2.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
-        black_rect(self.screen, (self.width - self.description_width) / 2 - 22, 715 - self.description_height, self.description_width + 40, 70 + self.description_height, 80, True, 2)
+            text1.set_alpha(int(abs(255 * ((self.tick - self.animation_start) -
+                                           self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+            text2.set_alpha(int(abs(255 * ((self.tick - self.animation_start) -
+                                           self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+        black_rect(self.screen, (self.width - self.description_width) / 2 - 22, 715 - self.description_height,
+                   self.description_width + 40, 70 + self.description_height, 80, True, 2)
         if self.description2 != "":
             self.screen.blit(text1, ((self.width - text1.get_width()) / 2, 680))
             self.screen.blit(text2, ((self.width - text2.get_width()) / 2, 735))
@@ -198,31 +213,43 @@ class MenuScene(nc.Scene):
         font = self.window.font.get("text", 20)
         text = pg.transform.smoothscale_by(font.render("Mehr Details", True, nc.RGB.BLACK), size)
         if self.animation_type != 0:
-            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) -
+                                          self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
         self.screen.blit(text, ((self.width - text.get_width()) / 2 + 2, 827 - text.get_height() / 2 + self.details_y))
         text = pg.transform.smoothscale_by(font.render("Mehr Details", True, nc.RGB.WHITE), size)
         if self.animation_type != 0:
-            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+            text.set_alpha(int(abs(255 * ((self.tick - self.animation_start) -
+                                          self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 825 - text.get_height() / 2 + self.details_y))
         size = math.sin(self.tick / 5) / 20 + 0.9
         if self.animation_type != 0:
-            self.down_arrow.set_alpha(int(abs(255 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
+            self.down_arrow.set_alpha(int(abs(255 * ((self.tick - self.animation_start) -
+                                                     self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2)))
         scaled = pg.transform.smoothscale_by(self.down_arrow, size)
-        self.screen.blit(scaled, ((self.width - scaled.get_width()) / 2, 855 - scaled.get_height() / 2 + self.details_y))
+        self.screen.blit(scaled, ((self.width - scaled.get_width()) / 2,
+                                  855 - scaled.get_height() / 2 + self.details_y))
 
         # Render arrows
         size = math.sin(self.tick / 5) * 6 + 100
         if self.animation_type == 1:
-            offset = int(35 - abs(35 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2))
-            self.screen.blit(pg.transform.smoothscale(self.left_arrow, (size, size)), (60 - size / 2 - offset, 490 - size / 2))
-            self.screen.blit(pg.transform.smoothscale(self.right_arrow, (size, size)), (self.width - 60 - size / 2, 490 - size / 2))
+            offset = int(35 - abs(35 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) /
+                                  self.ANIMATION_DURATION * 2))
+            self.screen.blit(pg.transform.smoothscale(self.left_arrow, (size, size)),
+                             (60 - size / 2 - offset, 490 - size / 2))
+            self.screen.blit(pg.transform.smoothscale(self.right_arrow, (size, size)),
+                             (self.width - 60 - size / 2, 490 - size / 2))
         elif self.animation_type == 2:
-            offset = int(35 - abs(35 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) / self.ANIMATION_DURATION * 2))
-            self.screen.blit(pg.transform.smoothscale(self.right_arrow, (size, size)), (self.width - 60 - size / 2 + offset, 490 - size / 2))
-            self.screen.blit(pg.transform.smoothscale(self.left_arrow, (size, size)), (60 - size / 2, 490 - size / 2))
+            offset = int(35 - abs(35 * ((self.tick - self.animation_start) - self.ANIMATION_DURATION / 2) /
+                                  self.ANIMATION_DURATION * 2))
+            self.screen.blit(pg.transform.smoothscale(self.right_arrow, (size, size)),
+                             (self.width - 60 - size / 2 + offset, 490 - size / 2))
+            self.screen.blit(pg.transform.smoothscale(self.left_arrow, (size, size)),
+                             (60 - size / 2, 490 - size / 2))
         else:
-            self.screen.blit(pg.transform.smoothscale(self.left_arrow, (size, size)), (60 - size / 2, 490 - size / 2))
-            self.screen.blit(pg.transform.smoothscale(self.right_arrow, (size, size)), (self.width - 60 - size / 2, 490 - size / 2))
+            self.screen.blit(pg.transform.smoothscale(self.left_arrow, (size, size)),
+                             (60 - size / 2, 490 - size / 2))
+            self.screen.blit(pg.transform.smoothscale(self.right_arrow, (size, size)),
+                             (self.width - 60 - size / 2, 490 - size / 2))
 
     def update(self) -> None:
 
@@ -281,15 +308,23 @@ class MenuScene(nc.Scene):
 
             # Update slot position, size and alpha
             for index, slot in enumerate(self.slots):
-                self.slots[index][1] = slot[3] + (slot[4] - slot[3]) / self.ANIMATION_DURATION * (self.tick - self.animation_start)
-                self.slots[index][2] = slot[5] + (slot[6] - slot[5]) / self.ANIMATION_DURATION * (self.tick - self.animation_start)
-                self.slots[index][7] = slot[8] + (slot[9] - slot[8]) / self.ANIMATION_DURATION * (self.tick - self.animation_start)
+                self.slots[index][1] = slot[3] + (slot[4] - slot[3]) / \
+                    self.ANIMATION_DURATION * (self.tick - self.animation_start)
+                self.slots[index][2] = slot[5] + (slot[6] - slot[5]) / \
+                    self.ANIMATION_DURATION * (self.tick - self.animation_start)
+                self.slots[index][7] = slot[8] + (slot[9] - slot[8]) / \
+                    self.ANIMATION_DURATION * (self.tick - self.animation_start)
 
             # Update title width
             if self.animation_type != 0:
-                self.title_width = int(self.title_width_start + (self.title_width_end - self.title_width_start) / self.ANIMATION_DURATION * (self.tick - self.animation_start))
-                self.description_width = int(self.description_width_start + (self.description_width_end - self.description_width_start) / self.ANIMATION_DURATION * (self.tick - self.animation_start))
-                self.description_height = int(self.description_height_start + (self.description_height_end - self.description_height_start) / self.ANIMATION_DURATION * (self.tick - self.animation_start))
+                self.title_width = int(self.title_width_start + (self.title_width_end - self.title_width_start) /
+                                       self.ANIMATION_DURATION * (self.tick - self.animation_start))
+                self.description_width = int(self.description_width_start +
+                                             (self.description_width_end - self.description_width_start) /
+                                             self.ANIMATION_DURATION * (self.tick - self.animation_start))
+                self.description_height = int(self.description_height_start +
+                                              (self.description_height_end - self.description_height_start) /
+                                              self.ANIMATION_DURATION * (self.tick - self.animation_start))
 
         # Debug screen
         self.window.debug_screen_left.append("")
@@ -328,19 +363,27 @@ class MenuScene(nc.Scene):
                 if event.key == pg.K_LEFT:
                     self.position -= 1
                     self.animation_type = 1
-                    self.slots.append([self.get_surf(self.position - 1), self.POS1, self.SIZE1, self.POS1, self.POS2, self.SIZE1, self.SIZE2, 240, 240, 190])
-                    self.slots.append([self.get_surf(self.position), self.POS2, self.SIZE2, self.POS2, self.POS3, self.SIZE2, self.SIZE3, 190, 190, 70])
-                    self.slots.append([self.get_surf(self.position + 2), self.POS4, self.SIZE2, self.POS4, self.POS5, self.SIZE2, self.SIZE1, 190, 190, 240])
-                    self.slots.append([self.get_surf(self.position + 1), self.POS3, self.SIZE3, self.POS3, self.POS4, self.SIZE3, self.SIZE2, 70, 70, 190])
+                    self.slots.append([self.get_surf(self.position - 1), self.POS1, self.SIZE1,
+                                       self.POS1, self.POS2, self.SIZE1, self.SIZE2, 240, 240, 190])
+                    self.slots.append([self.get_surf(self.position), self.POS2, self.SIZE2,
+                                       self.POS2, self.POS3, self.SIZE2, self.SIZE3, 190, 190, 70])
+                    self.slots.append([self.get_surf(self.position + 2), self.POS4, self.SIZE2,
+                                       self.POS4, self.POS5, self.SIZE2, self.SIZE1, 190, 190, 240])
+                    self.slots.append([self.get_surf(self.position + 1), self.POS3, self.SIZE3,
+                                       self.POS3, self.POS4, self.SIZE3, self.SIZE2, 70, 70, 190])
 
                 # Scroll to right
                 if event.key == pg.K_RIGHT:
                     self.position += 1
                     self.animation_type = 2
-                    self.slots.append([self.get_surf(self.position + 1), self.POS5, self.SIZE1, self.POS5, self.POS4, self.SIZE1, self.SIZE2, 240, 240, 190])
-                    self.slots.append([self.get_surf(self.position), self.POS4, self.SIZE2, self.POS4, self.POS3, self.SIZE2, self.SIZE3, 190, 190, 70])
-                    self.slots.append([self.get_surf(self.position - 2), self.POS2, self.SIZE2, self.POS2, self.POS1, self.SIZE2, self.SIZE1, 190, 190, 240])
-                    self.slots.append([self.get_surf(self.position - 1), self.POS3, self.SIZE3, self.POS3, self.POS2, self.SIZE3, self.SIZE2, 70, 70, 190])
+                    self.slots.append([self.get_surf(self.position + 1), self.POS5, self.SIZE1,
+                                       self.POS5, self.POS4, self.SIZE1, self.SIZE2, 240, 240, 190])
+                    self.slots.append([self.get_surf(self.position), self.POS4, self.SIZE2,
+                                       self.POS4, self.POS3, self.SIZE2, self.SIZE3, 190, 190, 70])
+                    self.slots.append([self.get_surf(self.position - 2), self.POS2, self.SIZE2,
+                                       self.POS2, self.POS1, self.SIZE2, self.SIZE1, 190, 190, 240])
+                    self.slots.append([self.get_surf(self.position - 1), self.POS3, self.SIZE3,
+                                       self.POS3, self.POS2, self.SIZE3, self.SIZE2, 70, 70, 190])
 
                 # Scroll
                 if event.key in (pg.K_LEFT, pg.K_RIGHT):
