@@ -34,6 +34,10 @@ class DetailsScene(nc.Scene):
         self.left_arrow: pg.Surface = pg.transform.smoothscale(pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert(), (60, 60))
         self.back_x: float = 0
 
+        # Activity request data
+        self.activity_request_tick: float = 0
+        self.activity_request_tick_target: float = 0
+
         # Star data
         img = pg.image.load(f"{PATH_IMAGE}/star.png")
         self.star_mask: pg.Mask = pg.mask.from_surface(img)
@@ -104,6 +108,17 @@ class DetailsScene(nc.Scene):
         self.screen.blit(self.image, (70, 240))
         pg.draw.rect(self.screen, nc.RGB.WHITE, (70, 240, 650, 650), 3)
 
+        # Render activity request
+        if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
+            height = 310 * (self.activity_request_tick / 20) - 300
+            black_rect(self.screen, self.width / 2 - 700, height, 1400, 230, 200, True, 3)
+            font = self.window.font.get("title", 110)
+            text = font.render("BIST DU NOCH DA?", True, nc.RGB.WHITE)
+            self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 30))
+            font = self.window.font.get("text", 35)
+            text = font.render("Bestätige deine Anwesenheit mit #!", True, nc.RGB.WHITE)
+            self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
+
         # Continue prompt
         font = self.window.font.get("text", 35)
         height = math.sin(self.tick / 10) * 15 + 950
@@ -121,6 +136,18 @@ class DetailsScene(nc.Scene):
         if self.back_x != 0:
             self.back_x -= self.dt * 3
 
+        # Show activity request
+        if self.tick - self.timeout > 1000:
+            self.activity_request_tick_target = 20
+
+        # Animate activity request
+        if abs(self.activity_request_tick_target - self.activity_request_tick) < 1.5:
+            self.activity_request_tick = self.activity_request_tick_target
+        if self.activity_request_tick > self.activity_request_tick_target:
+            self.activity_request_tick -= self.dt
+        elif self.activity_request_tick < self.activity_request_tick_target:
+            self.activity_request_tick += self.dt
+
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
@@ -130,6 +157,11 @@ class DetailsScene(nc.Scene):
     def event(self, event: pg.event.Event) -> None:
 
         if event.type == pg.KEYDOWN:
+
+            # Reset timeout
+            self.activity_request_tick_target = 0
+            self.timeout = self.tick
+
             if event.key == pg.K_LEFT:
                 self.window.change_scene("menu", transition_duration=7, transition_pause=3)
                 self.back_x = -1

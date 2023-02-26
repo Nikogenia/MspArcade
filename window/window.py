@@ -106,8 +106,17 @@ class Window(nc.Window):
         # Help info
         font = self.font.get("text", 20)
         text = font.render("Hilfe? Drücke #!", True, nc.RGB.WHITE)
-        black_rect(self.screen, self.width - text.get_width() - 10, self.height - 40, text.get_width() + 20, 50, 220, True, 1)
-        self.screen.blit(text, (self.width - text.get_width(), self.height - 30))
+        black_rect(self.screen, self.width - text.get_width() - 10, self.height - 37, text.get_width() + 20, 50, 220, True, 1)
+        self.screen.blit(text, (self.width - text.get_width(), self.height - 27))
+
+        # Offline info
+        if not self.main.user_manager.online:
+            font = self.font.get("text", 14)
+            text = font.render("HINWEIS: Die Datenbank kann aktuell nicht erreicht werden!", True, nc.RGB.RED1)
+            black_rect(self.screen, -10, self.height - 50, text.get_width() + 20, 70, 220, True, 1)
+            self.screen.blit(text, (7, self.height - 42))
+            text = font.render("         Neue Registrierungen sind daher nicht verfügbar!", True, nc.RGB.RED1)
+            self.screen.blit(text, (7, self.height - 22))
 
         if self.debug_screen_active:
             self.debug_screen.render(self.debug_screen_left, self.debug_screen_right)

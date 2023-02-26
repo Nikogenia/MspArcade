@@ -78,6 +78,10 @@ class MenuScene(nc.Scene):
         # More details data
         self.details_y: float = 0
 
+        # Activity request data
+        self.activity_request_tick: float = 0
+        self.activity_request_tick_target: float = 0
+
         # Game image positions
         self.POS1: nc.Vec = nc.Vec(-260, 490)
         self.POS2: nc.Vec = nc.Vec(360, 490)
@@ -102,6 +106,17 @@ class MenuScene(nc.Scene):
             black_rect(self.screen, *(self.POS2 - self.SIZE2 / 2), *self.SIZE2, 255, True, 2, nc.RGB.GRAY60)
             black_rect(self.screen, *(self.POS4 - self.SIZE2 / 2), *self.SIZE2, 255, True, 2, nc.RGB.GRAY60)
             black_rect(self.screen, *(self.POS3 - self.SIZE3 / 2), *self.SIZE3, 255, True, 2, nc.RGB.GRAY60)
+
+        # Render activity request
+        if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
+            height = 310 * (self.activity_request_tick / 20) - 300
+            black_rect(self.screen, self.width / 2 - 700, height, 1400, 230, 200, True, 3)
+            font = self.window.font.get("title", 110)
+            text = font.render("BIST DU NOCH DA?", True, nc.RGB.WHITE)
+            self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 30))
+            font = self.window.font.get("text", 35)
+            text = font.render("Bestätige deine Anwesenheit mit #!", True, nc.RGB.WHITE)
+            self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
 
         # Menu prompt
         font = self.window.font.get("text", 35)
@@ -217,8 +232,21 @@ class MenuScene(nc.Scene):
         if self.tick - self.timeout > 600:
             self.window.change_scene("idle")
 
+        # Update details y position
         if self.details_y != 0:
             self.details_y += self.dt * 3
+
+        # Show activity request
+        if self.tick - self.timeout > 400:
+            self.activity_request_tick_target = 20
+
+        # Animate activity request
+        if abs(self.activity_request_tick_target - self.activity_request_tick) < 1.5:
+            self.activity_request_tick = self.activity_request_tick_target
+        if self.activity_request_tick > self.activity_request_tick_target:
+            self.activity_request_tick -= self.dt
+        elif self.activity_request_tick < self.activity_request_tick_target:
+            self.activity_request_tick += self.dt
 
         # Animation running
         if self.animation_type != 0:
@@ -272,6 +300,10 @@ class MenuScene(nc.Scene):
 
         if event.type == pg.KEYDOWN:
 
+            # Reset timeout
+            self.activity_request_tick_target = 0
+            self.timeout = self.tick
+
             # Switch scene
             if event.key == pg.K_RETURN:
                 self.window.change_scene("login", {"back": "menu"})
@@ -285,7 +317,6 @@ class MenuScene(nc.Scene):
 
                 # Scroll
                 if event.key in (pg.K_LEFT, pg.K_RIGHT):
-                    self.timeout = self.tick
                     self.animation_start = self.tick
                     self.animation_switched = False
                     self.slots.clear()
