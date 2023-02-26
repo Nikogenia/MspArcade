@@ -18,6 +18,8 @@ from window.scenes.menu import MenuScene
 from window.scenes.login import LoginScene
 from window.scenes.details import DetailsScene
 from window.scenes.overview import OverviewScene
+from window.scenes.play import PlayScene
+from window.scenes.rating import RatingScene
 from window import cv_utils
 if TYPE_CHECKING:
     from main import Main
@@ -33,7 +35,7 @@ class Window(nc.Window):
                                      height=GUI_HEIGHT,
                                      flags=pg.FULLSCREEN,
                                      scene_mode=True,
-                                     start_scene="loading")
+                                     start_scene="rating")
 
         self.main: Main = main
 
@@ -50,6 +52,8 @@ class Window(nc.Window):
         self.register_scene("login", LoginScene)
         self.register_scene("details", DetailsScene)
         self.register_scene("overview", OverviewScene)
+        self.register_scene("play", PlayScene)
+        self.register_scene("rating", RatingScene)
 
         # Define fonts
         self.font.define("title", f"{PATH_FONT}/Arcade.ttf")

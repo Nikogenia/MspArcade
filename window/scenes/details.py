@@ -158,7 +158,7 @@ class DetailsScene(nc.Scene):
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
-        self.window.debug_screen_left.append(f"Timeout: {800 - (self.tick - self.timeout):.1f}")
+        self.window.debug_screen_left.append(f"Timeout: {1200 - (self.tick - self.timeout):.1f}")
         self.window.debug_screen_left.append("")
 
     def event(self, event: pg.event.Event) -> None:
