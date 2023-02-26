@@ -15,9 +15,9 @@ Bibliotheken: _Nikocraft, Pygame, ..._
 
 ### Entwickler
 - Nikolas (aka Nikocraft)
-- Samuel (aka MakerSam)
-- Linus
-- Valentin
+- Samuel (aka Maker Sam)
+- Linus (aka Linicus)
+- Valentin (aka Valis World)
 - ...
 
 \
