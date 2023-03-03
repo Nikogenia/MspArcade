@@ -1,7 +1,6 @@
 ### General
 - Database sync (missing time update)
-- Rating request
-- Game loading
+- Game loading (time change)
 
 ### UI
 - More animations
@@ -11,7 +10,6 @@
 
 ### Ideas
 - Add rating data to database
-- Add last login field to database
 
 ### Moodle Tests
 - Check page loading (limit of entries per request?)

@@ -41,6 +41,15 @@ class PlayScene(nc.Scene):
 
         self.tick += self.dt
 
+        if not self.window.main.game_manager.running_game:
+            self.window.change_scene("rating")
+
+        # Von Valis World
+        # Hallo Welt
+
+        # Von Linicus
+        # Hello World
+
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
@@ -50,3 +59,7 @@ class PlayScene(nc.Scene):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
                 self.window.change_scene("rating")
+
+    def init(self) -> None:
+
+        self.window.main.game_manager.start_game = True

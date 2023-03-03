@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 import threading as th
 from logging import Logger
+import subprocess as sp
 
 # External
 import nikocraft as nc
@@ -28,6 +29,10 @@ class GameManager(th.Thread):
 
         self.current: Game | None = None
 
+        self.start_game: bool = False
+
+        self.browser: sp.Popen | None = None
+
     # PROPERTIES
 
     @property
@@ -44,6 +49,10 @@ class GameManager(th.Thread):
 
             while self.running:
 
+                if self.start_game:
+                    self.open_browser()
+                    self.start_game = False
+
                 nc.time.wait(1)
 
         except Exception:
@@ -51,6 +60,20 @@ class GameManager(th.Thread):
             self.main.window.running = False
             self.main.user_manager.running = False
             raise
+
+    def open_browser(self) -> None:
+
+        self.browser = sp.Popen("./open.sh")
+
+        nc.time.wait(8)
+
+    def close_browser(self) -> None:
+
+        self.browser.kill()
+
+    @property
+    def running_game(self) -> bool:
+        return self.start_game or (self.browser is not None and self.browser.poll() is None)
 
     def load(self) -> None:
 

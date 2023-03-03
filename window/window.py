@@ -149,8 +149,9 @@ class Window(nc.Window):
     def update(self) -> None:
 
         # Debug screen information
-        self.debug_screen_left.append("")
-        self.debug_screen_left.append(f"Background Update: {self.background_update * 1000:.2f} ms")
+        if self.background_mode == "video":
+            self.debug_screen_left.append("")
+            self.debug_screen_left.append(f"Background Update: {self.background_update * 1000:.2f} ms")
 
         self.debug_screen_right.append("")
         self.debug_screen_right.append("Database Update")
