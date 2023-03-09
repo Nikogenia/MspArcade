@@ -89,25 +89,32 @@ class OverviewScene(nc.Scene):
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 290))
 
         # Info box
-        black_rect(self.screen, 200, 430, 600, 400, 60, True, 2)
+        black_rect(self.screen, 200, 400, 600, 460, 60, True, 2)
 
         # Time left
         font = self.window.font.get("text", 35)
         text = font.render("Zeit übrig:", True, nc.RGB.WHITE)
-        self.screen.blit(text, (500 - text.get_width() / 2, 490))
+        self.screen.blit(text, (505 - text.get_width() / 2, 450))
         font = self.window.font.get("text", 45)
         text = font.render(f"{self.player.time // 3600:02d}:{self.player.time // 60:02d}:{self.player.time % 60:02d}",
-                           True, nc.RGB.WHITE)
-        self.screen.blit(text, (500 - text.get_width() / 2, 550))
+                           True, nc.RGB.WHITE if self.player.time > 5 else nc.RGB.INDIANRED1)
+        self.screen.blit(text, (500 - text.get_width() / 2, 510))
 
         # Created
         font = self.window.font.get("text", 35)
         text = font.render("Beigetreten:", True, nc.RGB.WHITE)
-        self.screen.blit(text, (500 - text.get_width() / 2, 690))
+        self.screen.blit(text, (500 - text.get_width() / 2, 615))
         font = self.window.font.get("text", 30)
         text = font.render(f"{dt.datetime.fromtimestamp(self.player.created).strftime('%d.%m.%y %H:%M:%S')}",
                            True, nc.RGB.WHITE)
-        self.screen.blit(text, (500 - text.get_width() / 2, 750))
+        self.screen.blit(text, (500 - text.get_width() / 2, 675))
+
+        # Time refill
+        font = self.window.font.get("text", 17)
+        text = font.render("Deine Spielzeit wird immer", True, nc.RGB.WHITE)
+        self.screen.blit(text, (500 - text.get_width() / 2, 765))
+        text = font.render("am Montag wieder aufgeladen!", True, nc.RGB.WHITE)
+        self.screen.blit(text, (500 - text.get_width() / 2, 795))
 
         # Render image
         self.screen.blit(self.image, (1100, 360))
@@ -163,10 +170,11 @@ class OverviewScene(nc.Scene):
             text = font.render("Bestätige deine Anwesenheit mit #!", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
 
-        # Continue prompt
+        # Continue or sorry prompt
+        content = "Starte das Spiel mit #!" if self.player.time > 5 else "Du hast leider nicht mehr genug Zeit übrig!"
         font = self.window.font.get("text", 35)
-        height = math.sin(self.tick / 10) * 15 + 970
-        text = font.render("Starte das Spiel mit #!", True, nc.RGB.WHITE)
+        height = math.sin(self.tick / 10) * 15 + 960
+        text = font.render(content, True, nc.RGB.WHITE if self.player.time > 5 else nc.RGB.INDIANRED1)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
 
     def update(self) -> None:
@@ -219,4 +227,5 @@ class OverviewScene(nc.Scene):
                 self.window.main.user_manager.current = ""
 
             if event.key == pg.K_RETURN:
-                self.window.change_scene("play")
+                if self.player.time > 5:
+                    self.window.change_scene("play")

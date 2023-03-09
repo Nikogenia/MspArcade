@@ -228,6 +228,7 @@ class RatingScene(nc.Scene):
 
         # Log out user
         self.window.main.user_manager.current = ""
+        self.window.main.game_manager.current = None
 
     def event(self, event: pg.event.Event) -> None:
 

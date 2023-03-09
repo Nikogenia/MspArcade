@@ -15,6 +15,16 @@ if TYPE_CHECKING:
     from main import Main
 
 
+CODE = """
+export DISPLAY=:0
+
+sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/kiosk/.config/chromium/Default/Preferences
+sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' /home/kiosk/.config/chromium/Default/Preferences
+
+exec /usr/bin/chromium-browser --window-size=1920,1080 --kiosk --window-position=0,0 #URL#
+"""
+
+
 class GameManager(th.Thread):
 
     def __init__(self, main: Main):
@@ -53,7 +63,15 @@ class GameManager(th.Thread):
                     self.open_browser()
                     self.start_game = False
 
-                nc.time.wait(1)
+                while self.running_game:
+                    player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
+                    if player.time <= 0:
+                        self.close_browser()
+                    else:
+                        player.time -= 1
+                        nc.time.wait(1)
+
+                nc.time.wait(0.5)
 
         except Exception:
             self.main.running = False
@@ -63,9 +81,9 @@ class GameManager(th.Thread):
 
     def open_browser(self) -> None:
 
-        self.browser = sp.Popen("./open.sh")
-
-        nc.time.wait(8)
+        url = self.current.data["url"] if "url" in self.current.data else "https://bodensee-gymnasium.de/"
+        self.browser = sp.Popen(CODE.replace("#URL#", url), shell=True)
+        nc.time.wait(3)
 
     def close_browser(self) -> None:
 

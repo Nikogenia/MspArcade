@@ -70,7 +70,7 @@ class UserManager(th.Thread):
                             self.main.window.scene.invalid.clear()
                     self.last_update = nc.time.epoch_time()
 
-                nc.time.wait(1)
+                nc.time.wait(0.5)
 
             self.save()
 

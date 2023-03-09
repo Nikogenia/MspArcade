@@ -5,10 +5,11 @@ Maker Space Arcade
 
 ARCHITECTURE
 
-Threads:
+Threads/Processes:
 - Main (Window)
   - Background
   - Camera
   - Load Menu
 - User Manager
 - Game Manager
+  - Time Display
