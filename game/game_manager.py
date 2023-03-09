@@ -2,6 +2,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import threading as th
+import multiprocessing as mp
 from logging import Logger
 import subprocess as sp
 
@@ -11,6 +12,7 @@ import nikocraft as nc
 # Local
 from configs import ConfigError
 from game.game import Game
+from game.time_display import TimeDisplay
 if TYPE_CHECKING:
     from main import Main
 
@@ -43,6 +45,8 @@ class GameManager(th.Thread):
 
         self.browser: sp.Popen | None = None
 
+        self.time_display_queue: mp.Queue = mp.Queue()
+
     # PROPERTIES
 
     @property
@@ -60,16 +64,21 @@ class GameManager(th.Thread):
             while self.running:
 
                 if self.start_game:
+
                     self.open_browser()
                     self.start_game = False
 
-                while self.running_game:
-                    player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
-                    if player.time <= 0:
-                        self.close_browser()
-                    else:
-                        player.time -= 1
-                        nc.time.wait(1)
+                    while self.running_game:
+                        player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
+                        if player.time <= 0:
+                            self.close_browser()
+                            break
+                        else:
+                            player.time -= 1
+                            self.time_display_queue.put(player.time)
+                            nc.time.wait(1)
+
+                    self.time_display_queue.put("QUIT")
 
                 nc.time.wait(0.5)
 
@@ -84,6 +93,9 @@ class GameManager(th.Thread):
         url = self.current.data["url"] if "url" in self.current.data else "https://bodensee-gymnasium.de/"
         self.browser = sp.Popen(CODE.replace("#URL#", url), shell=True)
         nc.time.wait(3)
+
+        time_display = TimeDisplay(self.time_display_queue)
+        time_display.start()
 
     def close_browser(self) -> None:
 
