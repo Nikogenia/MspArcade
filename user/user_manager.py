@@ -84,11 +84,16 @@ class UserManager(th.Thread):
 
         self.logger.info(f"Start get entry request to database {self.db_id} ...")
 
-        url = f"https://lernplattform.mebis.bayern.de/webservice/rest/server.php?wstoken={self.token}" \
-              f"&wsfunction=mod_data_get_entries&moodlewsrestformat=json&databaseid={self.db_id}&returncontents=1"
+        params = {
+            "wstoken": self.token,
+            "wsfunction": "mod_data_get_entries",
+            "moodlewsrestformat": "json",
+            "databaseid": self.db_id,
+            "returncontents": 1
+        }
 
         try:
-            response = rq.get(url)
+            response = rq.post(DATABASE_URL, params=params)
         except rq.ConnectionError as e:
             self.logger.error("Failed to connect to database! Error message:")
             self.logger.error(e)
@@ -113,6 +118,49 @@ class UserManager(th.Thread):
             return None
 
         if "entries" not in data:
+            self.logger.error(f"Failed to get entries! Missing in dictionary ...")
+            return None
+
+        self.logger.info("Received and decoded entries from database.")
+
+        return data["entries"]
+
+    def update_time(self, entry: int, value: int) -> None:
+
+        self.logger.info(f"Start update entry request to database {self.db_id} ...")
+
+        params = {
+            "wstoken": self.token,
+            "wsfunction": "mod_data_update_entry",
+            "moodlewsrestformat": "json",
+        }
+
+        try:
+            response = rq.post(DATABASE_URL, params=params)
+        except rq.ConnectionError as e:
+            self.logger.error("Failed to connect to database! Error message:")
+            self.logger.error(e)
+            return None
+
+        self.logger.debug("Got response! Decode ...")
+
+        if response.status_code != 200:
+            self.logger.error(f"Got response with status code {response.status_code}!")
+            return None
+
+        try:
+            data = response.json()
+        except rq.JSONDecodeError as e:
+            self.logger.error("Failed to parse JSON! Invalid response! Error message:")
+            self.logger.error(e)
+            return None
+
+        if "exception" in data:
+            self.logger.error(f"Exception occurred! Type: '{data['exception']}' Error code: '{data['errorcode']}'")
+            self.logger.error(f"Error message: {data['message']}")
+            return None
+
+        if "updated" not in data or not data["updated"]:
             self.logger.error(f"Failed to get entries! Missing in dictionary ...")
             return None
 

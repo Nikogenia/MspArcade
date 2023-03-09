@@ -31,6 +31,9 @@ DISABLE_RESOLUTION_SCALING = False
 
 # USER
 
+# Database
+DATABASE_URL = "https://lernplattform.mebis.bayern.de/webservice/rest/server.php"
+
 # Time management of new accounts
 DEFAULT_TIME = 300
 TIME_RESET_TIMEOUT = 1000
