@@ -30,7 +30,7 @@ class TimeDisplay(mp.Process):
 
     def run(self):
 
-        self.update()
+        self.root.after(10, self.update)
 
         self.root.mainloop()
 
@@ -40,10 +40,12 @@ class TimeDisplay(mp.Process):
             cmd = self.queue.get(True, timeout=3)
         except Empty:
             self.root.destroy()
+            self.close()
             return
 
         if cmd == "QUIT":
             self.root.destroy()
+            self.close()
             return
 
         time_left = f"{cmd // 3600:02d}:{cmd // 60:02d}:{cmd % 60:02d}"
