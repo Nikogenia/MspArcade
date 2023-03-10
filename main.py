@@ -12,6 +12,7 @@ from configs import MainConfig, GameConfig, UserConfig
 from window.window import Window
 from user.user_manager import UserManager
 from game.game_manager import GameManager
+from listener import Listener
 
 
 class Main(nc.App):
@@ -62,6 +63,9 @@ class Main(nc.App):
         # Initialize game manager
         self.game_manager: GameManager = GameManager(self)
 
+        # Initialize listener
+        self.listener: Listener = Listener(self)
+
     def run(self):
 
         # Start user manager
@@ -69,6 +73,9 @@ class Main(nc.App):
 
         # Start game manager
         self.game_manager.start()
+
+        # Start listener
+        self.listener.start()
 
         try:
 
@@ -100,6 +107,11 @@ class Main(nc.App):
         self.user_manager.running = False
         self.user_manager.join()
 
+        # Quit listener
+        self.listener.running = False
+        self.listener.conn_listener.close()
+        self.listener.join()
+
         # Save configs
         self.logger.info("Save configs ...")
         self.user_config.save()
@@ -127,6 +139,8 @@ class Main(nc.App):
         self.window.running = False
         self.game_manager.running = False
         self.user_manager.running = False
+        self.listener.running = False
+        self.listener.conn_listener.close()
 
 
 def main():

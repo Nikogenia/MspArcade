@@ -24,6 +24,9 @@ class MainConfig(nc.Config):
         self.background_mode: str = "image"
         self.background_file_name: str = "background.png"
 
+        self.listener_port: int = 42000
+        self.listener_key: str = "DefaultKey"
+
         self.admin_users: list[str] = []
         self.banned_users: list[str] = []
 
