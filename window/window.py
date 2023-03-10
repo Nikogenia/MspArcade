@@ -191,6 +191,8 @@ class Window(nc.Window):
         for normal, low, lazy in self.fps_log:
             print(f"{normal:<10} {low:<10} {lazy:<10}")
 
+        pg.quit()
+
     def background_thread(self) -> None:
 
         clock = pg.time.Clock()

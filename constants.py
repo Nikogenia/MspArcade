@@ -45,3 +45,9 @@ FAST_UPDATE = 22
 # Display accounts on debug screen
 # WARNING: Disable in production! Security risk!
 SHOW_USERS_IN_DEBUG_SCREEN = True
+
+
+# ERROR HANDLING
+
+# Restart on crash
+RESTART_ON_CRASH = False

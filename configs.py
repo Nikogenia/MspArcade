@@ -24,7 +24,8 @@ class MainConfig(nc.Config):
         self.background_mode: str = "image"
         self.background_file_name: str = "background.png"
 
-        self.admin_users: list[int] = []
+        self.admin_users: list[str] = []
+        self.banned_users: list[str] = []
 
 
 class GameConfig(nc.Config):

@@ -92,10 +92,7 @@ class GameManager(th.Thread):
                 nc.time.wait(0.5)
 
         except Exception:
-            self.main.running = False
-            self.main.window.running = False
-            self.main.user_manager.running = False
-            raise
+            self.main.handle_crash()
 
     def open_browser(self) -> None:
 

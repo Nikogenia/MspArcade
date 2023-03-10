@@ -1,6 +1,7 @@
 # Standard
 import sys
 import threading as th
+import traceback as tb
 
 # External
 import nikocraft as nc
@@ -18,8 +19,8 @@ class Main(nc.App):
     def __init__(self, args):
 
         super(Main, self).__init__(args,
-                                   name="Arcade",
-                                   author="MakerSpace",
+                                   name="Msp Arcade",
+                                   author="Maker Space",
                                    version="Alpha 1.1.1",
                                    short_description="A Maker Space project for an arcade machine in the school",
                                    description="This is the main software of the arcade machine, which controls " +
@@ -75,11 +76,19 @@ class Main(nc.App):
             self.window.open()
 
         except Exception:
+            self.handle_crash()
+            self.logger.info("Close window ...")
+            self.window.scene.quit()
+            self.window.scene.deactivate_event_hooks()
+            self.window.quit()
+        except KeyboardInterrupt:
+            self.logger.warning("Keyboard interrupted! Shutting down!")
+            self.logger.info("Close window ...")
             self.running = False
             self.window.running = False
-            self.game_manager.running = False
-            self.user_manager.running = False
-            raise
+            self.window.scene.quit()
+            self.window.scene.deactivate_event_hooks()
+            self.window.quit()
 
     def quit(self):
 
@@ -95,15 +104,50 @@ class Main(nc.App):
         self.logger.info("Save configs ...")
         self.user_config.save()
 
+    def handle_crash(self):
 
-# Main
-if __name__ == '__main__':
+        # Set exit code
+        self.exit_code = 1
+
+        # Log error
+        self.logger.critical("\n" +
+                             "----------------------------------------\n" +
+                             "       CRITICAL UNEXPECTED ERROR\n" +
+                             (
+                                "                Restart\n"
+                                if RESTART_ON_CRASH else
+                                "                 Exit\n"
+                             ) +
+                             "----------------------------------------\n" +
+                             tb.format_exc() +
+                             "----------------------------------------")
+
+        # Quit all components
+        self.running = False
+        self.window.running = False
+        self.game_manager.running = False
+        self.user_manager.running = False
+
+
+def main():
 
     # Set main thread name
     th.main_thread().name = "Main"
 
     # Initialize main
-    main = Main(sys.argv)
+    m = Main(sys.argv)
 
     # Start main
-    main.start()
+    exit_code = m.start()
+
+    # Check for restart
+    if exit_code == 2 or (exit_code == 1 and RESTART_ON_CRASH):
+        print("")
+        print("RESTART")
+        print("")
+        main()
+
+
+# Main
+if __name__ == '__main__':
+    main()

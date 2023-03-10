@@ -75,10 +75,7 @@ class UserManager(th.Thread):
             self.save()
 
         except Exception:
-            self.main.running = False
-            self.main.window.running = False
-            self.main.game_manager.running = False
-            raise
+            self.main.handle_crash()
 
     def get_entries(self) -> dict | None:
 
