@@ -72,6 +72,7 @@ class GameManager(th.Thread):
                     self.logger.info(f"Start game '{self.current.name}' ...")
                     self.open_browser()
                     self.start_game = False
+                    self.main.window.background_video_update = False
 
                     while self.running_game:
                         if not self.running:
@@ -85,6 +86,7 @@ class GameManager(th.Thread):
                             nc.time.wait(1)
 
                     self.time_display_queue.put("QUIT")
+                    self.main.window.background_video_update = True
                     self.logger.info("Game closed.")
 
                 nc.time.wait(0.5)

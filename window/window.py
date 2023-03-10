@@ -104,6 +104,9 @@ class Window(nc.Window):
         self.background_black: pg.Surface = pg.Surface(self.dimension)
         self.background_black.fill(nc.RGB.BLACK)
 
+        # Background video update
+        self.background_video_update: bool = True
+
         # FPS log
         self.fps_log = []
 
@@ -195,6 +198,9 @@ class Window(nc.Window):
         while self.running:
 
             clock.tick(30)
+
+            if not self.background_video_update:
+                continue
 
             start = nc.time.bench_time()
 
