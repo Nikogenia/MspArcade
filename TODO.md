@@ -1,9 +1,9 @@
 ### General
 - Database sync (missing time update)
+- Move time display to right
 
 ### UI
-- Credit screen
-- Help popup
+- Help and credit popup
 - Controller input
 - Rating number and count
 

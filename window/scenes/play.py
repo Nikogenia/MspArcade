@@ -58,6 +58,7 @@ class PlayScene(nc.Scene):
 
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
+                self.window.main.game_manager.close_browser()
                 self.window.change_scene("rating")
 
     def init(self) -> None:

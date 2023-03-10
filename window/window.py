@@ -92,8 +92,13 @@ class Window(nc.Window):
                 self.background: pg.Surface = pg.Surface(self.dimension)
                 self.background_mode: str = "error"
 
+        elif self.main.main_config.background_mode == "off":
+            self.logger.info("Background disabled.")
+            self.background: pg.Surface = pg.Surface(self.dimension)
+            self.background_mode: str = "off"
+
         else:
-            raise ConfigError("Invalid background mode in config! Please use 'image' or 'video' ...")
+            raise ConfigError("Invalid background mode in config! Please use 'image', 'video' or 'off' ...")
 
         # Load background brightness
         self.background_black: pg.Surface = pg.Surface(self.dimension)

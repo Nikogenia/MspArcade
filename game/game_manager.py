@@ -5,6 +5,7 @@ import threading as th
 import multiprocessing as mp
 from logging import Logger
 import subprocess as sp
+import os
 
 # External
 import nikocraft as nc
@@ -12,7 +13,7 @@ import nikocraft as nc
 # Local
 from configs import ConfigError
 from game.game import Game
-from game.time_display import TimeDisplay
+from game import time_display
 if TYPE_CHECKING:
     from main import Main
 
@@ -45,7 +46,10 @@ class GameManager(th.Thread):
 
         self.browser: sp.Popen | None = None
 
+        self.time_display_proc: mp.Process | None = None
         self.time_display_queue: mp.Queue = mp.Queue()
+
+        self.sim_running_browser: bool = False
 
     # PROPERTIES
 
@@ -65,6 +69,7 @@ class GameManager(th.Thread):
 
                 if self.start_game:
 
+                    self.logger.info(f"Start game '{self.current.name}' ...")
                     self.open_browser()
                     self.start_game = False
 
@@ -72,13 +77,13 @@ class GameManager(th.Thread):
                         player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
                         if player.time <= 0:
                             self.close_browser()
-                            break
                         else:
                             player.time -= 1
                             self.time_display_queue.put(player.time)
                             nc.time.wait(1)
 
                     self.time_display_queue.put("QUIT")
+                    self.logger.info("Game closed.")
 
                 nc.time.wait(0.5)
 
@@ -90,19 +95,36 @@ class GameManager(th.Thread):
 
     def open_browser(self) -> None:
 
-        url = self.current.data["url"] if "url" in self.current.data else "https://bodensee-gymnasium.de/"
-        self.browser = sp.Popen(CODE.replace("#URL#", url), shell=True)
+        if os.name == "nt":
+            self.logger.debug("Running on windows. Use simulation ...")
+            self.sim_running_browser = True
+        else:
+            url = self.current.data["url"] if "url" in self.current.data else "https://bodensee-gymnasium.de/"
+            self.logger.debug(f"Open URL {url} ...")
+            self.browser = sp.Popen(CODE.replace("#URL#", url), shell=True)
+
         nc.time.wait(3)
 
-        time_display = TimeDisplay(self.time_display_queue)
-        time_display.start()
+        self.logger.debug("Open time display ...")
+        self.time_display_proc: mp.Process = mp.Process(
+            target=time_display.run, args=(self.time_display_queue,), name="Time Display", daemon=True)
+        self.time_display_proc.start()
 
     def close_browser(self) -> None:
 
-        self.browser.kill()
+        if os.name == "nt":
+            self.logger.debug("Stop simulation ...")
+            self.sim_running_browser = False
+        else:
+            self.logger.debug("Kill browser ...")
+            self.browser.kill()
 
     @property
     def running_game(self) -> bool:
+
+        if os.name == "nt":
+            return self.start_game or self.sim_running_browser
+
         return self.start_game or (self.browser is not None and self.browser.poll() is None)
 
     def load(self) -> None:
