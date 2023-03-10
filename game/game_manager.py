@@ -74,6 +74,8 @@ class GameManager(th.Thread):
                     self.start_game = False
 
                     while self.running_game:
+                        if not self.running:
+                            break
                         player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
                         if player.time <= 0:
                             self.close_browser()

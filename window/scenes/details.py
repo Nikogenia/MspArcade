@@ -137,7 +137,7 @@ class DetailsScene(nc.Scene):
 
         # Scene switching
         if self.tick - self.timeout > 1200:
-            self.window.change_scene("idle")
+            self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
         if self.back_x != 0:
             self.back_x -= self.dt * 3
@@ -169,7 +169,7 @@ class DetailsScene(nc.Scene):
             self.timeout = self.tick
 
             if event.key == pg.K_LEFT:
-                self.window.change_scene("menu", transition_duration=7, transition_pause=3)
+                self.window.change_scene("menu", transition_duration=8, transition_pause=4)
                 self.back_x = -1
             if event.key == pg.K_RETURN:
-                self.window.change_scene("login", {"back": "details"})
+                self.window.change_scene("login", {"back": "details"}, transition_duration=12, transition_pause=7)

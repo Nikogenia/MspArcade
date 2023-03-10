@@ -198,7 +198,7 @@ class RatingScene(nc.Scene):
 
         # Scene switching
         if self.tick - self.timeout > 900 or (self.tick - self.save_tick > 30 and self.save_tick):
-            self.window.change_scene("idle")
+            self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
         if self.back_x != 0:
             self.back_x -= self.dt * 3
@@ -239,7 +239,7 @@ class RatingScene(nc.Scene):
             self.timeout = self.tick
 
             if event.key == pg.K_LEFT:
-                self.window.change_scene("idle")
+                self.window.change_scene("idle", transition_duration=12, transition_pause=7)
                 self.back_x = -1
             if event.key == pg.K_RETURN:
                 if self.stars:

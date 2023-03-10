@@ -42,7 +42,7 @@ class PlayScene(nc.Scene):
         self.tick += self.dt
 
         if not self.window.main.game_manager.running_game:
-            self.window.change_scene("rating")
+            self.window.change_scene("rating", transition_duration=12, transition_pause=7)
 
         # Von Valis World
         # Hallo Welt
@@ -59,7 +59,7 @@ class PlayScene(nc.Scene):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
                 self.window.main.game_manager.close_browser()
-                self.window.change_scene("rating")
+                self.window.change_scene("rating", transition_duration=12, transition_pause=7)
 
     def init(self) -> None:
 

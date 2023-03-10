@@ -257,7 +257,7 @@ class MenuScene(nc.Scene):
 
         # Scene switching
         if self.tick - self.timeout > 600:
-            self.window.change_scene("idle")
+            self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
         # Update details y position
         if self.details_y != 0:
@@ -341,13 +341,13 @@ class MenuScene(nc.Scene):
 
             # Switch scene
             if event.key == pg.K_RETURN:
-                self.window.change_scene("login", {"back": "menu"})
+                self.window.change_scene("login", {"back": "menu"}, transition_duration=12, transition_pause=7)
 
             if self.loaded:
 
                 # More details
                 if event.key == pg.K_DOWN:
-                    self.window.change_scene("details", transition_duration=7, transition_pause=3)
+                    self.window.change_scene("details", transition_duration=8, transition_pause=4)
                     self.details_y = 1
 
                 # Scroll
