@@ -3,9 +3,37 @@ Maker Space Arcade
 ------------------
 
 
-ARCHITECTURE
+=== ARCHITECTURE ===
 
-Threads/Processes:
+STRUCTURE
+
+Main function
+  Main
+    Window
+      Font Manager
+      Debug Screen
+      Background
+      Scene
+        Screen
+    User Manager
+      User List
+      Player List
+      Database Connection
+    Game Manager
+      Game List
+      Browser
+      Time Display
+        Tkinter Window
+    Listener
+      Connection Listener
+        Connection
+    Main Config
+    Game Config
+    User Config
+
+
+THREADS / PROCESSES
+
 - Main (Window)
   - Background
   - Camera
@@ -14,3 +42,8 @@ Threads/Processes:
 - Game Manager
   - Time Display
 - Listener
+
+
+EXTRA TOOLS
+
+- Controller (CLI tool)
