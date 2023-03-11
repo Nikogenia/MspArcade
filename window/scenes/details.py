@@ -10,7 +10,7 @@ import pygame as pg
 # Local
 from constants import *
 from game.game import Game
-from window.draw_utils import black_rect, split_text
+from window.draw_utils import black_rect, split_text, draw_button
 
 if TYPE_CHECKING:
     from window.window import Window
@@ -120,6 +120,13 @@ class DetailsScene(nc.Scene):
         self.screen.blit(self.image, (70, 240))
         pg.draw.rect(self.screen, nc.RGB.WHITE, (70, 240, 650, 650), 3)
 
+        # Continue prompt
+        font = self.window.font.get("text", 35)
+        height = math.sin(self.tick / 10) * 15 + 950
+        text = font.render("Drücke  , um mit diesem Spiel fortzufahren!", True, nc.RGB.WHITE)
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
+        draw_button(self.screen, font, 7, (self.width - text.get_width()) / 2, height, CONFIRM_BUTTON)
+
         # Render activity request
         if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
             height = 310 * (self.activity_request_tick / 20) - 300
@@ -128,14 +135,9 @@ class DetailsScene(nc.Scene):
             text = font.render("BIST DU NOCH DA?", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 30))
             font = self.window.font.get("text", 35)
-            text = font.render("Bestätige deine Anwesenheit mit #!", True, nc.RGB.WHITE)
+            text = font.render("Bestätige deine Anwesenheit mit  !", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
-
-        # Continue prompt
-        font = self.window.font.get("text", 35)
-        height = math.sin(self.tick / 10) * 15 + 950
-        text = font.render("Drücke #, um mit diesem Spiel fortzufahren!", True, nc.RGB.WHITE)
-        self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
+            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, ACTIVITY_BUTTON)
 
     def update(self) -> None:
 

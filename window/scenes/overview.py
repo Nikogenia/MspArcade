@@ -13,7 +13,7 @@ from constants import *
 from game.game import Game
 from user.user import User
 from user.player import Player
-from window.draw_utils import black_rect
+from window.draw_utils import black_rect, draw_button
 
 if TYPE_CHECKING:
     from window.window import Window
@@ -165,6 +165,15 @@ class OverviewScene(nc.Scene):
             self.screen.blit(text2, (1375 - text2.get_width() / 2, 830))
         self.screen.blit(text, (1375 - text.get_width() / 2, 860))
 
+        # Continue or sorry prompt
+        content = "Starte das Spiel mit  !" if self.player.time > 5 else "Du hast leider nicht mehr genug Zeit übrig!"
+        font = self.window.font.get("text", 35)
+        height = math.sin(self.tick / 10) * 15 + 960
+        text = font.render(content, True, nc.RGB.WHITE if self.player.time > 5 else nc.RGB.INDIANRED1)
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
+        if self.player.time > 5:
+            draw_button(self.screen, font, 21, (self.width - text.get_width()) / 2, height, CONFIRM_BUTTON)
+
         # Render activity request
         if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
             height = 310 * (self.activity_request_tick / 20) - 300
@@ -173,15 +182,9 @@ class OverviewScene(nc.Scene):
             text = font.render("BIST DU NOCH DA?", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 30))
             font = self.window.font.get("text", 35)
-            text = font.render("Bestätige deine Anwesenheit mit #!", True, nc.RGB.WHITE)
+            text = font.render("Bestätige deine Anwesenheit mit  !", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
-
-        # Continue or sorry prompt
-        content = "Starte das Spiel mit #!" if self.player.time > 5 else "Du hast leider nicht mehr genug Zeit übrig!"
-        font = self.window.font.get("text", 35)
-        height = math.sin(self.tick / 10) * 15 + 960
-        text = font.render(content, True, nc.RGB.WHITE if self.player.time > 5 else nc.RGB.INDIANRED1)
-        self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
+            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, ACTIVITY_BUTTON)
 
     def update(self) -> None:
 

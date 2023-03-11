@@ -1,3 +1,8 @@
+# IMPORTS
+
+from nikocraft import RGB
+
+
 # FILE PATHS
 
 # Resource directories
@@ -30,6 +35,11 @@ DISABLE_RESOLUTION_SCALING = False
 
 # Select the second monitor
 SELECT_SECOND_MONITOR = False
+
+# Button colors
+HELP_BUTTON = RGB.BLUE
+CONFIRM_BUTTON = RGB.RED1
+ACTIVITY_BUTTON = RGB.LIMEGREEN
 
 
 # USER

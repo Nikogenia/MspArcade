@@ -12,7 +12,7 @@ import cv2
 # Local
 from constants import *
 from configs import ConfigError
-from window.draw_utils import black_rect
+from window.draw_utils import black_rect, draw_button
 from window.scenes.loading import LoadingScene
 from window.scenes.idle import IdleScene
 from window.scenes.menu import MenuScene
@@ -127,10 +127,11 @@ class Window(nc.Window):
 
         # Help info
         font = self.font.get("text", 20)
-        text = font.render("Hilfe? Drücke #!", True, nc.RGB.WHITE)
+        text = font.render("Hilfe? Drücke  !", True, nc.RGB.WHITE)
         black_rect(self.screen, self.width - text.get_width() - 10,
                    self.height - 37, text.get_width() + 20, 50, 220, True, 1)
         self.screen.blit(text, (self.width - text.get_width(), self.height - 27))
+        draw_button(self.screen, font, 14, self.width - text.get_width(), self.height - 27, HELP_BUTTON)
 
         # Offline info
         if not self.main.user_manager.online:

@@ -43,3 +43,13 @@ def split_text(text: str, line_length: int) -> list[str]:
     lines.append(line)
 
     return lines
+
+
+def draw_button(surf: pg.Surface, font: pg.font.Font, char: int,
+                x: int | float, y: int | float, color: nc.RGBColor) -> None:
+
+    width, height = font.size(" ")
+
+    pg.draw.circle(surf, color, (x + width * char + width / 2 - 2, y + height / 2), width / 2)
+    pg.draw.circle(surf, nc.RGB.GRAY75, (x + width * char + width / 2 - 2, y + height / 2),
+                   width / 2 + 1, int(width / 10))

@@ -12,7 +12,7 @@ import pygame as pg
 # Local
 from constants import *
 from configs import ConfigError
-from window.draw_utils import black_rect
+from window.draw_utils import black_rect, draw_button
 from game.game import Game
 if TYPE_CHECKING:
     from window.window import Window
@@ -109,6 +109,13 @@ class MenuScene(nc.Scene):
             black_rect(self.screen, *(self.POS4 - self.SIZE2 / 2), *self.SIZE2, 255, True, 2, nc.RGB.GRAY60)
             black_rect(self.screen, *(self.POS3 - self.SIZE3 / 2), *self.SIZE3, 255, True, 2, nc.RGB.GRAY60)
 
+        # Menu prompt
+        font = self.window.font.get("text", 35)
+        height = math.sin(self.tick / 10) * 15 + 960
+        text = font.render("Wähle mit   ein Spiel aus!", True, nc.RGB.WHITE)
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
+        draw_button(self.screen, font, 10, (self.width - text.get_width()) / 2, height, CONFIRM_BUTTON)
+
         # Render activity request
         if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
             height = 310 * (self.activity_request_tick / 20) - 300
@@ -117,14 +124,9 @@ class MenuScene(nc.Scene):
             text = font.render("BIST DU NOCH DA?", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 30))
             font = self.window.font.get("text", 35)
-            text = font.render("Bestätige deine Anwesenheit mit #!", True, nc.RGB.WHITE)
+            text = font.render("Bestätige deine Anwesenheit mit  !", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
-
-        # Menu prompt
-        font = self.window.font.get("text", 35)
-        height = math.sin(self.tick / 10) * 15 + 960
-        text = font.render("Wähle mit # ein Spiel aus!", True, nc.RGB.WHITE)
-        self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
+            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, ACTIVITY_BUTTON)
 
     def render_menu(self) -> None:
 

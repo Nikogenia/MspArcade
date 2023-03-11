@@ -14,7 +14,7 @@ import numpy as np
 # Local
 from constants import *
 from window import cv_utils
-from window.draw_utils import black_rect
+from window.draw_utils import black_rect, draw_button
 
 if TYPE_CHECKING:
     from window.window import Window
@@ -151,6 +151,12 @@ class LoginScene(nc.Scene):
         text = font.render("   nutzen kannst! Glückwunsch!  ", True, nc.RGB.WHITE)
         self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 810))
 
+        # Login prompt
+        font = self.window.font.get("text", 35)
+        height = math.sin(self.tick / 10) * 15 + 950
+        text = font.render("Halte deinen QR-Code vor die Kamera!", True, nc.RGB.WHITE)
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
+
         # Render activity request
         if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
             height = 310 * (self.activity_request_tick / 20) - 300
@@ -159,14 +165,9 @@ class LoginScene(nc.Scene):
             text = font.render("BIST DU NOCH DA?", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 30))
             font = self.window.font.get("text", 35)
-            text = font.render("Bestätige deine Anwesenheit mit #!", True, nc.RGB.WHITE)
+            text = font.render("Bestätige deine Anwesenheit mit  !", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
-
-        # Login prompt
-        font = self.window.font.get("text", 35)
-        height = math.sin(self.tick / 10) * 15 + 950
-        text = font.render("Halte deinen QR-Code vor die Kamera!", True, nc.RGB.WHITE)
-        self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
+            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, ACTIVITY_BUTTON)
 
     def update(self) -> None:
 
