@@ -66,17 +66,23 @@ class DetailsScene(nc.Scene):
         self.screen.blit(text, (190 - text.get_width() / 2 + self.back_x, 42 - text.get_height() / 2))
 
         # Render stars
-        for star in range(5):
-            value_mask = pg.mask.Mask((max(self.stars - star, 0) * 64, 64), True)
-            overlap_mask = self.star_mask.overlap_mask(value_mask, (0, 0))
-            self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)),
-                             (self.width / 2 - 200 + star * 80, 40))
-            self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)),
-                             (self.width / 2 - 200 + star * 80, 40))
-            outline = self.star_mask.outline(1)
-            for i, p in enumerate(outline):
-                pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(self.width / 2 - 200 + star * 80, 40) + nc.Vec(*p),
-                             nc.Vec(self.width / 2 - 200 + star * 80, 40) + nc.Vec(*outline[i - 1]), 1)
+        if self.stars:
+            for star in range(5):
+                value_mask = pg.mask.Mask((max(self.stars - star, 0) * 64, 64), True)
+                overlap_mask = self.star_mask.overlap_mask(value_mask, (0, 0))
+                self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)),
+                                 (self.width / 2 - 200 + star * 80, 40))
+                self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)),
+                                 (self.width / 2 - 200 + star * 80, 40))
+                outline = self.star_mask.outline(1)
+                for i, p in enumerate(outline):
+                    pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(self.width / 2 - 200 + star * 80, 40) + nc.Vec(*p),
+                                 nc.Vec(self.width / 2 - 200 + star * 80, 40) + nc.Vec(*outline[i - 1]), 1)
+            font = self.window.font.get("text", 36)
+            text = font.render(f"{self.stars:.1f}" if self.stars else " - ", True, nc.RGB.GRAY95)
+            self.screen.blit(text, (630, 72 - text.get_height() / 2 + 5))
+            text = font.render(f"({self.rating_count})", True, nc.RGB.GRAY95)
+            self.screen.blit(text, (1165, 72 - text.get_height() / 2 + 5))
 
         # Game title
         font = self.window.font.get("title", 120)

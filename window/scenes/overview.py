@@ -134,17 +134,23 @@ class OverviewScene(nc.Scene):
         self.screen.blit(text, (1375 - text.get_width() / 2, 455))
 
         # Render stars
-        for star in range(5):
-            value_mask = pg.mask.Mask((max(self.stars - star, 0) * 50, 50), True)
-            overlap_mask = self.star_mask.overlap_mask(value_mask, (0, 0))
-            self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)),
-                             (1375 - 150 + star * 60, 500))
-            self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)),
-                             (1375 - 150 + star * 60, 500))
-            outline = self.star_mask.outline(1)
-            for i, p in enumerate(outline):
-                pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(1375 - 150 + star * 60, 500) + nc.Vec(*p),
-                             nc.Vec(1375 - 150 + star * 60, 500) + nc.Vec(*outline[i - 1]), 1)
+        if self.stars:
+            for star in range(5):
+                value_mask = pg.mask.Mask((max(self.stars - star, 0) * 50, 50), True)
+                overlap_mask = self.star_mask.overlap_mask(value_mask, (0, 0))
+                self.screen.blit(self.star_mask.to_surface(setcolor=nc.RGB.GRAY60, unsetcolor=(0, 0, 0, 0)),
+                                 (1375 - 150 + star * 60, 500))
+                self.screen.blit(overlap_mask.to_surface(setcolor=nc.RGB.GOLD1, unsetcolor=(0, 0, 0, 0)),
+                                 (1375 - 150 + star * 60, 500))
+                outline = self.star_mask.outline(1)
+                for i, p in enumerate(outline):
+                    pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(1375 - 150 + star * 60, 500) + nc.Vec(*p),
+                                 nc.Vec(1375 - 150 + star * 60, 500) + nc.Vec(*outline[i - 1]), 1)
+            font = self.window.font.get("text", 20)
+            text = font.render(f"{self.stars:.1f}", True, nc.RGB.GRAY85)
+            self.screen.blit(text, (1158, 525 - text.get_height() / 2 + 2))
+            text = font.render(f"({self.rating_count})", True, nc.RGB.GRAY85)
+            self.screen.blit(text, (1520, 525 - text.get_height() / 2 + 2))
 
         # Game short description
         font = self.window.font.get("text", 20)

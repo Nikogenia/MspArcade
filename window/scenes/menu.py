@@ -162,6 +162,11 @@ class MenuScene(nc.Scene):
             for i, p in enumerate(outline):
                 pg.draw.line(self.screen, nc.RGB.WHITE, nc.Vec(self.width / 2 - 150 + star * 60, 20) + nc.Vec(*p),
                              nc.Vec(self.width / 2 - 150 + star * 60, 20) + nc.Vec(*outline[i - 1]), 1)
+        font = self.window.font.get("text", 30)
+        text = font.render(f"{stars:.1f}" if stars else " - ", True, nc.RGB.GRAY80)
+        self.screen.blit(text, (700, 45 - text.get_height() / 2 + 3))
+        text = font.render(f"({self.images[self.position % len(self.images)][3]})", True, nc.RGB.GRAY80)
+        self.screen.blit(text, (1115, 45 - text.get_height() / 2 + 3))
 
         # Render title
         font = self.window.font.get("title", 120)

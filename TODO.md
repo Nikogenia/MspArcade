@@ -5,7 +5,6 @@
 ### UI
 - Help and credit popup
 - Controller input
-- Rating number and count
 
 ### Ideas
 - Add rating data to database
