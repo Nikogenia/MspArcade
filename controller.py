@@ -23,7 +23,7 @@ if __name__ == '__main__':
     print("Try to open connection ...")
     try:
         conn = Client(("localhost", args.port), authkey=args.key.encode("utf-8"))
-        print("Connection successful!")
+        print(f"Connection to {args.port} successful!")
     except ConnectionError:
         print(f"Connection failed! Cannot find listener on port {args.port}!")
         sys.exit(1)
@@ -31,8 +31,16 @@ if __name__ == '__main__':
         print("Connection failed! Invalid key!")
         sys.exit(1)
 
-    print("Send task ...")
+    print(f"Send task {args.task} ...")
     conn.send({"type": args.task})
 
-    print("Close connection ...")
+    success, message = conn.recv()
+
+    if success == 0:
+        print("Task executed successfully!")
+    else:
+        print(f"Task execution failed! Error {success}:")
+        print(f"    {message}")
+
     conn.close()
+    print("Connection closed.")

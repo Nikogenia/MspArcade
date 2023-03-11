@@ -2,6 +2,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import threading as th
+import os
 
 # External
 import nikocraft as nc
@@ -40,6 +41,10 @@ class Window(nc.Window):
         self.main: Main = main
 
         self.running = True
+
+        # Select second monitor
+        if SELECT_SECOND_MONITOR:
+            os.environ['SDL_VIDEO_WINDOW_POS'] = f"-1920,0"
 
         # Resolution scaling on windows
         if DISABLE_RESOLUTION_SCALING:

@@ -40,6 +40,8 @@ class UserManager(th.Thread):
 
         self.current: str = ""
 
+        self.reload: bool = False
+
     # PROPERTIES
 
     @property
@@ -55,6 +57,9 @@ class UserManager(th.Thread):
             self.load()
 
             while self.running:
+
+                if self.reload:
+                    self.do_reload()
 
                 if isinstance(self.main.window.scene, LoginScene):
                     self.handle_login()
@@ -336,3 +341,21 @@ class UserManager(th.Thread):
             return
 
         player.ratings[str(game_id)] = value
+
+    def do_reload(self):
+
+        self.save()
+        self.main.user_config.save()
+
+        self.db_id = self.main.main_config.database_id
+        self.token = self.main.main_config.auth_token
+
+        self.last_update = 0
+        self.fast_update = False
+
+        self.current = ""
+
+        self.main.user_config.load()
+        self.load()
+
+        self.reload = False

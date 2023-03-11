@@ -6,6 +6,9 @@ from multiprocessing import AuthenticationError
 import threading as th
 from logging import Logger
 
+# External
+import nikocraft as nc
+
 # Local
 if TYPE_CHECKING:
     from main import Main
@@ -29,6 +32,8 @@ class Listener(th.Thread):
 
         self.conn_listener: ConnectionListener | None = None
 
+        self.reload: bool = False
+
     # PROPERTIES
 
     @property
@@ -46,6 +51,9 @@ class Listener(th.Thread):
                                                     authkey=self.key.encode("utf-8"))
 
             while self.running:
+
+                if self.reload:
+                    self.do_reload()
 
                 try:
                     conn = self.conn_listener.accept()
@@ -73,22 +81,55 @@ class Listener(th.Thread):
 
         if not isinstance(task, dict):
             self.logger.info("Connection failed! Dictionary expected!")
+            conn.send((1, "Dictionary expected!"))
             return
 
         if "type" not in task:
             self.logger.info("Connection failed! Missing type!")
+            conn.send((2, "Missing type!"))
             return
 
         match task["type"]:
 
             case "quit":
                 self.logger.info("Connection successful! Quit ...")
+                conn.send((0, ""))
                 self.main.running = False
 
             case "restart":
                 self.logger.info("Connection successful! Restart ...")
+                conn.send((0, ""))
                 self.main.running = False
                 self.main.exit_code = 2
 
+            case "reload":
+                self.logger.info("Connection successful! Reload ...")
+                conn.send((0, ""))
+                self.main.window.change_scene("loading", transition_duration=0, transition_pause=0)
+                nc.time.wait(0.1)
+                self.main.main_config.load()
+                self.main.game_config.load()
+                self.main.game_manager.reload = True
+                self.main.user_manager.reload = True
+                self.reload = True
+
             case _:
                 self.logger.info("Connection failed! Invalid task!")
+                conn.send((3, "Invalid task!"))
+
+    def do_reload(self):
+
+        self.port: int = self.main.main_config.listener_port
+        self.key: str = self.main.main_config.listener_key
+
+        if self.key == "DefaultKey":
+            self.logger.warning("Using default key for listening! Please change for safety!")
+
+        self.logger.info(f"Close listener ...")
+        self.conn_listener.close()
+
+        self.logger.info(f"Listening on port {self.port} ...")
+        self.conn_listener = ConnectionListener(("localhost", self.port),
+                                                authkey=self.key.encode("utf-8"))
+
+        self.reload = False

@@ -27,9 +27,6 @@ class MainConfig(nc.Config):
         self.listener_port: int = 42000
         self.listener_key: str = "DefaultKey"
 
-        self.admin_users: list[str] = []
-        self.banned_users: list[str] = []
-
 
 class GameConfig(nc.Config):
 
@@ -60,3 +57,6 @@ class UserConfig(nc.Config):
 
         self.users: list[dict[str, Any]] = []
         self.players: list[dict[str, Any]] = []
+
+        self.admins: list[int] = []
+        self.banned: list[int] = []

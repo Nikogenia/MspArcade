@@ -51,6 +51,8 @@ class GameManager(th.Thread):
 
         self.sim_running_browser: bool = False
 
+        self.reload: bool = False
+
     # PROPERTIES
 
     @property
@@ -67,6 +69,12 @@ class GameManager(th.Thread):
 
             while self.running:
 
+                if self.reload:
+                    self.start_game = False
+                    self.current: Game | None = None
+                    self.load()
+                    self.reload = False
+
                 if self.start_game:
 
                     self.logger.info(f"Start game '{self.current.name}' ...")
@@ -75,7 +83,7 @@ class GameManager(th.Thread):
                     self.main.window.background_video_update = False
 
                     while self.running_game:
-                        if not self.running:
+                        if (not self.running) or self.reload:
                             break
                         player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
                         if player.time <= 0:

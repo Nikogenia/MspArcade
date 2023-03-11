@@ -28,6 +28,9 @@ SHOW_FPS_DEFAULT = False
 # Disable scaling on windows
 DISABLE_RESOLUTION_SCALING = False
 
+# Select the second monitor
+SELECT_SECOND_MONITOR = False
+
 
 # USER
 
