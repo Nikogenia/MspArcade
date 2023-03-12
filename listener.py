@@ -113,6 +113,21 @@ class Listener(th.Thread):
                 self.main.user_manager.reload = True
                 self.reload = True
 
+            case "debug_on":
+                self.logger.info("Connection successful! Activate debug screen ...")
+                conn.send((0, ""))
+                self.main.window.debug_screen_active = True
+
+            case "debug_off":
+                self.logger.info("Connection successful! Deactivate debug screen ...")
+                conn.send((0, ""))
+                self.main.window.debug_screen_active = False
+
+            case "debug_toggle":
+                self.logger.info("Connection successful! Toggle debug screen ...")
+                conn.send((0, ""))
+                self.main.window.debug_screen_active = not self.main.window.debug_screen_active
+
             case _:
                 self.logger.info("Connection failed! Invalid task!")
                 conn.send((3, "Invalid task!"))

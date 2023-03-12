@@ -86,10 +86,14 @@ class GameManager(th.Thread):
                         if (not self.running) or self.reload:
                             break
                         player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
+                        admin = self.main.user_manager.is_admin(player.user_id)
                         if player.time <= 0:
                             self.close_browser()
                         else:
-                            player.time -= 1
+                            if admin:
+                                player.time = 86400
+                            else:
+                                player.time -= 1
                             self.time_display_queue.put(player.time)
                             nc.time.wait(1)
 

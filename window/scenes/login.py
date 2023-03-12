@@ -177,8 +177,12 @@ class LoginScene(nc.Scene):
         if self.tick - self.timeout > 1500:
             self.window.change_scene("idle", transition_duration=12, transition_pause=7)
         if self.status == 3:
-            self.window.change_scene("overview", {"back": self.args["back"]},
-                                     transition_duration=12, transition_pause=7)
+            player = self.window.main.user_manager.get_player_by_auth_id(self.window.main.user_manager.current)
+            if self.window.main.user_manager.is_banned(player.user_id):
+                self.window.change_scene("banned", transition_duration=12, transition_pause=7)
+            else:
+                self.window.change_scene("overview", {"back": self.args["back"]},
+                                         transition_duration=12, transition_pause=7)
 
         # Status reset
         if self.tick - self.status_update > 60 and self.status not in (0, 3):

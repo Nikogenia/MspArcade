@@ -229,7 +229,7 @@ class RatingScene(nc.Scene):
 
     def quit(self) -> None:
 
-        # Log out user
+        # Log out user and reset game selection
         self.window.main.user_manager.current = ""
         self.window.main.game_manager.current = None
 

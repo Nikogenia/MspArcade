@@ -42,7 +42,7 @@ class LoadingScene(nc.Scene):
 
         self.tick += self.dt
 
-        if self.tick > 60:
+        if self.tick > 40:
             self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
         # Debug screen

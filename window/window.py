@@ -21,6 +21,7 @@ from window.scenes.details import DetailsScene
 from window.scenes.overview import OverviewScene
 from window.scenes.play import PlayScene
 from window.scenes.rating import RatingScene
+from window.scenes.banned import BannedScene
 from window import cv_utils
 if TYPE_CHECKING:
     from main import Main
@@ -59,6 +60,7 @@ class Window(nc.Window):
         self.register_scene("overview", OverviewScene)
         self.register_scene("play", PlayScene)
         self.register_scene("rating", RatingScene)
+        self.register_scene("banned", BannedScene)
 
         # Define fonts
         self.font.define("title", f"{PATH_FONT}/Arcade.ttf")

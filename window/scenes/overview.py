@@ -96,7 +96,7 @@ class OverviewScene(nc.Scene):
         text = font.render("Zeit übrig:", True, nc.RGB.WHITE)
         self.screen.blit(text, (505 - text.get_width() / 2, 450))
         font = self.window.font.get("text", 45)
-        text = font.render(f"{self.player.time // 3600:02d}:{self.player.time // 60:02d}:{self.player.time % 60:02d}",
+        text = font.render(f"{self.player.time // 3600:02d}:{self.player.time % 3600 // 60:02d}:{self.player.time % 60:02d}",
                            True, nc.RGB.WHITE if self.player.time > 5 else nc.RGB.INDIANRED1)
         self.screen.blit(text, (500 - text.get_width() / 2, 510))
 

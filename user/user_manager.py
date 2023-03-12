@@ -32,6 +32,8 @@ class UserManager(th.Thread):
 
         self.users: list[User] = []
         self.players: list[Player] = []
+        self.admins: list[int] = []
+        self.banned: list[int] = []
 
         self.last_update: float = 0
         self.fast_update: bool = False
@@ -129,6 +131,8 @@ class UserManager(th.Thread):
 
     def update_time(self, entry: int, value: int) -> None:
 
+        # TODO Implement updating
+
         self.logger.info(f"Start update entry request to database {self.db_id} ...")
 
         params = {
@@ -163,12 +167,10 @@ class UserManager(th.Thread):
             return None
 
         if "updated" not in data or not data["updated"]:
-            self.logger.error(f"Failed to get entries! Missing in dictionary ...")
+            self.logger.error(f"Failed to update entry!")
             return None
 
-        self.logger.info("Received and decoded entries from database.")
-
-        return data["entries"]
+        self.logger.info("Entry successfully updated.")
 
     def load(self) -> None:
 
@@ -203,6 +205,36 @@ class UserManager(th.Thread):
             self.players.append(player)
 
         self.logger.info(f"Successfully loaded {len(self.players)} players!")
+
+        self.logger.info("Load admins from config ...")
+
+        self.admins.clear()
+
+        for admin in self.main.user_config.admins:
+            if self.get_user(admin) is None:
+                self.logger.warning(f"Failed to load admin {admin}! No user found!")
+                continue
+            self.admins.append(admin)
+            for player in self.players:
+                if player.user_id == admin:
+                    player.time = 86400
+
+        self.logger.info(f"Successfully loaded {len(self.admins)} admins!")
+
+        self.logger.info("Load banned from config ...")
+
+        self.banned.clear()
+
+        for banned in self.main.user_config.banned:
+            if self.get_user(banned) is None:
+                self.logger.warning(f"Failed to load banned {banned}! No user found!")
+                continue
+            if banned in self.admins:
+                self.logger.warning(f"Failed to load banned {banned}! Cannot ban admin!")
+                continue
+            self.banned.append(banned)
+
+        self.logger.info(f"Successfully loaded {len(self.banned)} banned!")
 
     def save(self) -> None:
 
@@ -286,6 +318,12 @@ class UserManager(th.Thread):
         for user in self.users:
             if user.id == user_id:
                 return user
+
+    def is_admin(self, user_id: int) -> bool:
+        return user_id in self.admins
+
+    def is_banned(self, user_id: int) -> bool:
+        return user_id in self.banned
 
     def handle_login(self) -> None:
 

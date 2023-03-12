@@ -52,7 +52,7 @@ class TimeDisplay:
             self.root.destroy()
             return
 
-        time_left = f"{cmd // 3600:02d}:{cmd // 60:02d}:{cmd % 60:02d}"
+        time_left = f"{cmd // 3600:02d}:{cmd % 3600 // 60:02d}:{cmd % 60:02d}"
         self.time["text"] = time_left
 
         self.root.after(200, self.update)
