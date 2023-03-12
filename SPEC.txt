@@ -15,6 +15,7 @@ Main function
       Background
       Scene
         Screen
+      Help popup
     User Manager
       User List
       Player List

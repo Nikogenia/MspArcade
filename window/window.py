@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 import threading as th
 import os
+import math
 
 # External
 import nikocraft as nc
@@ -114,6 +115,12 @@ class Window(nc.Window):
         # Background video update
         self.background_video_update: bool = True
 
+        # Help popup
+        self.help_open: bool = False
+        self.help_tick: float = 0
+        self.help_tick_target: float = 0
+        self.help_timeout: float = 0
+
         # FPS log
         self.fps_log = []
 
@@ -127,14 +134,6 @@ class Window(nc.Window):
         # Render scene content
         self.render_scene()
 
-        # Help info
-        font = self.font.get("text", 20)
-        text = font.render("Hilfe? Drücke  !", True, nc.RGB.WHITE)
-        black_rect(self.screen, self.width - text.get_width() - 10,
-                   self.height - 37, text.get_width() + 20, 50, 220, True, 1)
-        self.screen.blit(text, (self.width - text.get_width(), self.height - 27))
-        draw_button(self.screen, font, 14, self.width - text.get_width(), self.height - 27, HELP_BUTTON)
-
         # Offline info
         if not self.main.user_manager.online:
             font = self.font.get("text", 14)
@@ -143,6 +142,16 @@ class Window(nc.Window):
             self.screen.blit(text, (7, self.height - 42))
             text = font.render("         Neue Registrierungen sind daher nicht verfügbar!", True, nc.RGB.RED1)
             self.screen.blit(text, (7, self.height - 22))
+
+        # Help info
+        if self.help_tick < 0.85:
+            font = self.font.get("text", 20)
+            text = font.render("Hilfe? Drücke  !", True, nc.RGB.WHITE)
+            black_rect(self.screen, self.width - text.get_width() - 10,
+                       self.height - 37, text.get_width() + 20, 50, 220, True, 1)
+            self.screen.blit(text, (self.width - text.get_width(), self.height - 27))
+            draw_button(self.screen, font, 14, self.width - text.get_width(), self.height - 27, HELP_BUTTON)
+        self.draw_help_popup()
 
         # Render debug screen
         if self.debug_screen_active:
@@ -162,7 +171,28 @@ class Window(nc.Window):
             if event.key == pg.K_F3:
                 self.debug_screen_active = not self.debug_screen_active
 
+            # Toggle help popup
+            if event.key == pg.K_h:
+                self.help_open = not self.help_open
+                if self.help_open:
+                    self.help_timeout = nc.time.bench_time()
+                    self.help_tick_target = 1
+                else:
+                    self.help_tick_target = 0
+
     def update(self) -> None:
+
+        # Animate help popup
+        if abs(self.help_tick_target - self.help_tick) < 0.09:
+            self.help_tick = self.help_tick_target
+        if self.help_tick > self.help_tick_target:
+            self.help_tick -= self.dt / 13
+        elif self.help_tick < self.help_tick_target:
+            self.help_tick += self.dt / 13
+
+        if nc.time.bench_time() - self.help_timeout > 25:
+            self.help_open = False
+            self.help_tick_target = 0
 
         # Debug screen information
         if self.background_mode == "video":
@@ -234,3 +264,39 @@ class Window(nc.Window):
 
         if not self.main.running:
             self.running = False
+
+    def draw_help_popup(self) -> None:
+
+        if self.help_tick <= 0.2:
+            return
+
+        width = 1895 * self.help_tick
+        height = 1055 * self.help_tick
+
+        black_rect(self.screen, (self.width - width) / 2, (self.height - height) / 2, width, height,
+                   int(self.help_tick * 180), True, math.ceil(self.help_tick * 5), nc.RGB.WHITE * self.help_tick)
+
+        if self.help_tick != 1:
+            return
+
+        font = self.font.get("text", 40)
+        text = font.render("Schließen  ", True, nc.RGB.WHITE)
+        self.screen.blit(text, (self.width - text.get_width() - 40, 40))
+        draw_button(self.screen, font, 10, self.width - text.get_width() - 40, 40 - 2, HELP_BUTTON)
+
+        y = 35
+
+        font = self.font.get("title", 130)
+        text = font.render("Hilfe", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, y))
+
+        font = self.font.get("title", 100)
+        text = font.render("Credits", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 700))
+
+        font = self.font.get("text", 24)
+        text = font.render("MAKER SPACE © 2023 - Open Source (MIT Licence)", True, nc.RGB.WHITE)
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, 980))
+        font = self.font.get("text", 16)
+        text = font.render("Bodensee-Gymnasium Lindau", True, nc.RGB.WHITE)
+        self.screen.blit(text, ((self.width - text.get_width()) / 2, 1020))

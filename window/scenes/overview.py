@@ -190,6 +190,10 @@ class OverviewScene(nc.Scene):
 
         self.tick += self.dt
 
+        if self.window.help_open:
+            self.timeout = self.tick
+            self.activity_request_tick = 0
+
         # Scene switching
         if self.tick - self.timeout > 1200:
 

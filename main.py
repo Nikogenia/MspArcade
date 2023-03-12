@@ -28,11 +28,16 @@ class Main(nc.App):
                                    description="This is the main software of the arcade machine, which controls " +
                                    "all games and provides a menu. The gaming machine is a project of the Maker " +
                                    "Space for the Bodensee Gymnasium Lindau in Germany.",
-                                   details="Developers:\n" +
-                                   "- Nikocraft (aka Nikolas)\n" +
-                                   "- Maker Sam (aka Samuel)\n" +
+                                   details="Database: Lernplattform Mebis Bayern (Moodle)\n\n" +
+                                   "DEVELOPERS\n" +
+                                   "Management: Andre Scherl\n"
+                                   "Main software: Nikocraft (aka Nikolas)\n" +
+                                   "Automat:\n" +
                                    "- Valis World (aka Valentin)\n" +
-                                   "- Linicus (aka Linus)",
+                                   "- Linicus (aka Linus)\n" +
+                                   "- Alan (aka Bubiego)\n" +
+                                   "- ...\n" +
+                                   "Games: checkout menu",
                                    log_path=PATH_LOG,
                                    log_thread=True)
 

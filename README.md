@@ -11,14 +11,19 @@ die Schüler auf den Automaten aufmerksam machen._
 Projekt Version: _Alpha 1.1.1_\
 Programmiersprache: _Python_\
 Sprachen Version: _3.11_\
-Bibliotheken: _Nikocraft, Pygame, ..._
+Bibliotheken: _Nikocraft, Pygame, ..._\
+Datenbank: _Lernplattform Mebis Bayern (Moodle)_
 
 ### Entwickler
-- Nikolas (aka Nikocraft)
-- Samuel (aka Maker Sam)
-- Linus (aka Linicus)
-- Valentin (aka Valis World)
-- ...
+Leitung: Andre Scherl\
+Kernsoftware: Nikolas _(aka Nikocraft)_\
+Automat:\
+~ Linus _(aka Linicus)_\
+~ Valentin _(aka Valis World)_\
+~ Alan _(aka Bubiego)_\
+~ ...\
+Spiele:
+_siehe Spielübersicht_
 
 \
 **MAKER SPACE © 2023**\

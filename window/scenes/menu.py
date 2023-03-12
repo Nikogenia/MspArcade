@@ -57,6 +57,8 @@ class MenuScene(nc.Scene):
         self.star_mask: pg.Mask = pg.mask.from_surface(img)
         self.star_start: float = 0
         self.star_end: float = 0
+        self.rating_count_start: int = 0
+        self.rating_count_end: int = 0
 
         # Title data
         self.title: str = ""
@@ -150,9 +152,12 @@ class MenuScene(nc.Scene):
         # Render stars
         if self.animation_type == 0:
             stars = self.images[self.position % len(self.images)][2]
+            rating_count = self.images[self.position % len(self.images)][3]
         else:
             stars = self.star_start + (self.star_end - self.star_start) / \
                     self.ANIMATION_DURATION * (self.tick - self.animation_start)
+            rating_count = round(self.rating_count_start + (self.rating_count_end - self.rating_count_start) /
+                                 self.ANIMATION_DURATION * (self.tick - self.animation_start))
         for star in range(5):
             value_mask = pg.mask.Mask((max(stars - star, 0) * 50, 50), True)
             overlap_mask = self.star_mask.overlap_mask(value_mask, (0, 0))
@@ -167,7 +172,7 @@ class MenuScene(nc.Scene):
         font = self.window.font.get("text", 30)
         text = font.render(f"{stars:.1f}" if stars else " - ", True, nc.RGB.GRAY80)
         self.screen.blit(text, (700, 45 - text.get_height() / 2 + 3))
-        text = font.render(f"({self.images[self.position % len(self.images)][3]})", True, nc.RGB.GRAY80)
+        text = font.render(f"({rating_count})", True, nc.RGB.GRAY80)
         self.screen.blit(text, (1115, 45 - text.get_height() / 2 + 3))
 
         # Render title
@@ -261,6 +266,10 @@ class MenuScene(nc.Scene):
     def update(self) -> None:
 
         self.tick += self.dt
+
+        if self.window.help_open:
+            self.timeout = self.tick
+            self.activity_request_tick = 0
 
         # Scene switching
         if self.tick - self.timeout > 600:
@@ -365,6 +374,7 @@ class MenuScene(nc.Scene):
                     if self.animation_type != 0:
                         self.title = self.images[self.position % len(self.images)][1].name
                     self.star_start = self.images[self.position % len(self.images)][2]
+                    self.rating_count_start = self.images[self.position % len(self.images)][3]
 
                 # Scroll to left
                 if event.key == pg.K_LEFT:
@@ -395,6 +405,7 @@ class MenuScene(nc.Scene):
                 # Scroll
                 if event.key in (pg.K_LEFT, pg.K_RIGHT):
                     self.star_end = self.images[self.position % len(self.images)][2]
+                    self.rating_count_end = self.images[self.position % len(self.images)][3]
                     self.title_width_start = self.title_width
                     self.description_width_start = self.description_width
                     self.description_height_start = self.description_height
