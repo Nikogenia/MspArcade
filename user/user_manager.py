@@ -33,7 +33,7 @@ class UserManager(th.Thread):
         self.users: list[User] = []
         self.players: list[Player] = []
         self.admins: list[int] = []
-        self.banned: list[int] = []
+        self.banned: list[tuple[int, str]] = []
 
         self.last_update: float = 0
         self.fast_update: bool = False
@@ -226,13 +226,19 @@ class UserManager(th.Thread):
         self.banned.clear()
 
         for banned in self.main.user_config.banned:
-            if self.get_user(banned) is None:
+            if (not isinstance(banned, list)) or len(banned) != 2:
+                self.logger.warning(f"Failed to load banned {banned}! List of length 2 expected!")
+                continue
+            if (not isinstance(banned[0], int)) or (not isinstance(banned[1], str)):
+                self.logger.warning(f"Failed to load banned {banned}! Type int and str expected!")
+                continue
+            if self.get_user(banned[0]) is None:
                 self.logger.warning(f"Failed to load banned {banned}! No user found!")
                 continue
-            if banned in self.admins:
+            if banned[0] in self.admins:
                 self.logger.warning(f"Failed to load banned {banned}! Cannot ban admin!")
                 continue
-            self.banned.append(banned)
+            self.banned.append((banned[0], banned[1]))
 
         self.logger.info(f"Successfully loaded {len(self.banned)} banned!")
 
@@ -323,7 +329,12 @@ class UserManager(th.Thread):
         return user_id in self.admins
 
     def is_banned(self, user_id: int) -> bool:
-        return user_id in self.banned
+        return self.get_ban_reason(user_id) is not None
+
+    def get_ban_reason(self, user_id: int) -> None | str:
+        for banned in self.banned:
+            if banned[0] == user_id:
+                return banned[1]
 
     def handle_login(self) -> None:
 

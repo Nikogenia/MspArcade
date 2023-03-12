@@ -11,7 +11,7 @@ import pygame as pg
 from constants import *
 from user.user import User
 from user.player import Player
-from window.draw_utils import black_rect, draw_button
+from window.draw_utils import black_rect, draw_button, split_text
 
 if TYPE_CHECKING:
     from window.window import Window
@@ -77,6 +77,10 @@ class BannedScene(nc.Scene):
         font = self.window.font.get("text", 30)
         text = font.render("Begründung:", True, nc.RGB.WHITE)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 580))
+        lines = split_text(self.window.main.user_manager.get_ban_reason(self.user.id), 30)
+        for i, line in enumerate(lines):
+            text = font.render(line, True, nc.RGB.WHITE)
+            self.screen.blit(text, ((self.width - text.get_width()) / 2, 620 + i * 40))
 
         # Render activity request
         if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
