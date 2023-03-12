@@ -1,6 +1,7 @@
 # Standard
 from dataclasses import dataclass
 from typing import Self, Any
+from logging import Logger
 
 
 @dataclass
@@ -30,25 +31,50 @@ class Game:
         } | self.data
 
     @classmethod
-    def from_json(cls, data: dict) -> Self:
+    def from_json(cls, json: dict, logger: Logger) -> Self:
 
-        fields = {"id": int, "name": str, "type": str, "short_description": str, "short_description_split": int,
-                  "description": str, "author": str, "image_name": str}
-        optional_fields = {"url": str}
+        # Name: Required, Type
+        fields = {
+            "id": ("", int),
+            "name": ("", str),
+            "type": ("", str),
+            "short_description": ("", str),
+            "short_description_split": ("", int),
+            "description": ("", str),
+            "author": ("", str),
+            "image_name": ("", str),
+            "url": ("web", str)
+        }
 
-        for f_name, f_type in fields.items():
-            if f_name not in data:
-                return None
-            if not isinstance(data[f_name], f_type):
-                return None
-        for f_name, f_type in optional_fields.items():
-            if f_name in data and not isinstance(data[f_name], f_type):
-                return None
+        # Additional data
+        data = {}
 
-        optional = {}
-        for f_name, f_value in data.items():
-            if f_name not in fields:
-                optional[f_name] = f_value
+        # Type checking and fill missing fields
+        game_type = ""
+        for f_name, f_data in fields.items():
 
-        return cls(data["id"], data["name"], data["type"], data["short_description"], data["short_description_split"],
-                   data["description"], data["author"], data["image_name"], optional)
+            # Required field
+            if f_data[0] in ("", game_type):
+
+                # Field not available
+                if f_name not in json:
+
+                    # Log warning and fail
+                    logger.warning(f"Missing field '{f_name}' on loading a game! Data: {json}")
+                    return None
+
+                # Set the type
+                if f_name == "type":
+                    game_type = json["type"]
+
+                # Check for type
+                if not isinstance(json[f_name], f_data[1]):
+                    logger.warning(f"Invalid field type of '{f_name}' on loading a game! Data: {json}")
+                    return None
+
+                # Check for additional field
+                if f_data[0] != "":
+                    data[f_name] = json[f_name]
+
+        return cls(json["id"], json["name"], json["type"], json["short_description"], json["short_description_split"],
+                   json["description"], json["author"], json["image_name"], data)

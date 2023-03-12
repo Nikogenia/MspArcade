@@ -1,6 +1,7 @@
 # Standard
 from dataclasses import dataclass
 from typing import Self
+from logging import Logger
 
 
 @dataclass
@@ -19,14 +20,42 @@ class User:
         }
 
     @classmethod
-    def from_json(cls, data: dict) -> Self:
+    def from_json(cls, json: dict, logger: Logger) -> Self:
 
-        fields = {"id": int, "name": str, "last_login": int}
+        # Name: Type, Default (None for error)
+        fields = {
+            "id": (int, None),
+            "name": (str, "Unknown User"),
+            "last_login": (int, 0)
+        }
 
-        for f_name, f_type in fields.items():
-            if f_name not in data:
-                return None
-            if not isinstance(data[f_name], f_type):
-                return None
+        # Type checking and fill missing fields
+        for f_name, f_data in fields.items():
 
-        return cls(data["id"], data["name"], data["last_login"])
+            # Field not available
+            if f_name not in json:
+
+                # Log warning
+                logger.warning(f"Missing field '{f_name}' on loading a user! Data: {json}")
+
+                # Fail on default value None
+                if f_data[1] is None:
+                    return None
+
+                # Use default value
+                json[f_name] = f_data[1]
+
+            # Check for type
+            if not isinstance(json[f_name], f_data[0]):
+
+                # Log warning
+                logger.warning(f"Invalid field type of '{f_name}' on loading a player! Data: {json}")
+
+                # Fail on default value None
+                if f_data[1] is None:
+                    return None
+
+                # Use default value
+                json[f_name] = f_data[1]
+
+        return cls(json["id"], json["name"], json["last_login"])

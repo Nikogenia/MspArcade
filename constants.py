@@ -14,6 +14,7 @@ PATH_FONT = f"{PATH_RESOURCE}/fonts"
 PATH_DATA = "./data"
 PATH_LOG = f"{PATH_DATA}/logs"
 PATH_CONFIG = f"{PATH_DATA}/configs"
+PATH_CONFIG_BACKUP = f"{PATH_CONFIG}/backups"
 PATH_GAME = f"{PATH_DATA}/games"
 
 

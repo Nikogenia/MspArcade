@@ -43,7 +43,7 @@ class GameConfig(nc.Config):
                 "short_description_split": 0,
                 "description": "This is a cool game!",
                 "author": "Maker Space",
-                "image_name": "template.png",
+                "image_name": "Template.png",
                 "url": "https://www.bodensee-gymnasium.de/"
             }
         ]

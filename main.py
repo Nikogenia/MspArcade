@@ -2,6 +2,7 @@
 import sys
 import threading as th
 import traceback as tb
+import shutil
 
 # External
 import nikocraft as nc
@@ -38,15 +39,19 @@ class Main(nc.App):
         self.running = True
 
         # Create directories
-        for path in [PATH_CONFIG, PATH_GAME]:
+        for path in [PATH_CONFIG, PATH_CONFIG_BACKUP, PATH_GAME]:
             if not nc.file.exists(path):
                 nc.file.make_dir(path, self.logger)
 
         # Load configs
-        self.logger.info("Load configs ...")
         self.main_config: MainConfig = MainConfig(self.logger)
         self.game_config: GameConfig = GameConfig(self.logger)
         self.user_config: UserConfig = UserConfig(self.logger)
+        self.logger.info("Backup configs ...")
+        for conf in (self.main_config, self.game_config, self.user_config):
+            self.logger.debug(f"Copy config '{conf.path}' to '{PATH_CONFIG_BACKUP}' ...")
+            shutil.copy(conf.path, PATH_CONFIG_BACKUP)
+        self.logger.info("Load configs ...")
         self.main_config.load()
         self.game_config.load()
         self.user_config.load()
@@ -155,7 +160,7 @@ def main():
     exit_code = m.start()
 
     # Check for restart
-    if exit_code == 2 or (exit_code == 1 and RESTART_ON_CRASH):
+    if exit_code == 2 or (exit_code == 1 and RESTART_ON_CRASH and nc.time.run_time() > 5):
         print("")
         print("RESTART")
         print("")

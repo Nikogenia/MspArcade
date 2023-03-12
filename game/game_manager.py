@@ -145,9 +145,8 @@ class GameManager(th.Thread):
         ids = []
 
         for data in self.main.game_config.games:
-            game = Game.from_json(data)
+            game = Game.from_json(data, self.logger)
             if game is None:
-                self.logger.warning(f"Failed to load a game! Data: {data}")
                 continue
             if game.id in ids:
                 raise ConfigError(f"Duplicated game ID {game.id} found in config!")

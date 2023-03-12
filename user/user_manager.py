@@ -177,9 +177,9 @@ class UserManager(th.Thread):
         self.users.clear()
 
         for data in self.main.user_config.users:
-            user = User.from_json(data)
+            user = User.from_json(data, self.logger)
             if user is None:
-                self.logger.warning(f"Failed to load a user! Data: {data}")
+                self.logger.warning("Failed to load a user!")
                 continue
             self.logger.debug(f"User {user.id} ({user.name}) loaded.")
             self.users.append(user)
@@ -191,9 +191,13 @@ class UserManager(th.Thread):
         self.players.clear()
 
         for data in self.main.user_config.players:
-            player = Player.from_json(data)
+            player = Player.from_json(data, self.logger)
             if player is None:
-                self.logger.warning(f"Failed to load a player! Data: {data}")
+                self.logger.warning("Failed to load a player!")
+                continue
+            if self.get_user(player.user_id) is None:
+                self.logger.warning(f"Failed to load player {player.id} ({player.name})! " +
+                                    f"No matched user for {player.user_id}!")
                 continue
             self.logger.debug(f"Player {player.id} [{player.auth_id}] ({player.name}) loaded.")
             self.players.append(player)
