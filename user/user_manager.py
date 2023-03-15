@@ -38,6 +38,8 @@ class UserManager(th.Thread):
         self.last_update: float = 0
         self.fast_update: bool = False
 
+        self.fields: tuple[int, int, int] | None = None
+
         self.online: bool = True
 
         self.current: str = ""
@@ -69,6 +71,8 @@ class UserManager(th.Thread):
                 if (nc.time.epoch_time() - self.last_update > AUTO_UPDATE) or \
                         (nc.time.epoch_time() - self.last_update > FAST_UPDATE and self.fast_update):
                     self.fast_update = False
+                    if self.fields is None:
+                        self.get_fields()
                     data = self.get_entries()
                     self.online = data is not None
                     if self.online:
@@ -84,17 +88,7 @@ class UserManager(th.Thread):
         except Exception:
             self.main.handle_crash()
 
-    def get_entries(self) -> dict | None:
-
-        self.logger.info(f"Start get entry request to database {self.db_id} ...")
-
-        params = {
-            "wstoken": self.token,
-            "wsfunction": "mod_data_get_entries",
-            "moodlewsrestformat": "json",
-            "databaseid": self.db_id,
-            "returncontents": 1
-        }
+    def request(self, params: dict) -> dict | None:
 
         try:
             response = rq.post(DATABASE_URL, params=params)
@@ -119,6 +113,27 @@ class UserManager(th.Thread):
         if "exception" in data:
             self.logger.error(f"Exception occurred! Type: '{data['exception']}' Error code: '{data['errorcode']}'")
             self.logger.error(f"Error message: {data['message']}")
+            return None
+
+        if "warnings" in data and data["warnings"]:
+            self.logger.warning(f"Warnings were given! Continue execution. {data['warnings']}")
+
+        return data
+
+    def get_entries(self) -> dict | None:
+
+        self.logger.info(f"Start get entries request to database {self.db_id} ...")
+
+        params = {
+            "wstoken": self.token,
+            "wsfunction": "mod_data_get_entries",
+            "moodlewsrestformat": "json",
+            "databaseid": self.db_id,
+            "returncontents": 1
+        }
+
+        data = self.request(params)
+        if data is None:
             return None
 
         if "entries" not in data:
@@ -129,41 +144,51 @@ class UserManager(th.Thread):
 
         return data["entries"]
 
-    def update_time(self, entry: int, value: int) -> None:
+    def get_fields(self) -> bool:
 
-        # TODO Implement updating
+        self.logger.info(f"Start get fields request to database {self.db_id} ...")
 
-        self.logger.info(f"Start update entry request to database {self.db_id} ...")
+        params = {
+            "wstoken": self.token,
+            "wsfunction": "mod_data_get_fields",
+            "moodlewsrestformat": "json",
+            "databaseid": self.db_id,
+        }
+
+        data = self.request(params)
+        if data is None:
+            return False
+
+        if "fields" not in data:
+            self.logger.error(f"Failed to get fields! Missing in dictionary ...")
+            return False
+
+        if (not isinstance(data["fields"], list)) or len(data["fields"]) < 3:
+            self.logger.error(f"Failed to get fields! Expected list with at least 3 fields ...")
+            return False
+
+        # TODO Parse fields
+
+        self.logger.info("Received and decoded fields from database.")
+
+        return True
+
+    def update_time(self, player: Player) -> None:
+
+        self.logger.info(f"Start update entry request to database {self.db_id} on entry {player.id} ...")
+
+        # TODO Build params
 
         params = {
             "wstoken": self.token,
             "wsfunction": "mod_data_update_entry",
             "moodlewsrestformat": "json",
+            "entryid": player.id,
+            "data[0][fieldid]": 0
         }
 
-        try:
-            response = rq.post(DATABASE_URL, params=params)
-        except rq.ConnectionError as e:
-            self.logger.error("Failed to connect to database! Error message:")
-            self.logger.error(e)
-            return None
-
-        self.logger.debug("Got response! Decode ...")
-
-        if response.status_code != 200:
-            self.logger.error(f"Got response with status code {response.status_code}!")
-            return None
-
-        try:
-            data = response.json()
-        except rq.JSONDecodeError as e:
-            self.logger.error("Failed to parse JSON! Invalid response! Error message:")
-            self.logger.error(e)
-            return None
-
-        if "exception" in data:
-            self.logger.error(f"Exception occurred! Type: '{data['exception']}' Error code: '{data['errorcode']}'")
-            self.logger.error(f"Error message: {data['message']}")
+        data = self.request(params)
+        if data is None:
             return None
 
         if "updated" not in data or not data["updated"]:
@@ -405,6 +430,8 @@ class UserManager(th.Thread):
 
         self.last_update = 0
         self.fast_update = False
+
+        self.fields = None
 
         self.current = ""
 

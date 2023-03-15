@@ -9,38 +9,46 @@ from multiprocessing import AuthenticationError
 if __name__ == '__main__':
 
     parser = ap.ArgumentParser(
-        prog="Controller",
+        prog="python controller.py",
         description="A CLI tool to send some tasks to the arcade software.",
         allow_abbrev=False
     )
 
-    parser.add_argument("key", help="The authentication key")
-    parser.add_argument("task", help="The task to execute")
-    parser.add_argument("-p", "--port", help="Which port to use", type=int, default=42000)
+    parser.add_argument("-v", "--verbose", help="log detailed information", action="store_true")
+    parser.add_argument("-p", "--port", help="which port to use", type=int, default=42000)
+    parser.add_argument("key", help="the authentication key")
+    parser.add_argument("task", help="the task to execute")
+    parser.add_argument("args", help="arguments for the task", nargs="*")
 
     args = parser.parse_args()
 
-    print("Try to open connection ...")
+    print(args)
+
+    if args.verbose:
+        print(f"Try to open connection with port {args.port} ...")
     try:
         conn = Client(("localhost", args.port), authkey=args.key.encode("utf-8"))
-        print(f"Connection to {args.port} successful!")
+        if args.verbose:
+            print(f"Connection successful opened!")
     except ConnectionError:
         print(f"Connection failed! Cannot find listener on port {args.port}!")
         sys.exit(1)
     except AuthenticationError:
-        print("Connection failed! Invalid key!")
+        print(f"Connection failed! Invalid key '{args.key}'!")
         sys.exit(1)
 
-    print(f"Send task {args.task} ...")
-    conn.send({"type": args.task})
+    if args.verbose:
+        print(f"Send task '{args.task}' with arguments {args.args} ...")
+    conn.send({"type": args.task, "args": args.args})
 
-    success, message = conn.recv()
+    code, message = conn.recv()
 
-    if success == 0:
+    if code == 0:
         print("Task executed successfully!")
     else:
-        print(f"Task execution failed! Error {success}:")
+        print(f"Task execution failed! Error {code}:")
         print(f"    {message}")
 
+    if args.verbose:
+        print("Close connection ...")
     conn.close()
-    print("Connection closed.")

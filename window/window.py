@@ -274,7 +274,7 @@ class Window(nc.Window):
         height = 1055 * self.help_tick
 
         black_rect(self.screen, (self.width - width) / 2, (self.height - height) / 2, width, height,
-                   int(self.help_tick * 180), True, math.ceil(self.help_tick * 5), nc.RGB.WHITE * self.help_tick)
+                   int(self.help_tick * 210), True, math.ceil(self.help_tick * 5), nc.RGB.WHITE * self.help_tick)
 
         if self.help_tick != 1:
             return
