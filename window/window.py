@@ -161,6 +161,8 @@ class Window(nc.Window):
 
     def event(self, event: pg.event.Event) -> None:
 
+        self.logger.debug(event)
+
         if event.type == pg.KEYDOWN:
 
             # Quitting

@@ -101,7 +101,7 @@ class GameManager(th.Thread):
                     self.main.window.background_video_update = True
                     self.logger.info("Game closed.")
 
-                nc.time.wait(0.5)
+                nc.time.wait(1)
 
         except Exception:
             self.main.handle_crash()

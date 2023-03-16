@@ -119,7 +119,6 @@ class Main(nc.App):
 
         # Quit listener
         self.listener.running = False
-        self.listener.conn_listener.close()
         self.listener.join()
 
         # Save configs
@@ -150,7 +149,6 @@ class Main(nc.App):
         self.game_manager.running = False
         self.user_manager.running = False
         self.listener.running = False
-        self.listener.conn_listener.close()
 
 
 def main():

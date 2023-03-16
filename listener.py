@@ -49,6 +49,7 @@ class Listener(th.Thread):
             self.logger.info(f"Listening on port {self.port} ...")
             self.conn_listener = ConnectionListener(("localhost", self.port),
                                                     authkey=self.key.encode("utf-8"))
+            self.conn_listener._listener._socket.settimeout(1)
 
             while self.running:
 
@@ -60,7 +61,11 @@ class Listener(th.Thread):
                 except AuthenticationError:
                     self.logger.info("Connection failed! Invalid key!")
                     continue
-                except OSError:
+                except TimeoutError:
+                    continue
+                except OSError as e:
+                    self.logger.error("Error on listening! Error message:")
+                    self.logger.error(e)
                     continue
 
                 self.logger.debug("New connection opened.")
@@ -146,5 +151,6 @@ class Listener(th.Thread):
         self.logger.info(f"Listening on port {self.port} ...")
         self.conn_listener = ConnectionListener(("localhost", self.port),
                                                 authkey=self.key.encode("utf-8"))
+        self.conn_listener._listener._socket.settimeout(1)
 
         self.reload = False

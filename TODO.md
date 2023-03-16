@@ -13,4 +13,4 @@
 - Check page loading (limit of entries per request?)
 
 ### Bugfix
-- Fix time display crash on second run
+- Fix time display border

@@ -81,7 +81,7 @@ class UserManager(th.Thread):
                             self.main.window.scene.invalid.clear()
                     self.last_update = nc.time.epoch_time()
 
-                nc.time.wait(0.5)
+                nc.time.wait(1)
 
             self.save()
 
@@ -147,6 +147,8 @@ class UserManager(th.Thread):
     def get_fields(self) -> bool:
 
         self.logger.info(f"Start get fields request to database {self.db_id} ...")
+
+        return True
 
         params = {
             "wstoken": self.token,
