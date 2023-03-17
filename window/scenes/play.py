@@ -23,6 +23,8 @@ class PlayScene(nc.Scene):
 
         self.tick: float = 0
 
+        self.reset: bool = False
+
     def render(self) -> None:
 
         font = self.window.font.get("title", 150)
@@ -42,7 +44,12 @@ class PlayScene(nc.Scene):
         self.tick += self.dt
 
         if not self.window.main.game_manager.running_game:
-            self.window.change_scene("rating", transition_duration=12, transition_pause=7)
+            if self.reset:
+                self.window.change_scene("idle", transition_duration=12, transition_pause=7)
+                self.window.main.user_manager.current = ""
+                self.window.main.game_manager.current = None
+            else:
+                self.window.change_scene("rating", transition_duration=12, transition_pause=7)
 
         # Von Valis World
         # Hallo Welt
@@ -57,9 +64,9 @@ class PlayScene(nc.Scene):
     def event(self, event: pg.event.Event) -> None:
 
         if event.type == pg.KEYDOWN:
-            if event.key == pg.K_SPACE:
+            if event.key == pg.K_q:
                 self.window.main.game_manager.close_browser()
-                self.window.change_scene("rating", transition_duration=12, transition_pause=7)
+                self.reset = self.window.controller_reset
 
     def init(self) -> None:
 

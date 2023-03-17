@@ -2,6 +2,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import threading as th
+import multiprocessing as mp
+from queue import Empty
 import os
 import math
 
@@ -23,6 +25,7 @@ from window.scenes.overview import OverviewScene
 from window.scenes.play import PlayScene
 from window.scenes.rating import RatingScene
 from window.scenes.banned import BannedScene
+from window import input_controller
 from window import cv_utils
 if TYPE_CHECKING:
     from main import Main
@@ -124,6 +127,26 @@ class Window(nc.Window):
         # FPS log
         self.fps_log = []
 
+        # Deactivate joysticks
+        pg.joystick.quit()
+
+        # Load input controller
+        self.input_controller_queue: mp.Queue = mp.Queue()
+        self.input_controller_proc: mp.Process = mp.Process(
+            target=input_controller.run, args=(self.input_controller_queue,), name="Input Controller", daemon=True)
+
+        # Controller input data
+        self.controller_left: bool = False
+        self.controller_right: bool = False
+        self.controller_up: bool = False
+        self.controller_down: bool = False
+        self.controller_reset: bool = False
+        self.controller_quit: bool = False
+        self.controller_b1: bool = False
+        self.controller_b2: bool = False
+        self.controller_b3: bool = False
+        self.controller_b4: bool = False
+
     def render(self) -> None:
 
         # Render background
@@ -161,8 +184,6 @@ class Window(nc.Window):
 
     def event(self, event: pg.event.Event) -> None:
 
-        self.logger.debug(event)
-
         if event.type == pg.KEYDOWN:
 
             # Quitting
@@ -183,6 +204,8 @@ class Window(nc.Window):
                     self.help_tick_target = 0
 
     def update(self) -> None:
+
+        self.update_input()
 
         # Animate help popup
         if abs(self.help_tick_target - self.help_tick) < 0.09:
@@ -223,6 +246,8 @@ class Window(nc.Window):
 
     def init(self) -> None:
 
+        self.input_controller_proc.start()
+
         if self.background_mode == "video":
             th.Thread(target=self.background_thread, name="Background").start()
 
@@ -232,6 +257,8 @@ class Window(nc.Window):
             print(f"{normal:<10} {low:<10} {lazy:<10}")
 
         pg.quit()
+
+        self.input_controller_proc.kill()
 
     def background_thread(self) -> None:
 
@@ -266,6 +293,77 @@ class Window(nc.Window):
 
         if not self.main.running:
             self.running = False
+
+    def update_input(self) -> None:
+
+        try:
+
+            while True:
+
+                code, state, device = self.input_controller_queue.get(block=False)
+                self.logger.debug((code, state, device))
+
+                match code:
+
+                    case "BTN_TRIGGER":
+                        if state:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_RETURN}))
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                        self.controller_b1 = bool(state)
+                    case "BTN_THUMB":
+                        if state:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                        self.controller_b2 = bool(state)
+                    case "BTN_THUMB2":
+                        if state:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                        self.controller_b3 = bool(state)
+                    case "BTN_TOP":
+                        if state:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_h}))
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                        self.controller_b4 = bool(state)
+                    case "BTN_PINKIE":
+                        if state:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_q}))
+                            self.change_scene("idle", transition_duration=12, transition_pause=7)
+                        self.controller_reset = bool(state)
+                    case "BTN_TOP2":
+                        if state:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_q}))
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                        self.controller_quit = bool(state)
+                    case "ABS_X":
+                        if state == 127:
+                            self.controller_left = False
+                            self.controller_right = False
+                        elif state == 0:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_LEFT}))
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                            self.controller_left = True
+                            self.controller_right = False
+                        elif state == 255:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_RIGHT}))
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                            self.controller_left = False
+                            self.controller_right = True
+                    case "ABS_Y":
+                        if state == 127:
+                            self.controller_up = False
+                            self.controller_down = False
+                        elif state == 0:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_UP}))
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                            self.controller_up = True
+                            self.controller_down = False
+                        elif state == 255:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_DOWN}))
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                            self.controller_up = False
+                            self.controller_down = True
+
+        except Empty:
+            pass
 
     def draw_help_popup(self) -> None:
 

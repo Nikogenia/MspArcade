@@ -17,7 +17,7 @@ class TimeDisplay:
         self.root.geometry("200x265+28+70")
         self.root.wm_attributes("-topmost", 1)
 
-        self.canvas = tk.Canvas(self.root, width=196, height=261, background="black")
+        self.canvas = tk.Canvas(self.root, width=198, height=263, background="black")
         self.canvas.place(x=0, y=0)
 
         self.title = tk.Label(self.root, text="Zeit", background="black", foreground="white",
