@@ -1,6 +1,6 @@
 nikocraft==0.0.4
 
-pygame==2.2.0
+pygame==2.3.0
 
 numpy==1.24.2
 
