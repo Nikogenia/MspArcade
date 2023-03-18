@@ -4,7 +4,7 @@ from typing import Self, Any
 from logging import Logger
 
 
-@dataclass
+@dataclass(slots=True)
 class Game:
 
     id: int

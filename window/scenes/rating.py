@@ -233,7 +233,6 @@ class RatingScene(nc.Scene):
 
     def quit(self) -> None:
 
-        # Log out user and reset game selection
         self.window.main.user_manager.current = ""
         self.window.main.game_manager.current = None
 
@@ -252,6 +251,8 @@ class RatingScene(nc.Scene):
                 if self.stars:
                     self.window.main.user_manager.set_rating(self.player.auth_id, self.game.id, self.stars)
                     self.save_tick = self.tick
+            if event.key == pg.K_r:
+                self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
             if event.key == pg.K_UP:
                 if self.stars < 5:

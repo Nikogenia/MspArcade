@@ -196,11 +196,9 @@ class OverviewScene(nc.Scene):
 
         # Scene switching
         if self.tick - self.timeout > 1200:
-
-            self.window.change_scene("idle", transition_duration=12, transition_pause=7)
-
-            # Log out user
             self.window.main.user_manager.current = ""
+            self.window.main.game_manager.current = None
+            self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
         if self.back_x != 0:
             self.back_x -= self.dt * 3
@@ -232,13 +230,15 @@ class OverviewScene(nc.Scene):
             self.timeout = self.tick
 
             if event.key == pg.K_LEFT:
-
+                self.window.main.user_manager.current = ""
                 self.window.change_scene(self.args["back"], transition_duration=12, transition_pause=7)
                 self.back_x = -1
-
-                # Log out user
-                self.window.main.user_manager.current = ""
 
             if event.key == pg.K_RETURN:
                 if self.player.time > 5:
                     self.window.change_scene("play", transition_duration=12, transition_pause=7)
+
+            if event.key == pg.K_r:
+                self.window.main.user_manager.current = ""
+                self.window.main.game_manager.current = None
+                self.window.change_scene("idle", transition_duration=12, transition_pause=7)

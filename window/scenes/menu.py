@@ -273,6 +273,7 @@ class MenuScene(nc.Scene):
 
         # Scene switching
         if self.tick - self.timeout > 600:
+            self.window.main.game_manager.current = None
             self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
         # Update details y position
@@ -358,6 +359,10 @@ class MenuScene(nc.Scene):
             # Switch scene
             if event.key == pg.K_RETURN:
                 self.window.change_scene("login", {"back": "menu"}, transition_duration=12, transition_pause=7)
+
+            if event.key == pg.K_r:
+                self.window.main.game_manager.current = None
+                self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
             if self.loaded:
 

@@ -203,6 +203,11 @@ class Window(nc.Window):
                 else:
                     self.help_tick_target = 0
 
+            # Close help popup
+            if event.key == pg.K_r:
+                self.help_open = False
+                self.help_tick_target = 0
+
     def update(self) -> None:
 
         self.update_input()
@@ -325,8 +330,7 @@ class Window(nc.Window):
                         self.controller_b4 = bool(state)
                     case "BTN_PINKIE":
                         if state:
-                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_q}))
-                            self.change_scene("idle", transition_duration=12, transition_pause=7)
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_r}))
                         self.controller_reset = bool(state)
                     case "BTN_TOP2":
                         if state:

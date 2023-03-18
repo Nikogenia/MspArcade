@@ -4,7 +4,7 @@ from typing import Self
 from logging import Logger
 
 
-@dataclass
+@dataclass(slots=True)
 class User:
 
     id: int

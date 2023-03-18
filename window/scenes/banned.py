@@ -129,7 +129,6 @@ class BannedScene(nc.Scene):
 
     def quit(self) -> None:
 
-        # Log out user and reset game selection
         self.window.main.user_manager.current = ""
         self.window.main.game_manager.current = None
 
@@ -145,3 +144,6 @@ class BannedScene(nc.Scene):
 
                 self.window.change_scene("idle", transition_duration=12, transition_pause=7)
                 self.back_x = -1
+
+            if event.key == pg.K_r:
+                self.window.change_scene("idle", transition_duration=12, transition_pause=7)

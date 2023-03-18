@@ -86,7 +86,11 @@ class GameManager(th.Thread):
                         if (not self.running) or self.reload:
                             break
                         player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
+                        if player is None:
+                            break
                         admin = self.main.user_manager.is_admin(player.user_id)
+                        if admin is None:
+                            break
                         if player.time <= 0:
                             self.close_browser()
                         else:
@@ -101,7 +105,7 @@ class GameManager(th.Thread):
                     self.main.window.background_video_update = True
                     self.logger.info("Game closed.")
 
-                nc.time.wait(1)
+                nc.time.wait(0.6)
 
         except Exception:
             self.main.handle_crash()
@@ -116,7 +120,7 @@ class GameManager(th.Thread):
             self.logger.debug(f"Open URL {url} ...")
             self.browser = sp.Popen(CODE.replace("#URL#", url), shell=True)
 
-        nc.time.wait(3)
+        nc.time.wait(2.5)
 
         self.logger.debug("Open time display ...")
         self.time_display_proc: mp.Process = mp.Process(

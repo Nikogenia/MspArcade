@@ -7,7 +7,7 @@ from logging import Logger
 from constants import DEFAULT_TIME
 
 
-@dataclass
+@dataclass(slots=True)
 class Player:
 
     user_id: int

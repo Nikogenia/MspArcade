@@ -59,5 +59,5 @@ class IdleScene(nc.Scene):
     def event(self, event: pg.event.Event) -> None:
 
         if event.type == pg.KEYDOWN:
-            if event.key in (pg.K_RETURN, pg.K_SPACE):
+            if event.key == pg.K_SPACE:
                 self.window.change_scene("menu", transition_duration=12, transition_pause=7)

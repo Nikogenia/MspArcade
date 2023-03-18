@@ -179,6 +179,7 @@ class LoginScene(nc.Scene):
 
         # Scene switching
         if self.tick - self.timeout > 1500:
+            self.window.main.game_manager.current = None
             self.window.change_scene("idle", transition_duration=12, transition_pause=7)
         if self.status == 3:
             player = self.window.main.user_manager.get_player_by_auth_id(self.window.main.user_manager.current)
@@ -238,6 +239,9 @@ class LoginScene(nc.Scene):
             if event.key == pg.K_LEFT:
                 self.window.change_scene(self.args["back"], transition_duration=12, transition_pause=7)
                 self.back_x = -1
+            if event.key == pg.K_r:
+                self.window.main.game_manager.current = None
+                self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
     def quit(self) -> None:
 
