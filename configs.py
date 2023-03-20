@@ -27,6 +27,13 @@ class MainConfig(nc.Config):
         self.listener_port: int = 42000
         self.listener_key: str = "DefaultKey"
 
+        self.email_server_address: str = ""
+        self.email_server_port: int = 465
+        self.email_server_user: str = ""
+        self.emaiL_server_password: str = ""
+        self.email_sender: str = ""
+        self.email_targets: list[str] = []
+
 
 class GameConfig(nc.Config):
 

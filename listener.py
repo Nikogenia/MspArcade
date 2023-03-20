@@ -94,48 +94,63 @@ class Listener(th.Thread):
             conn.send((2, "Missing type!"))
             return
 
-        match task["type"]:
+        if "args" not in task:
+            self.logger.info("Connection failed! Missing args!")
+            conn.send((3, "Missing args!"))
+            return
 
-            case "quit":
-                self.logger.info("Connection successful! Quit ...")
-                conn.send((0, ""))
-                self.main.running = False
+        if task["type"].lower() == "quit":
+            self.logger.info("Connection successful! Quit ...")
+            conn.send((0, ""))
+            self.main.running = False
 
-            case "restart":
-                self.logger.info("Connection successful! Restart ...")
-                conn.send((0, ""))
-                self.main.running = False
-                self.main.exit_code = 2
+        elif task["type"].lower() == "restart":
+            self.logger.info("Connection successful! Restart ...")
+            conn.send((0, ""))
+            self.main.running = False
+            self.main.exit_code = 2
 
-            case "reload":
-                self.logger.info("Connection successful! Reload ...")
-                conn.send((0, ""))
-                self.main.window.change_scene("loading", transition_duration=0, transition_pause=0)
-                nc.time.wait(0.1)
-                self.main.main_config.load()
-                self.main.game_config.load()
-                self.main.game_manager.reload = True
-                self.main.user_manager.reload = True
-                self.reload = True
+        elif task["type"].lower() == "reload":
+            self.logger.info("Connection successful! Reload ...")
+            conn.send((0, ""))
+            self.main.window.change_scene("loading", transition_duration=0, transition_pause=0)
+            nc.time.wait(0.1)
+            self.main.main_config.load()
+            self.main.game_config.load()
+            self.main.game_manager.reload = True
+            self.main.user_manager.reload = True
+            self.reload = True
 
-            case "debug_on":
-                self.logger.info("Connection successful! Activate debug screen ...")
-                conn.send((0, ""))
-                self.main.window.debug_screen_active = True
+        elif task["type"].lower() == "reset":
+            self.logger.info("Connection successful! Reset ...")
+            conn.send((0, ""))
+            self.main.window.reset()
 
-            case "debug_off":
-                self.logger.info("Connection successful! Deactivate debug screen ...")
-                conn.send((0, ""))
-                self.main.window.debug_screen_active = False
+        elif task["type"].lower() == "debug":
+            match task["args"]:
+                case [] | None:
+                    self.logger.info("Connection successful! Send debug screen state ...")
+                    conn.send((0, "The debug screen is activated."
+                               if self.main.window.debug_screen_active else "The debug screen is deactivated."))
+                case ["on"]:
+                    self.logger.info("Connection successful! Activate debug screen ...")
+                    conn.send((0, ""))
+                    self.main.window.debug_screen_active = True
+                case ["off"]:
+                    self.logger.info("Connection successful! Deactivate debug screen ...")
+                    conn.send((0, ""))
+                    self.main.window.debug_screen_active = False
+                case ["toggle"]:
+                    self.logger.info("Connection successful! Toggle debug screen ...")
+                    conn.send((0, ""))
+                    self.main.window.debug_screen_active = not self.main.window.debug_screen_active
+                case _:
+                    self.logger.info("Connection failed! Invalid arguments!")
+                    conn.send((5, "Invalid arguments!"))
 
-            case "debug_toggle":
-                self.logger.info("Connection successful! Toggle debug screen ...")
-                conn.send((0, ""))
-                self.main.window.debug_screen_active = not self.main.window.debug_screen_active
-
-            case _:
-                self.logger.info("Connection failed! Invalid task!")
-                conn.send((3, "Invalid task!"))
+        else:
+            self.logger.info("Connection failed! Invalid task!")
+            conn.send((4, "Invalid task!"))
 
     def do_reload(self):
 

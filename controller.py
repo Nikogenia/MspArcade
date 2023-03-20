@@ -22,8 +22,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print(args)
-
     if args.verbose:
         print(f"Try to open connection with port {args.port} ...")
     try:
@@ -44,7 +42,11 @@ if __name__ == '__main__':
     code, message = conn.recv()
 
     if code == 0:
-        print("Task executed successfully!")
+        if message:
+            print("Task executed successfully! Message:")
+            print(f"    {message}")
+        else:
+            print("Task executed successfully!")
     else:
         print(f"Task execution failed! Error {code}:")
         print(f"    {message}")

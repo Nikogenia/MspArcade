@@ -299,6 +299,11 @@ class Window(nc.Window):
         if not self.main.running:
             self.running = False
 
+    @staticmethod
+    def reset() -> None:
+
+        pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_r}))
+
     def update_input(self) -> None:
 
         try:
@@ -330,7 +335,7 @@ class Window(nc.Window):
                         self.controller_b4 = bool(state)
                     case "BTN_PINKIE":
                         if state:
-                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_r}))
+                            self.reset()
                         self.controller_reset = bool(state)
                     case "BTN_TOP2":
                         if state:

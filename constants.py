@@ -65,3 +65,6 @@ SHOW_USERS_IN_DEBUG_SCREEN = True
 
 # Restart on crash
 RESTART_ON_CRASH = False
+
+# Send email
+SEND_EMAIL = False

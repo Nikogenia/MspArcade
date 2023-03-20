@@ -14,6 +14,7 @@ from window.window import Window
 from user.user_manager import UserManager
 from game.game_manager import GameManager
 from listener import Listener
+import email_utils
 
 
 class Main(nc.App):
@@ -150,6 +151,10 @@ class Main(nc.App):
         self.user_manager.running = False
         self.listener.running = False
 
+        # Send email, if activated
+        if SEND_EMAIL:
+            email_utils.send_error(self.main_config, tb.format_exc().strip("\n"))
+
 
 def main():
 
@@ -163,10 +168,11 @@ def main():
     exit_code = m.start()
 
     # Check for restart
-    if exit_code == 2 or (exit_code == 1 and RESTART_ON_CRASH and nc.time.run_time() > 5):
+    if exit_code == 2 or (exit_code == 1 and RESTART_ON_CRASH and nc.time.run_time() > 8):
         print("")
         print("RESTART")
         print("")
+        nc.time.wait(3)
         main()
 
 
