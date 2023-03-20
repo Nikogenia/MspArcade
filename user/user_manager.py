@@ -14,6 +14,7 @@ from user.user import User
 from user.player import Player
 from window.scenes.login import LoginScene
 from window.scenes.idle import IdleScene
+from window.scenes.loading import LoadingScene
 if TYPE_CHECKING:
     from main import Main
 
@@ -71,7 +72,7 @@ class UserManager(th.Thread):
 
                 if ((nc.time.epoch_time() - self.last_update > AUTO_UPDATE) or
                         (nc.time.epoch_time() - self.last_update > FAST_UPDATE and self.fast_update)) and \
-                        isinstance(self.main.window.scene, IdleScene):
+                        isinstance(self.main.window.scene, (IdleScene, LoadingScene)):
                     self.fast_update = False
                     if self.fields is None:
                         self.get_fields()
