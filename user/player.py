@@ -82,7 +82,7 @@ class Player:
         remove = []
         for game, value in json["ratings"].items():
             if not isinstance(value, int):
-                logger.warning(f"Invalid field type of 'dict.{game}' on loading a player! Data: {json}")
+                logger.warning(f"Invalid field type of 'ratings.{game}' on loading a player! Data: {json}")
                 remove.append(game)
         for r in remove:
             json["ratings"].pop(r)

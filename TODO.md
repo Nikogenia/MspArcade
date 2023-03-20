@@ -1,5 +1,4 @@
 ### General
-- Database sync (missing time update)
 - Add listener commands
 
 ### UI

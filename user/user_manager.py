@@ -13,6 +13,7 @@ from constants import *
 from user.user import User
 from user.player import Player
 from window.scenes.login import LoginScene
+from window.scenes.idle import IdleScene
 if TYPE_CHECKING:
     from main import Main
 
@@ -68,8 +69,9 @@ class UserManager(th.Thread):
                 if isinstance(self.main.window.scene, LoginScene):
                     self.handle_login()
 
-                if (nc.time.epoch_time() - self.last_update > AUTO_UPDATE) or \
-                        (nc.time.epoch_time() - self.last_update > FAST_UPDATE and self.fast_update):
+                if ((nc.time.epoch_time() - self.last_update > AUTO_UPDATE) or
+                        (nc.time.epoch_time() - self.last_update > FAST_UPDATE and self.fast_update)) and \
+                        isinstance(self.main.window.scene, IdleScene):
                     self.fast_update = False
                     if self.fields is None:
                         self.get_fields()
@@ -148,8 +150,6 @@ class UserManager(th.Thread):
 
         self.logger.info(f"Start get fields request to database {self.db_id} ...")
 
-        return True
-
         params = {
             "wstoken": self.token,
             "wsfunction": "mod_data_get_fields",
@@ -169,7 +169,13 @@ class UserManager(th.Thread):
             self.logger.error(f"Failed to get fields! Expected list with at least 3 fields ...")
             return False
 
-        # TODO Parse fields
+        for field in data["fields"]:
+            if "id" not in field or (not isinstance(field["id"], int)):
+                self.logger.error(f"Failed to get fields! Fields with id as integer expected ...")
+                return False
+
+        self.fields = data["fields"][0]["id"], data["fields"][1]["id"], data["fields"][2]["id"]
+        self.logger.debug(f"Parsed fields {self.fields[0]}, {self.fields[1]}, {self.fields[2]}.")
 
         self.logger.info("Received and decoded fields from database.")
 
@@ -179,14 +185,17 @@ class UserManager(th.Thread):
 
         self.logger.info(f"Start update entry request to database {self.db_id} on entry {player.id} ...")
 
-        # TODO Build params
-
         params = {
             "wstoken": self.token,
             "wsfunction": "mod_data_update_entry",
             "moodlewsrestformat": "json",
             "entryid": player.id,
-            "data[0][fieldid]": 0
+            "data[0][fieldid]": self.fields[0],
+            "data[0][value]": f'"{player.auth_id}"',
+            "data[1][fieldid]": self.fields[1],
+            "data[1][value]": player.time,
+            "data[2][fieldid]": self.fields[2],
+            "data[2][value]": f'"{player.name}"'
         }
 
         data = self.request(params)
@@ -295,6 +304,8 @@ class UserManager(th.Thread):
 
         for entry in data:
 
+            new = False
+
             try:
                 player = Player(
                     entry["userid"],
@@ -302,7 +313,7 @@ class UserManager(th.Thread):
                     entry["contents"][0]["content"],
                     entry["contents"][2]["content"],
                     entry["timecreated"],
-                    entry["contents"][1]["content"],
+                    None if entry["contents"][1]["content"] is None else int(entry["contents"][1]["content"]),
                     {}
                 )
                 user = User(
@@ -310,7 +321,7 @@ class UserManager(th.Thread):
                     entry["fullname"],
                     0
                 )
-            except KeyError as e:
+            except (KeyError, ValueError, TypeError) as e:
                 self.logger.warning(f"Error on parsing data: {e}")
                 continue
 
@@ -325,14 +336,19 @@ class UserManager(th.Thread):
 
             if self.get_player_by_id(player.id) is None:
                 self.logger.debug(f"New player {player.id} [{player.auth_id}] ({player.name}) added.")
-                player.time = DEFAULT_TIME
-                if self.get_user(player.user_id) is not None and \
-                        nc.time.epoch_time() - self.get_user(player.user_id).last_login < TIME_RESET_TIMEOUT:
-                    player.time = 0
+                if player.time is None:
+                    player.time = DEFAULT_TIME
+                    if self.get_user(player.user_id) is not None and \
+                            nc.time.epoch_time() - self.get_user(player.user_id).last_login < TIME_RESET_TIMEOUT:
+                        player.time = 0
                 self.players.append(player)
+                new = True
             else:
                 self.get_player_by_id(player.id).name = player.name
                 deleted_players.remove(player.id)
+
+            if (self.get_player_by_id(player.id).time != player.time) or new:
+                self.update_time(self.get_player_by_id(player.id))
 
         for player_id in deleted_players:
             self.players.remove(self.get_player_by_id(player_id))

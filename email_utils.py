@@ -11,8 +11,8 @@ from configs import MainConfig
 ERROR_EMAIL = """
 ! ATTENTION !
 
-A critical error occurred on the MAKER SPACE Arcade! The system tries to
-restart automatically. A successful restart is not guaranteed. Please
+A critical error occurred on the MAKER SPACE Arcade! The system tries to \
+restart automatically. A successful restart is not guaranteed. Please \
 checkout the system!
 
 -----------------------------------------
