@@ -229,6 +229,10 @@ class Window(nc.Window):
             self.debug_screen_left.append("")
             self.debug_screen_left.append(f"Background Update: {self.background_update * 1000:.2f} ms")
 
+        current_game = self.main.game_manager.current
+        self.debug_screen_left.append("")
+        self.debug_screen_left.append(f"Current Game: {None if current_game is None else current_game.name}")
+
         self.debug_screen_right.append("")
         self.debug_screen_right.append("Database Update")
         if self.main.user_manager.last_update == 0:
@@ -238,6 +242,10 @@ class Window(nc.Window):
                 f"{nc.time.epoch_time() - self.main.user_manager.last_update:.1f} seconds")
 
         if SHOW_USERS_IN_DEBUG_SCREEN:
+            current_player = self.main.user_manager.current
+            self.debug_screen_right.append("")
+            self.debug_screen_right.append("Current Player")
+            self.debug_screen_right.append(f"{None if current_player == '' else current_player}")
             self.debug_screen_right.append("")
             self.debug_screen_right.append("Players")
             for player in self.main.user_manager.players:

@@ -106,6 +106,9 @@ class UserManager(th.Thread):
             self.logger.error(f"Got response with status code {response.status_code}!")
             return None
 
+        if LOG_RESPONSE:
+            self.logger.debug(f"Response: {response.text}")
+
         try:
             data = response.json()
         except rq.JSONDecodeError as e:

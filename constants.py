@@ -56,6 +56,9 @@ TIME_RESET_TIMEOUT = 1000
 AUTO_UPDATE = 300
 FAST_UPDATE = 22
 
+# Log response
+LOG_RESPONSE = False
+
 # Display accounts on debug screen
 # WARNING: Disable in production! Security risk!
 SHOW_USERS_IN_DEBUG_SCREEN = True
