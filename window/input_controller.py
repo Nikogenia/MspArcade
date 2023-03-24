@@ -17,6 +17,7 @@ class InputController:
             try:
                 events: list[inputs.InputEvent] = inputs.get_gamepad()
             except (inputs.UnpluggedError, OSError):
+                inputs.devices = inputs.DeviceManager()
                 time.sleep(1)
                 continue
 
