@@ -352,7 +352,8 @@ class UserManager(th.Thread):
                 deleted_players.remove(player.id)
 
             if (self.get_player_by_id(player.id).time != player.time) or new:
-                self.update_time(self.get_player_by_id(player.id))
+                if self.fields is not None:
+                    self.update_time(self.get_player_by_id(player.id))
 
         for player_id in deleted_players:
             self.players.remove(self.get_player_by_id(player_id))
