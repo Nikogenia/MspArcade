@@ -95,7 +95,7 @@ class UserManager(th.Thread):
 
         try:
             response = rq.post(DATABASE_URL, params=params, timeout=2)
-        except rq.ConnectionError as e:
+        except (rq.ConnectionError, rq.Timeout, TimeoutError) as e:
             self.logger.error("Failed to connect to database! Error message:")
             self.logger.error(e)
             return None
