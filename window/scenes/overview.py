@@ -51,7 +51,7 @@ class OverviewScene(nc.Scene):
                 pg.image.load(f"{PATH_GAME}/{self.game.image_name}"), (550, 550))
         else:
             self.logger.warning(f"Couldn't load game image at '{PATH_GAME}/{self.game.image_name}'! Use black ...")
-            self.image: pg.Surface = pg.Surface((400, 400))
+            self.image: pg.Surface = pg.Surface((550, 550))
 
         self.player: Player = self.window.main.user_manager.get_player_by_auth_id(self.window.main.user_manager.current)
         self.user: User = self.window.main.user_manager.get_user(self.player.user_id)
