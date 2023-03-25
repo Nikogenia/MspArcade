@@ -67,10 +67,10 @@ SHOW_USERS_IN_DEBUG_SCREEN = True
 # ERROR HANDLING
 
 # Restart on crash
-RESTART_ON_CRASH = False
+RESTART_ON_CRASH = True
 
 # Send email
-SEND_EMAIL = False
+SEND_EMAIL = True
 
 # Show offline warning
 SHOW_OFFLINE_WARNING = False
