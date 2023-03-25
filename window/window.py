@@ -158,7 +158,7 @@ class Window(nc.Window):
         self.render_scene()
 
         # Offline info
-        if not self.main.user_manager.online:
+        if SHOW_OFFLINE_WARNING and not self.main.user_manager.online:
             font = self.font.get("text", 14)
             text = font.render("HINWEIS: Die Datenbank kann aktuell nicht erreicht werden!", True, nc.RGB.RED1)
             black_rect(self.screen, -10, self.height - 50, text.get_width() + 20, 70, 220, True, 1)

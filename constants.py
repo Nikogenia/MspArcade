@@ -71,3 +71,6 @@ RESTART_ON_CRASH = False
 
 # Send email
 SEND_EMAIL = False
+
+# Show offline warning
+SHOW_OFFLINE_WARNING = False
