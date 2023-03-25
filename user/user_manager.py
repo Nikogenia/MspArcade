@@ -94,7 +94,7 @@ class UserManager(th.Thread):
     def request(self, params: dict) -> dict | None:
 
         try:
-            response = rq.post(DATABASE_URL, params=params)
+            response = rq.post(DATABASE_URL, params=params, timeout=5)
         except rq.ConnectionError as e:
             self.logger.error("Failed to connect to database! Error message:")
             self.logger.error(e)
