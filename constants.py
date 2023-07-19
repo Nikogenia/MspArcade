@@ -70,7 +70,7 @@ SHOW_USERS_IN_DEBUG_SCREEN = True
 RESTART_ON_CRASH = True
 
 # Send email
-SEND_EMAIL = True
+SEND_EMAIL = False
 
 # Show offline warning
-SHOW_OFFLINE_WARNING = False
+SHOW_OFFLINE_WARNING = True
