@@ -140,7 +140,7 @@ class Main(nc.App):
                              "       CRITICAL UNEXPECTED ERROR\n" +
                              (
                                 "                Restart\n"
-                                if RESTART_ON_CRASH else
+                                if self.main_config.restart_on_crash else
                                 "                 Exit\n"
                              ) +
                              "----------------------------------------\n" +
@@ -155,7 +155,7 @@ class Main(nc.App):
         self.listener.running = False
 
         # Send email, if activated
-        if SEND_EMAIL:
+        if self.main_config.email_send:
             email_utils.send_error(self.main_config, tb.format_exc().strip("\n"))
 
 
@@ -171,7 +171,7 @@ def main():
     exit_code = m.start()
 
     # Check for restart
-    if exit_code == 2 or (exit_code == 1 and RESTART_ON_CRASH and nc.time.run_time() > 8):
+    if exit_code == 2 or (exit_code == 1 and m.main_config.restart_on_crash and nc.time.run_time() > 8):
         print("")
         print("RESTART")
         print("")

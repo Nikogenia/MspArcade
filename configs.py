@@ -19,7 +19,9 @@ class MainConfig(nc.Config):
         super(MainConfig, self).__init__(f"{PATH_CONFIG}/main.json", logger)
 
         self.database_id: str = ""
-        self.auth_token: str = ""
+        self.database_auth_token: str = ""
+        self.database_auto_update: int = 300
+        self.database_fast_update: int = 22
 
         self.background_mode: str = "image"
         self.background_file_name: str = "background.png"
@@ -27,10 +29,27 @@ class MainConfig(nc.Config):
         self.listener_port: int = 42000
         self.listener_key: str = "DefaultKey"
 
+        self.debug_screen_show_default: bool = False
+        self.debug_screen_show_users: bool = False
+
+        self.log_response: bool = False
+        self.log_fps: bool = False
+
+        self.windows_disable_resolution_scaling: bool = False
+        self.windows_select_second_monitor: bool = False
+
+        self.account_default_time: int = 300
+        self.account_reset_timeout: int = 1000
+
+        self.show_offline_warning: bool = True
+
+        self.restart_on_crash: bool = True
+
+        self.email_send: bool = False
         self.email_server_address: str = ""
         self.email_server_port: int = 465
         self.email_server_user: str = ""
-        self.emaiL_server_password: str = ""
+        self.email_server_password: str = ""
         self.email_sender: str = ""
         self.email_targets: list[str] = []
 

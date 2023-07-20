@@ -3,9 +3,6 @@ from dataclasses import dataclass
 from typing import Self
 from logging import Logger
 
-# Local
-from constants import DEFAULT_TIME
-
 
 @dataclass(slots=True)
 class Player:
@@ -37,7 +34,7 @@ class Player:
         }
 
     @classmethod
-    def from_json(cls, json: dict, logger: Logger) -> Self:
+    def from_json(cls, json: dict, logger: Logger, default_time: int) -> Self:
 
         # Name: Type, Default (None for error)
         fields = {
@@ -46,7 +43,7 @@ class Player:
             "auth_id": (str, None),
             "name": (str, "Unknown Player"),
             "created": (int, 0),
-            "time": (int, DEFAULT_TIME),
+            "time": (int, default_time),
             "ratings": (dict, {})
         }
 

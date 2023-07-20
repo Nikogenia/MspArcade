@@ -30,7 +30,7 @@ class UserManager(th.Thread):
         self.running: bool = True
 
         self.db_id: str = self.main.main_config.database_id
-        self.token: str = self.main.main_config.auth_token
+        self.token: str = self.main.main_config.database_auth_token
 
         self.users: list[User] = []
         self.players: list[Player] = []
@@ -70,8 +70,8 @@ class UserManager(th.Thread):
                 if isinstance(self.main.window.scene, LoginScene):
                     self.handle_login()
 
-                if ((nc.time.epoch_time() - self.last_update > AUTO_UPDATE) or
-                        (nc.time.epoch_time() - self.last_update > FAST_UPDATE and self.fast_update)) and \
+                if ((nc.time.epoch_time() - self.last_update > self.main.main_config.database_auto_update) or
+                        (nc.time.epoch_time() - self.last_update > self.main.main_config.database_fast_update and self.fast_update)) and \
                         isinstance(self.main.window.scene, (IdleScene, LoadingScene)):
                     self.fast_update = False
                     if self.fields is None:
@@ -106,7 +106,7 @@ class UserManager(th.Thread):
             self.logger.error(f"Got response with status code {response.status_code}!")
             return None
 
-        if LOG_RESPONSE:
+        if self.main.main_config.log_response:
             self.logger.debug(f"Response: {response.text}")
 
         try:
@@ -233,7 +233,7 @@ class UserManager(th.Thread):
         self.players.clear()
 
         for data in self.main.user_config.players:
-            player = Player.from_json(data, self.logger)
+            player = Player.from_json(data, self.logger, self.main.main_config.account_default_time)
             if player is None:
                 self.logger.warning("Failed to load a player!")
                 continue
@@ -341,9 +341,9 @@ class UserManager(th.Thread):
             if self.get_player_by_id(player.id) is None:
                 self.logger.debug(f"New player {player.id} [{player.auth_id}] ({player.name}) added.")
                 if player.time is None:
-                    player.time = DEFAULT_TIME
+                    player.time = self.main.main_config.account_default_time
                     if self.get_user(player.user_id) is not None and \
-                            nc.time.epoch_time() - self.get_user(player.user_id).last_login < TIME_RESET_TIMEOUT:
+                            nc.time.epoch_time() - self.get_user(player.user_id).last_login < self.main.main_config.account_reset_timeout:
                         player.time = 0
                 self.players.append(player)
                 new = True

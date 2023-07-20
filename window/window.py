@@ -48,11 +48,11 @@ class Window(nc.Window):
         self.running = True
 
         # Select second monitor
-        if SELECT_SECOND_MONITOR:
+        if self.main.main_config.windows_select_second_monitor:
             os.environ['SDL_VIDEO_WINDOW_POS'] = f"-1920,0"
 
         # Resolution scaling on windows
-        if DISABLE_RESOLUTION_SCALING:
+        if self.main.main_config.windows_disable_resolution_scaling:
             self.disable_resolution_scaling()
 
         # Register scenes
@@ -74,7 +74,7 @@ class Window(nc.Window):
         self.debug_screen: nc.DebugScreen = nc.DebugScreen(self)
         self.debug_screen_left: list[str] = []
         self.debug_screen_right: list[str] = []
-        self.debug_screen_active: bool = SHOW_FPS_DEFAULT
+        self.debug_screen_active: bool = self.main.main_config.debug_screen_show_default
 
         # Load background
         if self.main.main_config.background_mode == "image":
@@ -158,7 +158,7 @@ class Window(nc.Window):
         self.render_scene()
 
         # Offline info
-        if SHOW_OFFLINE_WARNING and not self.main.user_manager.online:
+        if self.main.main_config.show_offline_warning and not self.main.user_manager.online:
             font = self.font.get("text", 14)
             text = font.render("HINWEIS: Die Datenbank kann aktuell nicht erreicht werden!", True, nc.RGB.RED1)
             black_rect(self.screen, -10, self.height - 50, text.get_width() + 20, 70, 220, True, 1)
@@ -241,7 +241,7 @@ class Window(nc.Window):
             self.debug_screen_right.append(
                 f"{nc.time.epoch_time() - self.main.user_manager.last_update:.1f} seconds")
 
-        if SHOW_USERS_IN_DEBUG_SCREEN:
+        if self.main.main_config.debug_screen_show_users:
             current_player = self.main.user_manager.current
             self.debug_screen_right.append("")
             self.debug_screen_right.append("Current Player")
@@ -253,7 +253,7 @@ class Window(nc.Window):
                 self.debug_screen_right.append(player.auth_id)
                 self.debug_screen_right.append(f"{player.time} - {player.name}")
 
-        if FPS_LOG:
+        if self.main.main_config.log_fps:
             self.fps_log.append((f"{self.clock.available_fps:.2f}", f"{self.clock.available_fps_low:.2f}",
                                  f"{self.clock.available_fps_lazy:.2f}"))
 
