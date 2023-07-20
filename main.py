@@ -55,8 +55,11 @@ class Main(nc.App):
         self.user_config: UserConfig = UserConfig(self.logger)
         self.logger.info("Backup configs ...")
         for conf in (self.main_config, self.game_config, self.user_config):
-            self.logger.debug(f"Copy config '{conf.path}' to '{PATH_CONFIG_BACKUP}' ...")
-            shutil.copy(conf.path, PATH_CONFIG_BACKUP)
+            try:
+                self.logger.debug(f"Copy config '{conf.path}' to '{PATH_CONFIG_BACKUP}' ...")
+                shutil.copy(conf.path, PATH_CONFIG_BACKUP)
+            except OSError:
+                pass
         self.logger.info("Load configs ...")
         self.main_config.load()
         self.game_config.load()
