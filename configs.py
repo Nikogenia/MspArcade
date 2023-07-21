@@ -39,7 +39,8 @@ class MainConfig(nc.Config):
         self.windows_select_second_monitor: bool = False
 
         self.account_default_time: int = 300
-        self.account_reset_timeout: int = 1000
+        self.account_reset_timeout: int = 604800
+        self.account_time_refresh: bool = False
 
         self.show_offline_warning: bool = True
 
