@@ -54,6 +54,17 @@ class MainConfig(nc.Config):
         self.email_sender: str = ""
         self.email_targets: list[str] = []
 
+        self.key_left: str = "j"
+        self.key_right: str = "l"
+        self.key_up: str = "i"
+        self.key_down: str = "k"
+        self.key_reset: str = "n"
+        self.key_quit: str = "m"
+        self.key_b1: str = "x"
+        self.key_b2: str = "c"
+        self.key_b3: str = "v"
+        self.key_b4: str = "b"
+
 
 class GameConfig(nc.Config):
 

@@ -318,66 +318,58 @@ class Window(nc.Window):
 
             while True:
 
-                code, state, device = self.input_controller_queue.get(block=False)
-                self.logger.debug((code, state, device))
+                state, key = self.input_controller_queue.get(block=False)
+                self.logger.debug(f"Key press: {key}")
 
-                match code:
+                match key:
 
-                    case "BTN_TRIGGER":
+                    case self.main.main_config.key_b1:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_RETURN}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_b1 = bool(state)
-                    case "BTN_THUMB":
+                        self.controller_b1 = state
+                    case self.main.main_config.key_b2:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_b2 = bool(state)
-                    case "BTN_THUMB2":
+                        self.controller_b2 = state
+                    case self.main.main_config.key_b3:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_b3 = bool(state)
-                    case "BTN_TOP":
+                        self.controller_b3 = state
+                    case self.main.main_config.key_b4:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_h}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_b4 = bool(state)
-                    case "BTN_PINKIE":
+                        self.controller_b4 = state
+                    case self.main.main_config.key_reset:
                         if state:
                             self.reset()
-                        self.controller_reset = bool(state)
-                    case "BTN_TOP2":
+                        self.controller_reset = state
+                    case self.main.main_config.key_quit:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_q}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_quit = bool(state)
-                    case "ABS_X":
-                        if state == 127:
-                            self.controller_left = False
-                            self.controller_right = False
-                        elif state == 0:
+                        self.controller_quit = state
+                    case self.main.main_config.key_left:
+                        if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_LEFT}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                            self.controller_left = True
-                            self.controller_right = False
-                        elif state == 255:
+                        self.controller_left = state
+                    case self.main.main_config.key_right:
+                        if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_RIGHT}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                            self.controller_left = False
-                            self.controller_right = True
-                    case "ABS_Y":
-                        if state == 127:
-                            self.controller_up = False
-                            self.controller_down = False
-                        elif state == 0:
+                        self.controller_right = state
+                    case self.main.main_config.key_up:
+                        if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_UP}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                            self.controller_up = True
-                            self.controller_down = False
-                        elif state == 255:
+                        self.controller_up = state
+                    case self.main.main_config.key_down:
+                        if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_DOWN}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                            self.controller_up = False
-                            self.controller_down = True
+                        self.controller_down = state
 
         except Empty:
             pass

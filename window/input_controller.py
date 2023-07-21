@@ -1,7 +1,6 @@
 # Standard
 import multiprocessing as mp
-import inputs
-import time
+from pynput.keyboard import Listener
 
 
 class InputController:
@@ -10,20 +9,22 @@ class InputController:
 
         self.queue: mp.Queue = queue
 
+    def on_press(self, key):
+        try:
+            self.queue.put((True, key.char))
+        except AttributeError:
+            pass
+
+    def on_release(self, key):
+        try:
+            self.queue.put((False, key.char))
+        except AttributeError:
+            pass
+
     def run(self):
 
-        while True:
-
-            try:
-                events: list[inputs.InputEvent] = inputs.get_gamepad()
-            except (inputs.UnpluggedError, OSError):
-                inputs.devices = inputs.DeviceManager()
-                time.sleep(1)
-                continue
-
-            for event in events:
-                device: inputs.GamePad = event.device
-                self.queue.put((event.code, event.state, device.get_number()))
+        with Listener(on_press=self.on_press, on_release=self.on_release, daemon=True) as listener:
+            listener.join()
 
 
 def run(queue: mp.Queue):

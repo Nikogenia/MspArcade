@@ -1,6 +1,6 @@
 nikocraft==0.0.4
 requests==2.31.0
-opencv-python==4.5.5.64
 numpy==1.25.1
 pyzbar==0.1.9
-inputs==0.5
+opencv-python==4.6.0.66
+pynput==1.7.6
