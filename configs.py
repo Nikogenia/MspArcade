@@ -98,3 +98,5 @@ class UserConfig(nc.Config):
 
         self.admins: list[int] = []
         self.banned: list[int] = []
+
+        self.last_refresh: int = 0

@@ -2,6 +2,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import threading as th
+import datetime as dt
 from logging import Logger
 
 # External
@@ -73,6 +74,8 @@ class UserManager(th.Thread):
                 if ((nc.time.epoch_time() - self.last_update > self.main.main_config.database_auto_update) or
                         (nc.time.epoch_time() - self.last_update > self.main.main_config.database_fast_update and self.fast_update)) and \
                         isinstance(self.main.window.scene, (IdleScene, LoadingScene)):
+                    if self.main.main_config.account_time_refresh:
+                        self.refresh_time()
                     self.fast_update = False
                     if self.fields is None:
                         self.get_fields()
@@ -83,6 +86,7 @@ class UserManager(th.Thread):
                         if isinstance(self.main.window.scene, LoginScene):
                             self.main.window.scene.invalid.clear()
                     self.last_update = nc.time.epoch_time()
+                    self.save()
 
                 nc.time.wait(0.6)
 
@@ -211,6 +215,18 @@ class UserManager(th.Thread):
             return None
 
         self.logger.info("Entry successfully updated.")
+
+    def refresh_time(self) -> None:
+        last_refresh = dt.datetime.fromtimestamp(self.main.user_config.last_refresh)
+        now = dt.datetime.now()
+        if (last_refresh - dt.timedelta(last_refresh.weekday())).date() != (now - dt.timedelta(now.weekday())).date():
+
+            self.main.user_config.last_refresh = int(now.timestamp())
+
+            self.logger.info("Refresh time ...")
+
+            for player in self.players:
+                player.time = self.main.main_config.account_default_time
 
     def load(self) -> None:
 
@@ -399,7 +415,7 @@ class UserManager(th.Thread):
                 scene.success = value
                 scene.status = 3
                 scene.status_update = scene.tick
-                continue
+                break
 
             self.fast_update = True
 
