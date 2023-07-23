@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 import threading as th
 import datetime as dt
+import json
 from logging import Logger
 
 # External
@@ -41,7 +42,7 @@ class UserManager(th.Thread):
         self.last_update: float = 0
         self.fast_update: bool = False
 
-        self.fields: tuple[int, int, int] | None = None
+        self.fields: tuple[int, int, int, int] | None = None
 
         self.online: bool = True
 
@@ -139,7 +140,8 @@ class UserManager(th.Thread):
             "wsfunction": "mod_data_get_entries",
             "moodlewsrestformat": "json",
             "databaseid": self.db_id,
-            "returncontents": 1
+            "returncontents": 1,
+            "perpage": 10000
         }
 
         data = self.request(params)
@@ -182,8 +184,8 @@ class UserManager(th.Thread):
                 self.logger.error(f"Failed to get fields! Fields with id as integer expected ...")
                 return False
 
-        self.fields = data["fields"][0]["id"], data["fields"][1]["id"], data["fields"][2]["id"]
-        self.logger.debug(f"Parsed fields {self.fields[0]}, {self.fields[1]}, {self.fields[2]}.")
+        self.fields = data["fields"][0]["id"], data["fields"][1]["id"], data["fields"][2]["id"], data["fields"][3]["id"]
+        self.logger.debug(f"Parsed fields {self.fields[0]}, {self.fields[1]}, {self.fields[2]}, {self.fields[3]}.")
 
         self.logger.info("Received and decoded fields from database.")
 
@@ -203,7 +205,9 @@ class UserManager(th.Thread):
             "data[1][fieldid]": self.fields[1],
             "data[1][value]": player.time,
             "data[2][fieldid]": self.fields[2],
-            "data[2][value]": f'"{player.name}"'
+            "data[2][value]": f'"{player.name}"',
+            "data[3][fieldid]": self.fields[3],
+            "data[3][value]": f'"{player.ratings}"'
         }
 
         data = self.request(params)
@@ -226,7 +230,8 @@ class UserManager(th.Thread):
             self.logger.info("Refresh time ...")
 
             for player in self.players:
-                player.time = self.main.main_config.account_default_time
+                if self.is_admin(player.user_id):
+                    player.time = self.main.main_config.account_default_time
 
     def load(self) -> None:
 
@@ -334,7 +339,7 @@ class UserManager(th.Thread):
                     entry["contents"][2]["content"],
                     entry["timecreated"],
                     None if entry["contents"][1]["content"] is None else int(entry["contents"][1]["content"]),
-                    {}
+                    {} if entry["contents"][3]["content"] is None else json.loads(str(entry["contents"][3]["content"]).replace("'", '"'))
                 )
                 user = User(
                     entry["userid"],
@@ -365,9 +370,11 @@ class UserManager(th.Thread):
                 new = True
             else:
                 self.get_player_by_id(player.id).name = player.name
+                self.get_player_by_id(player.id).ratings = player.ratings | self.get_player_by_id(player.id).ratings
                 deleted_players.remove(player.id)
 
-            if (self.get_player_by_id(player.id).time != player.time) or new:
+            if (self.get_player_by_id(player.id).time != player.time) or new or \
+                    (self.get_player_by_id(player.id).ratings != player.ratings):
                 if self.fields is not None:
                     self.update_time(self.get_player_by_id(player.id))
 
@@ -465,7 +472,7 @@ class UserManager(th.Thread):
         self.main.user_config.save()
 
         self.db_id = self.main.main_config.database_id
-        self.token = self.main.main_config.auth_token
+        self.token = self.main.main_config.database_auth_token
 
         self.last_update = 0
         self.fast_update = False

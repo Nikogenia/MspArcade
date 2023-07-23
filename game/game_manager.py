@@ -120,12 +120,12 @@ class GameManager(th.Thread):
             self.logger.debug(f"Open URL {url} ...")
             self.browser = sp.Popen(CODE.replace("#URL#", url), shell=True)
 
-        nc.time.wait(2.5)
+            nc.time.wait(2.5)
 
-        self.logger.debug("Open time display ...")
-        self.time_display_proc: mp.Process = mp.Process(
-            target=time_display.run, args=(self.time_display_queue,), name="Time Display", daemon=True)
-        self.time_display_proc.start()
+            self.logger.debug("Open time display ...")
+            self.time_display_proc: mp.Process = mp.Process(
+                target=time_display.run, args=(self.time_display_queue,), name="Time Display", daemon=True)
+            self.time_display_proc.start()
 
     def close_browser(self) -> None:
 

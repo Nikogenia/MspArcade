@@ -22,10 +22,12 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    key = "DefaultKey" if args.key == "-" else args.key
+
     if args.verbose:
         print(f"Try to open connection with port {args.port} ...")
     try:
-        conn = Client(("localhost", args.port), authkey=args.key.encode("utf-8"))
+        conn = Client(("localhost", args.port), authkey=key.encode("utf-8"))
         if args.verbose:
             print(f"Connection successful opened!")
     except ConnectionError:
