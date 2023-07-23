@@ -319,7 +319,8 @@ class Window(nc.Window):
             while True:
 
                 state, key = self.input_controller_queue.get(block=False)
-                self.logger.debug(f"Key press: {key}")
+                if state:
+                    self.logger.debug(f"Key input: {key}")
 
                 match key:
 
@@ -339,7 +340,6 @@ class Window(nc.Window):
                     case self.main.main_config.key_b4:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_h}))
-                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
                         self.controller_b4 = state
                     case self.main.main_config.key_reset:
                         if state:

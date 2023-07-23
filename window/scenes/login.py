@@ -266,6 +266,8 @@ class LoginScene(nc.Scene):
 
             # Read camera
             _, frame = self.camera.read()
+            if frame is None:
+                continue
             self.camera_size = nc.Vec(frame.shape[1], frame.shape[0])
 
             # Decode
