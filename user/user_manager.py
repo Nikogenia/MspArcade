@@ -2,6 +2,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import threading as th
+import datetime as dt
+import json
 from logging import Logger
 
 # External
@@ -40,7 +42,7 @@ class UserManager(th.Thread):
         self.last_update: float = 0
         self.fast_update: bool = False
 
-        self.fields: tuple[int, int, int] | None = None
+        self.fields: tuple[int, int, int, int] | None = None
 
         self.online: bool = True
 
@@ -73,6 +75,8 @@ class UserManager(th.Thread):
                 if ((nc.time.epoch_time() - self.last_update > self.main.main_config.database_auto_update) or
                         (nc.time.epoch_time() - self.last_update > self.main.main_config.database_fast_update and self.fast_update)) and \
                         isinstance(self.main.window.scene, (IdleScene, LoadingScene)):
+                    if self.main.main_config.account_time_refresh:
+                        self.refresh_time()
                     self.fast_update = False
                     if self.fields is None:
                         self.get_fields()
@@ -83,6 +87,7 @@ class UserManager(th.Thread):
                         if isinstance(self.main.window.scene, LoginScene):
                             self.main.window.scene.invalid.clear()
                     self.last_update = nc.time.epoch_time()
+                    self.save()
 
                 nc.time.wait(0.6)
 
@@ -135,7 +140,8 @@ class UserManager(th.Thread):
             "wsfunction": "mod_data_get_entries",
             "moodlewsrestformat": "json",
             "databaseid": self.db_id,
-            "returncontents": 1
+            "returncontents": 1,
+            "perpage": 10000
         }
 
         data = self.request(params)
@@ -178,8 +184,8 @@ class UserManager(th.Thread):
                 self.logger.error(f"Failed to get fields! Fields with id as integer expected ...")
                 return False
 
-        self.fields = data["fields"][0]["id"], data["fields"][1]["id"], data["fields"][2]["id"]
-        self.logger.debug(f"Parsed fields {self.fields[0]}, {self.fields[1]}, {self.fields[2]}.")
+        self.fields = data["fields"][0]["id"], data["fields"][1]["id"], data["fields"][2]["id"], data["fields"][3]["id"]
+        self.logger.debug(f"Parsed fields {self.fields[0]}, {self.fields[1]}, {self.fields[2]}, {self.fields[3]}.")
 
         self.logger.info("Received and decoded fields from database.")
 
@@ -199,7 +205,9 @@ class UserManager(th.Thread):
             "data[1][fieldid]": self.fields[1],
             "data[1][value]": player.time,
             "data[2][fieldid]": self.fields[2],
-            "data[2][value]": f'"{player.name}"'
+            "data[2][value]": f'"{player.name}"',
+            "data[3][fieldid]": self.fields[3],
+            "data[3][value]": f'"{player.ratings}"'
         }
 
         data = self.request(params)
@@ -211,6 +219,19 @@ class UserManager(th.Thread):
             return None
 
         self.logger.info("Entry successfully updated.")
+
+    def refresh_time(self) -> None:
+        last_refresh = dt.datetime.fromtimestamp(self.main.user_config.last_refresh)
+        now = dt.datetime.now()
+        if (last_refresh - dt.timedelta(last_refresh.weekday())).date() != (now - dt.timedelta(now.weekday())).date():
+
+            self.main.user_config.last_refresh = int(now.timestamp())
+
+            self.logger.info("Refresh time ...")
+
+            for player in self.players:
+                if self.is_admin(player.user_id):
+                    player.time = self.main.main_config.account_default_time
 
     def load(self) -> None:
 
@@ -318,7 +339,7 @@ class UserManager(th.Thread):
                     entry["contents"][2]["content"],
                     entry["timecreated"],
                     None if entry["contents"][1]["content"] is None else int(entry["contents"][1]["content"]),
-                    {}
+                    {} if entry["contents"][3]["content"] is None else json.loads(str(entry["contents"][3]["content"]).replace("'", '"'))
                 )
                 user = User(
                     entry["userid"],
@@ -349,9 +370,11 @@ class UserManager(th.Thread):
                 new = True
             else:
                 self.get_player_by_id(player.id).name = player.name
+                self.get_player_by_id(player.id).ratings = player.ratings | self.get_player_by_id(player.id).ratings
                 deleted_players.remove(player.id)
 
-            if (self.get_player_by_id(player.id).time != player.time) or new:
+            if (self.get_player_by_id(player.id).time != player.time) or new or \
+                    (self.get_player_by_id(player.id).ratings != player.ratings):
                 if self.fields is not None:
                     self.update_time(self.get_player_by_id(player.id))
 
@@ -399,7 +422,7 @@ class UserManager(th.Thread):
                 scene.success = value
                 scene.status = 3
                 scene.status_update = scene.tick
-                continue
+                break
 
             self.fast_update = True
 
@@ -449,7 +472,7 @@ class UserManager(th.Thread):
         self.main.user_config.save()
 
         self.db_id = self.main.main_config.database_id
-        self.token = self.main.main_config.auth_token
+        self.token = self.main.main_config.database_auth_token
 
         self.last_update = 0
         self.fast_update = False

@@ -24,7 +24,7 @@ class Main(nc.App):
         super(Main, self).__init__(args,
                                    name="Msp Arcade",
                                    author="Maker Space",
-                                   version="Alpha 1.1.1",
+                                   version="1.0.0",
                                    short_description="A Maker Space project for an arcade machine in the school",
                                    description="This is the main software of the arcade machine, which controls " +
                                    "all games and provides a menu. The gaming machine is a project of the Maker " +
@@ -32,7 +32,7 @@ class Main(nc.App):
                                    details="Database: Lernplattform Mebis Bayern (Moodle)\n\n" +
                                    "DEVELOPERS\n" +
                                    "Management: Andre Scherl\n"
-                                   "Main software: Nikocraft (aka Nikolas)\n" +
+                                   "Main software: Nikogenia (aka Nikolas)\n" +
                                    "Automat:\n" +
                                    "- Valis World (aka Valentin)\n" +
                                    "- Linicus (aka Linus)\n" +

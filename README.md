@@ -8,15 +8,15 @@ Sie soll die einzelnen Spiele verwalten und
 die Schüler auf den Automaten aufmerksam machen._
 
 ### Details
-Projekt Version: _Alpha 1.1.1_\
+Projekt Version: _1.0.0_\
 Programmiersprache: _Python_\
 Sprachen Version: _3.11_\
-Bibliotheken: _Nikocraft, Pygame, ..._\
+Bibliotheken: _Nikocraft, Pygame, OpenCV, PyZbar, Pynput, ..._\
 Datenbank: _Lernplattform Mebis Bayern (Moodle)_
 
 ### Entwickler
 Leitung: Andre Scherl\
-Kernsoftware: Nikolas _(aka Nikocraft)_\
+Kernsoftware: Nikolas _(aka Nikogenia)_\
 Automat:\
 ~ Linus _(aka Linicus)_\
 ~ Valentin _(aka Valis World)_\
