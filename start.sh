@@ -1,2 +1,5 @@
 #!/bin/bash
-tmux new-session -d -s arcade './start_arcade.sh'
+export DISPLAY=:0
+cd /home/maker/MakerSpaceArcade
+source venv/bin/activate
+python main.py
