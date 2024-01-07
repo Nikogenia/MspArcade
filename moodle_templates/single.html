@@ -1,0 +1,79 @@
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+<div class="defaulttemplate"><h4 style="text-align: left;"><strong>Halte den QR-Code vor die
+    Kamera!</strong></h4>
+    <div class="table-responsive" style="text-align: left;" id="qrcode"></div>
+</div>
+<div class="defaulttemplate"><span class="" style="font-size: small;"
+                                   id="playerid">[[ID]]</span><br>
+    <div class="table-responsive">
+        <table style="border-width: 3px; border-style: solid;">
+            <thead>
+            <tr>
+                <th scope="col" style="text-align: right;">&nbsp;Name&nbsp;</th>
+                <th scope="col"><span style="font-weight: normal;">[[Spielername]]&nbsp;</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="text-align: right;"><strong>&nbsp;Nutzer&nbsp;</strong></td>
+                <td>##user##&nbsp;</td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><strong>&nbsp;Zeit&nbsp;</strong></td>
+                <td id="time">[[Zeitkonto]]</td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><strong>&nbsp;Erstellt&nbsp;</strong></td>
+                <td>##timeadded##&nbsp;</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive" style="text-align: left;"><br></div>
+    <div class="table-responsive" style="text-align: left;">##edit## Name bearbeiten</div>
+    <div class="table-responsive" style="text-align: left;">##delete## Account löschen</div>
+    <div class="table-responsive"><br></div>
+    <div class="table-responsive"><em>Hinweise:</em></div>
+    <div class="table-responsive"><em>- Diese Oberfläche funktioniert nicht mit der Moodle App.
+        Bitte verwende die offizielle Website der Lernplattform!</em></div>
+    <div class="table-responsive"><em>- Wenn ein Account gelöscht und erneut erstellt wird, wird die
+        Zeit des neuen Accounts für eine Woche nicht aufgeladen!</em></div>
+    <div class="table-responsive"><em><br></em></div>
+    <div class="table-responsive"><em><br></em></div>
+    <div class="table-responsive" style="text-align: center;"><span>Maker Space&nbsp;© 2023</span>
+    </div>
+    <div class="table-responsive" style="text-align: center;"><span>Bodensee-Gymnasium Lindau</span>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var toHHMMSS = (secs) => {
+        var sec_num = parseInt(secs, 10)
+        var hours   = Math.floor(sec_num / 3600)
+        var minutes = Math.floor(sec_num / 60) % 60
+        var seconds = sec_num % 60
+
+        return [hours,minutes,seconds]
+            .map(v => v < 10 ? "0" + v : v)
+            .filter((v,i) => v !== "00" || i > 0)
+            .join(":")
+    }
+
+    let playeridfield = document.querySelector("#playerid");
+    let playerid = playeridfield.innerHTML;
+    new QRCode(document.querySelector("#qrcode"), {
+    text: playerid,
+    width: 250,
+    height: 250,
+    correctLevel: QRCode.CorrectLevel.H
+    });
+
+    let timefield = document.querySelector("#time");
+    if (timefield.innerHTML == "") {
+    timefield.innerHTML = "Initialisiere ..."
+    } else {
+    timefield.innerHTML = toHHMMSS(timefield.innerHTML);
+    }
+</script>

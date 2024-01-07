@@ -1,0 +1,15 @@
+<div class="table-responsive" style="text-align: center;"><p><span><br></span></p>
+    <p><span><span style="">Gib deinen gewünschten Spielernamen ein</span><span
+            style="background-color: var(--color-input-bg-focus); color: var(--color-input-focus); font-size: 1.11111rem;">!</span></span>
+    </p><span><p><span>[[Spielername]]</span></p></span><span id="playerid" style="display:none">[[ID]]</span>
+
+    <script type="text/javascript">
+        let playeridfield = document.querySelector("#playerid input");
+        let playerid = playeridfield.value;
+          playeridfield.type = "hidden";
+        if (playerid == "") {
+          playerid = this.crypto.randomUUID();
+          playeridfield.value = playerid;
+        }
+    </script>
+</div>
