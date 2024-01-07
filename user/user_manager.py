@@ -230,8 +230,7 @@ class UserManager(th.Thread):
             self.logger.info("Refresh time ...")
 
             for player in self.players:
-                if self.is_admin(player.user_id):
-                    player.time = self.main.main_config.account_default_time
+                player.time = self.main.main_config.account_default_time
 
     def load(self) -> None:
 
