@@ -1,30 +1,27 @@
-# MAKER SPACE ARCADE
-Ein MAKER SPACE Projekt für den Arcade Spielautomaten der Schule
+![Arcade Logo](resources/images/arcade_logo.png "Arcade Logo")
+# Msp Arcade
+A Makerspace project for an arcade machine in the school
 
-### Beschreibung
-_Dieses Projekt beinhaltet die Kernsoftware für den Spielautomaten
-des Bodensee Gymnasiums Lindau.
-Sie soll die einzelnen Spiele verwalten und
-die Schüler auf den Automaten aufmerksam machen._
+### Description
+_This is the main software of the arcade machine, which controls
+all games and provides a menu. The gaming machine is a project of the 
+Makerspace for the Bodensee Gymnasium Lindau in Germany._
 
 ### Details
-Projekt Version: _1.0.0_\
-Programmiersprache: _Python_\
-Sprachen Version: _3.11_\
-Bibliotheken: _Nikocraft, Pygame, OpenCV, PyZbar, Pynput, ..._\
-Datenbank: _Lernplattform Mebis Bayern (Moodle)_
+Version: _1.1.0_\
+Author: _Makerspace_\
+Framework: _Nikocraft (v0.0.4)_\
+Database: _Lernplattform Mebis Bayern (Moodle)_
 
-### Entwickler
-Leitung: Andre Scherl\
-Kernsoftware: Nikolas _(aka Nikogenia)_\
-Automat:\
-~ Linus _(aka Linicus)_\
-~ Valentin _(aka Valis World)_\
-~ Alan _(aka Bubiego)_\
+### Team
+Management: Dr. Andre Scherl\
+Software: Nikogenia _(aka Nikolas)_\
+Hardware:\
+~ Valis World _(aka Valentin)_\
+~ Linicus _(aka Linus)_\
 ~ ...\
-Spiele:
-_siehe Spielübersicht_
+Games: _checkout menu_
 
 \
-**MAKER SPACE © 2023**\
-![Bogy Logo](resources/images/bogy_logo.jpg)
+**Makerspace © 2024**\
+![Bogy Logo](resources/images/bogy_logo.jpg "Bogy Logo")

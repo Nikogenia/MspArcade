@@ -23,20 +23,19 @@ class Main(nc.App):
 
         super(Main, self).__init__(args,
                                    name="Msp Arcade",
-                                   author="Maker Space",
+                                   author="Makerspace",
                                    version="1.0.0",
-                                   short_description="A Maker Space project for an arcade machine in the school",
+                                   short_description="A Makerspace project for an arcade machine in the school",
                                    description="This is the main software of the arcade machine, which controls " +
-                                   "all games and provides a menu. The gaming machine is a project of the Maker " +
-                                   "Space for the Bodensee Gymnasium Lindau in Germany.",
+                                   "all games and provides a menu. The gaming machine is a project of the " +
+                                   "Makerspace for the Bodensee Gymnasium Lindau in Germany.",
                                    details="Database: Lernplattform Mebis Bayern (Moodle)\n\n" +
-                                   "DEVELOPERS\n" +
-                                   "Management: Andre Scherl\n"
-                                   "Main software: Nikogenia (aka Nikolas)\n" +
-                                   "Automat:\n" +
+                                   "TEAM\n" +
+                                   "Management: Dr. Andre Scherl\n"
+                                   "Software: Nikogenia (aka Nikolas)\n" +
+                                   "Hardware:\n" +
                                    "- Valis World (aka Valentin)\n" +
                                    "- Linicus (aka Linus)\n" +
-                                   "- Alan (aka Bubiego)\n" +
                                    "- ...\n" +
                                    "Games: checkout menu",
                                    log_path=PATH_LOG,
