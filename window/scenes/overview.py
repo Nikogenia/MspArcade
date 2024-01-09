@@ -195,7 +195,7 @@ class OverviewScene(nc.Scene):
             self.activity_request_tick = 0
 
         # Scene switching
-        if self.tick - self.timeout > 1200:
+        if self.tick - self.timeout > 1500:
             self.window.main.user_manager.current = ""
             self.window.main.game_manager.current = None
             self.window.change_scene("idle", transition_duration=12, transition_pause=7)
@@ -204,7 +204,7 @@ class OverviewScene(nc.Scene):
             self.back_x -= self.dt * 3
 
         # Show activity request
-        if self.tick - self.timeout > 900:
+        if self.tick - self.timeout > 1200:
             self.activity_request_tick_target = 20
 
         # Animate activity request
@@ -218,7 +218,7 @@ class OverviewScene(nc.Scene):
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
-        self.window.debug_screen_left.append(f"Timeout: {1200 - (self.tick - self.timeout):.1f}")
+        self.window.debug_screen_left.append(f"Timeout: {1500 - (self.tick - self.timeout):.1f}")
         self.window.debug_screen_left.append("")
 
     def event(self, event: pg.event.Event) -> None:

@@ -178,7 +178,7 @@ class LoginScene(nc.Scene):
             self.activity_request_tick = 0
 
         # Scene switching
-        if self.tick - self.timeout > 1500:
+        if self.tick - self.timeout > 2000:
             self.window.main.game_manager.current = None
             self.window.change_scene("idle", transition_duration=12, transition_pause=7)
         if self.status == 3:
@@ -198,7 +198,7 @@ class LoginScene(nc.Scene):
             self.back_x -= self.dt * 3
 
         # Show activity request
-        if self.tick - self.timeout > 1200:
+        if self.tick - self.timeout > 1700:
             self.activity_request_tick_target = 20
 
         # Animate activity request
@@ -212,7 +212,7 @@ class LoginScene(nc.Scene):
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
-        self.window.debug_screen_left.append(f"Timeout: {1500 - (self.tick - self.timeout):.1f}")
+        self.window.debug_screen_left.append(f"Timeout: {2000 - (self.tick - self.timeout):.1f}")
         self.window.debug_screen_left.append("")
         if self.camera_size is None:
             self.window.debug_screen_left.append(f"Camera: <off>")

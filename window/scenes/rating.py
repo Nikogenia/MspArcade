@@ -204,14 +204,14 @@ class RatingScene(nc.Scene):
             self.activity_request_tick = 0
 
         # Scene switching
-        if self.tick - self.timeout > 900 or (self.tick - self.save_tick > 30 and self.save_tick):
+        if self.tick - self.timeout > 1200 or (self.tick - self.save_tick > 30 and self.save_tick):
             self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
         if self.back_x != 0:
             self.back_x -= self.dt * 3
 
         # Show activity request
-        if self.tick - self.timeout > 700:
+        if self.tick - self.timeout > 900:
             self.activity_request_tick_target = 20
 
         if self.tick - self.update_tick > 10:
@@ -228,7 +228,7 @@ class RatingScene(nc.Scene):
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
-        self.window.debug_screen_left.append(f"Timeout: {900 - (self.tick - self.timeout):.1f}")
+        self.window.debug_screen_left.append(f"Timeout: {1200 - (self.tick - self.timeout):.1f}")
         self.window.debug_screen_left.append("")
 
     def quit(self) -> None:

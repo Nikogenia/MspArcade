@@ -51,10 +51,12 @@ class PlayScene(nc.Scene):
             else:
                 self.window.change_scene("rating", transition_duration=12, transition_pause=7)
 
-        # Von Valis World
+        # HALL OF FAME
+
+        # by Valis World
         # Hallo Welt
 
-        # Von Linicus
+        # by Linicus
         # Hello World
 
         # Debug screen

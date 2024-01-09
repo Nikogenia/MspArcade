@@ -272,7 +272,7 @@ class MenuScene(nc.Scene):
             self.activity_request_tick = 0
 
         # Scene switching
-        if self.tick - self.timeout > 600:
+        if self.tick - self.timeout > 1200:
             self.window.main.game_manager.current = None
             self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
@@ -281,7 +281,7 @@ class MenuScene(nc.Scene):
             self.details_y += self.dt * 3
 
         # Show activity request
-        if self.tick - self.timeout > 400:
+        if self.tick - self.timeout > 900:
             self.activity_request_tick_target = 20
 
         # Animate activity request
@@ -346,7 +346,7 @@ class MenuScene(nc.Scene):
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
-        self.window.debug_screen_left.append(f"Timeout: {600 - (self.tick - self.timeout):.1f}")
+        self.window.debug_screen_left.append(f"Timeout: {1200 - (self.tick - self.timeout):.1f}")
 
     def event(self, event: pg.event.Event) -> None:
 
