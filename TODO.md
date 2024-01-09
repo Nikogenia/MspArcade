@@ -1,5 +1,6 @@
 - Add listener commands
-- Split configuration
+- Split configuration to config and database
 - Split inputs
 - Game shutdown on quit
-- Fix time exploit
+- Fix time exploit on power loss
+- Fix time refresh admin bug
