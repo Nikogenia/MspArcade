@@ -32,12 +32,10 @@ class Main(nc.App):
                                    details="Database: Lernplattform Mebis Bayern (Moodle)\n\n" +
                                    "TEAM\n" +
                                    "Management: Dr. Andre Scherl\n"
-                                   "Software: Nikogenia (aka Nikolas)\n" +
-                                   "Hardware:\n" +
-                                   "- Valis World (aka Valentin)\n" +
-                                   "- Linicus (aka Linus)\n" +
-                                   "- ...\n" +
-                                   "Games: checkout menu",
+                                   "Software: Nikogenia (Nikolas)\n" +
+                                   "Hardware: Valis World (Valentin)\n" +
+                                   "Assembly: Linicus (Linus)\n" +
+                                   "Games: checkout the menu",
                                    log_path=PATH_LOG,
                                    log_thread=True)
 

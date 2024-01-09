@@ -15,12 +15,10 @@ Database: _Lernplattform Mebis Bayern (Moodle)_
 
 ### Team
 Management: Dr. Andre Scherl\
-Software: Nikogenia _(aka Nikolas)_\
-Hardware:\
-~ Valis World _(aka Valentin)_\
-~ Linicus _(aka Linus)_\
-~ ...\
-Games: _checkout menu_
+Software: Nikogenia _(Nikolas)_\
+Hardware: Valis World _(Valentin)_\
+Assembly: Linicus _(Linus)_\
+Games: _checkout the menu_
 
 \
 **Makerspace © 2024**\
