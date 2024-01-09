@@ -166,12 +166,11 @@ class Window(nc.Window):
 
         # Offline info
         if self.main.main_config.show_offline_warning and not self.main.user_manager.online:
-            font = self.font.get("text", 14)
+            font = self.font.get("text", 16)
             text = font.render("HINWEIS: Die Datenbank kann aktuell nicht erreicht werden!", True, nc.RGB.RED1)
-            black_rect(self.screen, -10, self.height - 50, text.get_width() + 20, 70, 220, True, 1)
-            self.screen.blit(text, (7, self.height - 42))
-            text = font.render("         Neue Registrierungen sind daher nicht verfügbar!", True, nc.RGB.RED1)
-            self.screen.blit(text, (7, self.height - 22))
+            black_rect(self.screen, -10,
+                       self.height - 37, text.get_width() + 20, 50, 220, True, 1)
+            self.screen.blit(text, (7, self.height - 25))
 
         # Help info
         if self.help_tick < 0.85:
@@ -397,7 +396,7 @@ class Window(nc.Window):
         height = 1055 * self.help_tick
 
         black_rect(self.screen, (self.width - width) / 2, (self.height - height) / 2, width, height,
-                   int(self.help_tick * 210), True, math.ceil(self.help_tick * 5), nc.RGB.WHITE * self.help_tick)
+                   int(self.help_tick * 220), True, math.ceil(self.help_tick * 5), nc.RGB.WHITE * self.help_tick)
 
         if self.help_tick != 1:
             return
@@ -425,11 +424,11 @@ class Window(nc.Window):
         draw_button(self.screen, font, 52, 50, 210, HELP_BUTTON)
         draw_button(self.screen, font, 54, 50, 210, ACTIVITY_BUTTON)
 
-        text = font.render("Lesen hilft in den meisten Fällen! Sollten dennoch fragen offenbleiben,", True, nc.RGB.WHITE)
+        text = font.render("Lesen hilft in den meisten Fällen! Sollten dennoch Fragen offenbleiben,", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 270))
         text = font.render("erreicht man uns per E-Mail an \"arcade@nikogenia.de\" oder direkt über", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 310))
-        text = font.render("Microsoft Teams bzw. dem ByCS-Messenger.", True, nc.RGB.WHITE)
+        text = font.render("Microsoft Teams bzw. den ByCS-Messenger.", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 350))
         text = font.render("Viele Grüße wünschen im Namen des Makerspace", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 410))

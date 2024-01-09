@@ -24,7 +24,7 @@ class Main(nc.App):
         super(Main, self).__init__(args,
                                    name="Msp Arcade",
                                    author="Makerspace",
-                                   version="1.0.0",
+                                   version="1.1.0",
                                    short_description="A Makerspace project for an arcade machine in the school",
                                    description="This is the main software of the arcade machine, which controls " +
                                    "all games and provides a menu. The gaming machine is a project of the " +
