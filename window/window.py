@@ -124,6 +124,13 @@ class Window(nc.Window):
         self.help_tick_target: float = 0
         self.help_timeout: float = 0
 
+        # Assets
+        self.down_arrow: pg.Surface = pg.Surface((40, 40))
+        self.up_arrow: pg.Surface = pg.Surface((40, 40))
+        self.left_arrow: pg.Surface = pg.Surface((40, 40))
+        self.right_arrow: pg.Surface = pg.Surface((40, 40))
+        self.github_code: pg.Surface = pg.Surface((155, 155))
+
         # FPS log
         self.fps_log = []
 
@@ -195,16 +202,12 @@ class Window(nc.Window):
                 self.debug_screen_active = not self.debug_screen_active
 
             # Toggle help popup
-            if event.key == pg.K_h:
-                self.help_open = not self.help_open
-                if self.help_open:
+            if not self.help_open:
+                if event.key == pg.K_h:
+                    self.help_open = True
                     self.help_timeout = nc.time.bench_time()
                     self.help_tick_target = 1
-                else:
-                    self.help_tick_target = 0
-
-            # Close help popup
-            if event.key == pg.K_r:
+            else:
                 self.help_open = False
                 self.help_tick_target = 0
 
@@ -220,7 +223,7 @@ class Window(nc.Window):
         elif self.help_tick < self.help_tick_target:
             self.help_tick += self.dt / 13
 
-        if nc.time.bench_time() - self.help_timeout > 25:
+        if nc.time.bench_time() - self.help_timeout > 45:
             self.help_open = False
             self.help_tick_target = 0
 
@@ -263,6 +266,17 @@ class Window(nc.Window):
 
         if self.background_mode == "video":
             th.Thread(target=self.background_thread, name="Background").start()
+
+        self.down_arrow: pg.Surface = pg.transform.smoothscale(
+            pg.image.load(f"{PATH_IMAGE}/down_arrow.png").convert(), (40, 40))
+        self.up_arrow: pg.Surface = pg.transform.smoothscale(
+            pg.image.load(f"{PATH_IMAGE}/up_arrow.png").convert(), (40, 40))
+        self.left_arrow: pg.Surface = pg.transform.smoothscale(
+            pg.image.load(f"{PATH_IMAGE}/left_arrow.png").convert(), (40, 40))
+        self.right_arrow: pg.Surface = pg.transform.smoothscale(
+            pg.image.load(f"{PATH_IMAGE}/right_arrow.png").convert(), (40, 40))
+        self.github_code: pg.Surface = pg.transform.smoothscale(
+            pg.image.load(f"{PATH_IMAGE}/github.png").convert(), (180, 180))
 
     def quit(self) -> None:
 
@@ -393,18 +407,63 @@ class Window(nc.Window):
         self.screen.blit(text, (self.width - text.get_width() - 40, 40))
         draw_button(self.screen, font, 10, self.width - text.get_width() - 40, 40 - 2, HELP_BUTTON)
 
-        y = 35
-
         font = self.font.get("title", 130)
         text = font.render("Hilfe", True, nc.RGB.WHITE)
-        self.screen.blit(text, (50, y))
+        self.screen.blit(text, (50, 35))
+
+        font = self.font.get("text", 24)
+        text = font.render("Verwende die Joysticks, um den Pfeilen zu folgen:", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 150))
+        self.screen.blit(self.left_arrow, (1240, 142))
+        self.screen.blit(self.right_arrow, (1360, 142))
+        self.screen.blit(self.up_arrow, (1300, 122))
+        self.screen.blit(self.down_arrow, (1300, 162))
+
+        text = font.render("Die farbigen Buttons werden mit Punkten markiert:", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 210))
+        draw_button(self.screen, font, 50, 50, 210, CONFIRM_BUTTON)
+        draw_button(self.screen, font, 52, 50, 210, HELP_BUTTON)
+        draw_button(self.screen, font, 54, 50, 210, ACTIVITY_BUTTON)
+
+        text = font.render("Lesen hilft in den meisten Fällen! Sollten dennoch fragen offenbleiben,", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 270))
+        text = font.render("erreicht man uns per E-Mail an \"arcade@nikogenia.de\" oder direkt über", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 310))
+        text = font.render("Microsoft Teams bzw. dem ByCS-Messenger.", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 350))
+        text = font.render("Viele Grüße wünschen im Namen des Makerspace", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 410))
+        text = font.render("Valentin Sutter und Nikolas Beyer", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 450))
+
+        text = font.render("Info: Nach aktuellem Stand ist der Automat ohne Internetverbindung nicht", True, nc.RGB.RED1)
+        self.screen.blit(text, (50, 520))
+        text = font.render("      funktionsfähig. Also nicht wundern, wenn es gerade kein Netz gibt.", True, nc.RGB.RED1)
+        self.screen.blit(text, (50, 560))
 
         font = self.font.get("title", 100)
         text = font.render("Credits", True, nc.RGB.WHITE)
-        self.screen.blit(text, (50, 700))
+        self.screen.blit(text, (50, 610))
 
         font = self.font.get("text", 24)
-        text = font.render("MAKER SPACE © 2023 - Open Source (MIT Licence)", True, nc.RGB.WHITE)
+        text = font.render("Leitung    Dr. Andre Scherl", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 700))
+        text = font.render("Software   Nikolas Beyer (Nikogenia)", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 750))
+        text = font.render("Hardware   Valentin Sutter (Valis World)", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 800))
+        text = font.render("Montage    Linus Scholz (Linicus)", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 850))
+        text = font.render("Spiele     Makerspace (siehe Menü)", True, nc.RGB.WHITE)
+        self.screen.blit(text, (50, 900))
+
+        text = font.render("Github", True, nc.RGB.WHITE)
+        self.screen.blit(text, (1618, 700))
+
+        self.screen.blit(self.github_code, (1600, 750))
+
+        font = self.font.get("text", 24)
+        text = font.render("MAKERSPACE © 2024 - Open Source (MIT Licence)", True, nc.RGB.WHITE)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 980))
         font = self.font.get("text", 16)
         text = font.render("Bodensee-Gymnasium Lindau", True, nc.RGB.WHITE)
