@@ -7,4 +7,3 @@
 
 ### UI
 - Help and credit popup
-- Remove logo
