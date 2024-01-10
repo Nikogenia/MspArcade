@@ -33,7 +33,7 @@ def run(queue: mp.Queue):
     controller.run()
 
 
-# TODO Debug
+# TEST
 if __name__ == '__main__':
     q = mp.Queue()
     mp.Process(target=run, args=(q,), daemon=True).start()

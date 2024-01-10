@@ -4,3 +4,4 @@
 - Game shutdown on quit
 - Fix time exploit on power loss
 - Fix time refresh admin bug
+- Scratch support

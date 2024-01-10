@@ -145,7 +145,7 @@ class LoginScene(nc.Scene):
         self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 690))
         text = font.render("5. Jetzt siehst du deinen        ", True, nc.RGB.WHITE)
         self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 725))
-        text = font.render("   QR-Code, den du zum einloggen ", True, nc.RGB.WHITE)
+        text = font.render("   QR-Code, den du zum Einloggen ", True, nc.RGB.WHITE)
         self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 750))
         text = font.render("   nutzen kannst. Glückwunsch!   ", True, nc.RGB.WHITE)
         self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 775))
