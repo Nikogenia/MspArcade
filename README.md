@@ -8,7 +8,7 @@ all games and provides a menu. The gaming machine is a project of the
 Makerspace for the Bodensee Gymnasium Lindau in Germany._
 
 ### Details
-Version: _1.1.0_\
+Version: _1.2.0_\
 Author: _Makerspace_\
 Framework: _Nikocraft (v0.0.4)_\
 Database: _Lernplattform Mebis Bayern (Moodle)_
