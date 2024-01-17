@@ -17,7 +17,6 @@ Database: _Lernplattform Mebis Bayern (Moodle)_
 Management: Dr. Andre Scherl\
 Software: Nikogenia _(Nikolas)_\
 Hardware: Valis World _(Valentin)_\
-Assembly: Linicus _(Linus)_\
 Games: _checkout the menu_
 
 \
