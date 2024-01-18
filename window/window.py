@@ -451,10 +451,8 @@ class Window(nc.Window):
         self.screen.blit(text, (50, 750))
         text = font.render("Hardware   Valentin Sutter (Valis World)", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 800))
-        text = font.render("Montage    Linus Scholz (Linicus)", True, nc.RGB.WHITE)
-        self.screen.blit(text, (50, 850))
         text = font.render("Spiele     Makerspace (siehe Menü)", True, nc.RGB.WHITE)
-        self.screen.blit(text, (50, 900))
+        self.screen.blit(text, (50, 850))
 
         text = font.render("Github", True, nc.RGB.WHITE)
         self.screen.blit(text, (1618, 700))
