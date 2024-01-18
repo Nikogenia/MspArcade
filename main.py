@@ -9,7 +9,7 @@ import nikocraft as nc
 
 # Local
 from constants import *
-from configs import MainConfig, GameConfig, UserConfig
+from configs import MainConfig, GameConfig, UserConfig, CacheConfig
 from window.window import Window
 from user.user_manager import UserManager
 from game.game_manager import GameManager
@@ -34,7 +34,6 @@ class Main(nc.App):
                                    "Management: Dr. Andre Scherl\n"
                                    "Software: Nikogenia (Nikolas)\n" +
                                    "Hardware: Valis World (Valentin)\n" +
-                                   "Assembly: Linicus (Linus)\n" +
                                    "Games: checkout the menu",
                                    log_path=PATH_LOG,
                                    log_thread=True)
@@ -50,8 +49,9 @@ class Main(nc.App):
         self.main_config: MainConfig = MainConfig(self.logger)
         self.game_config: GameConfig = GameConfig(self.logger)
         self.user_config: UserConfig = UserConfig(self.logger)
+        self.cache_config: CacheConfig = CacheConfig(self.logger)
         self.logger.info("Backup configs ...")
-        for conf in (self.main_config, self.game_config, self.user_config):
+        for conf in (self.main_config, self.game_config, self.user_config, self.cache_config):
             try:
                 self.logger.debug(f"Copy config '{conf.path}' to '{PATH_CONFIG_BACKUP}' ...")
                 shutil.copy(conf.path, PATH_CONFIG_BACKUP)
@@ -61,9 +61,11 @@ class Main(nc.App):
         self.main_config.load()
         self.game_config.load()
         self.user_config.load()
+        self.cache_config.load()
         self.main_config.save()
         self.game_config.save()
         self.user_config.save()
+        self.cache_config.save()
 
         # Initialize window
         self.window = Window(self)
@@ -124,7 +126,7 @@ class Main(nc.App):
 
         # Save configs
         self.logger.info("Save configs ...")
-        self.user_config.save()
+        self.cache_config.save()
 
     def handle_crash(self):
 

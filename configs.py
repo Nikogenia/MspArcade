@@ -93,10 +93,17 @@ class UserConfig(nc.Config):
 
         super(UserConfig, self).__init__(f"{PATH_CONFIG}/user.json", logger)
 
-        self.users: list[dict[str, Any]] = []
-        self.players: list[dict[str, Any]] = []
-
         self.admins: list[int] = []
         self.banned: list[int] = []
+
+
+class CacheConfig(nc.Config):
+
+    def __init__(self, logger):
+
+        super(CacheConfig, self).__init__(f"{PATH_CONFIG}/cache.json", logger)
+
+        self.users: list[dict[str, Any]] = []
+        self.players: list[dict[str, Any]] = []
 
         self.last_refresh: int = 0
