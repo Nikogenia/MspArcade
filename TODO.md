@@ -1,7 +1,9 @@
 - Add listener commands
 - Split configuration to config and database
-- Split inputs
 - Game shutdown on quit
 - Fix time exploit on power loss
 - Fix time refresh admin bug
+- Fix help screen bug
+- Remove antimicro
+- Update inputs
 - Scratch support
