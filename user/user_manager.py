@@ -99,7 +99,7 @@ class UserManager(th.Thread):
     def request(self, params: dict) -> dict | None:
 
         try:
-            response = rq.post(DATABASE_URL, params=params, timeout=2)
+            response = rq.post(self.main.main_config.database_url, params=params, timeout=2)
         except (rq.ConnectionError, rq.Timeout, TimeoutError) as e:
             self.logger.error("Failed to connect to database! Error message:")
             self.logger.error(e)
@@ -231,6 +231,8 @@ class UserManager(th.Thread):
 
             for player in self.players:
                 player.time = self.main.main_config.account_default_time
+                if self.is_admin(player.user_id):
+                    player.time = 86400
 
     def load(self) -> None:
 
@@ -238,7 +240,7 @@ class UserManager(th.Thread):
 
         self.users.clear()
 
-        for data in self.main.user_config.users:
+        for data in self.main.cache_config.users:
             user = User.from_json(data, self.logger)
             if user is None:
                 self.logger.warning("Failed to load a user!")
@@ -252,7 +254,7 @@ class UserManager(th.Thread):
 
         self.players.clear()
 
-        for data in self.main.user_config.players:
+        for data in self.main.cache_config.players:
             player = Player.from_json(data, self.logger, self.main.main_config.account_default_time)
             if player is None:
                 self.logger.warning("Failed to load a player!")
@@ -306,17 +308,17 @@ class UserManager(th.Thread):
 
         self.logger.info("Save users to config ...")
 
-        self.main.user_config.users.clear()
+        self.main.cache_config.users.clear()
 
         for user in self.users:
-            self.main.user_config.users.append(user.json())
+            self.main.cache_config.users.append(user.json())
 
         self.logger.info("Save players to config ...")
 
-        self.main.user_config.players.clear()
+        self.main.cache_config.players.clear()
 
         for player in self.players:
-            self.main.user_config.players.append(player.json())
+            self.main.cache_config.players.append(player.json())
 
     def update(self, data: dict) -> None:
 
@@ -362,6 +364,8 @@ class UserManager(th.Thread):
                 self.logger.debug(f"New player {player.id} [{player.auth_id}] ({player.name}) added.")
                 if player.time is None:
                     player.time = self.main.main_config.account_default_time
+                    if self.is_admin(player.user_id):
+                        player.time = 86400
                     if self.get_user(player.user_id) is not None and \
                             nc.time.epoch_time() - self.get_user(player.user_id).last_login < self.main.main_config.account_reset_timeout:
                         player.time = 0
@@ -468,7 +472,7 @@ class UserManager(th.Thread):
     def do_reload(self):
 
         self.save()
-        self.main.user_config.save()
+        self.main.cache_config.save()
 
         self.db_id = self.main.main_config.database_id
         self.token = self.main.main_config.database_auth_token
@@ -480,7 +484,7 @@ class UserManager(th.Thread):
 
         self.current = ""
 
-        self.main.user_config.load()
+        self.main.cache_config.load()
         self.load()
 
         self.reload = False

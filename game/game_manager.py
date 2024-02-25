@@ -24,7 +24,7 @@ export DISPLAY=:0
 sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/kiosk/.config/chromium/Default/Preferences
 sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' /home/kiosk/.config/chromium/Default/Preferences
 
-exec /usr/bin/chromium-browser --window-size=1920,1080 --kiosk --window-position=0,0 #URL#
+exec /usr/bin/chromium --window-size=1920,1080 --kiosk --window-position=0,0 #URL#
 """
 
 
@@ -88,17 +88,14 @@ class GameManager(th.Thread):
                         player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
                         if player is None:
                             break
-                        admin = self.main.user_manager.is_admin(player.user_id)
-                        if admin is None:
-                            break
+                        admin = self.main.user_manager.is_admin(player.user_id) or \
+                            player.user_id in self.current.owners
                         if player.time <= 0:
                             self.close_browser()
                         else:
-                            if admin:
-                                player.time = 86400
-                            else:
+                            if not admin:
                                 player.time -= 1
-                            self.time_display_queue.put(player.time)
+                            self.time_display_queue.put(86400 if admin else player.time)
                             nc.time.wait(1)
 
                     self.time_display_queue.put("QUIT")

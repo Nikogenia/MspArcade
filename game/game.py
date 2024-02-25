@@ -14,7 +14,7 @@ class Game:
     short_description_split: int
     description: str
     author: str
-    owners: list[str]
+    owners: list[int]
     image_name: str
     data: dict[str, Any]
 
@@ -44,7 +44,7 @@ class Game:
             "short_description_split": ((), int),
             "description": ((), str),
             "author": ((), str),
-            "owners": ((), list[str]),
+            "owners": ((), list[int]),
             "image_name": ((), str),
             "url": (("web", "makecode", "scratch"), str)
         }
