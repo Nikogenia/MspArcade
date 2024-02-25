@@ -18,16 +18,17 @@ class MainConfig(nc.Config):
 
         super(MainConfig, self).__init__(f"{PATH_CONFIG}/main.json", logger)
 
+        self.database_url: str = "https://lernplattform.mebis.bycs.de/webservice/rest/server.php?"
         self.database_id: str = ""
         self.database_auth_token: str = ""
         self.database_auto_update: int = 300
-        self.database_fast_update: int = 22
+        self.database_fast_update: int = 10
 
         self.background_mode: str = "image"
         self.background_file_name: str = "background.png"
 
         self.listener_port: int = 42000
-        self.listener_key: str = "DefaultKey"
+        self.listener_key: str = "makerspace"
 
         self.debug_screen_show_default: bool = False
         self.debug_screen_show_users: bool = False
@@ -44,9 +45,7 @@ class MainConfig(nc.Config):
 
         self.show_offline_warning: bool = True
 
-        self.restart_on_crash: bool = True
-
-        self.email_send: bool = False
+        self.email_active: bool = False
         self.email_server_address: str = ""
         self.email_server_port: int = 465
         self.email_server_user: str = ""

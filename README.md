@@ -3,21 +3,21 @@
 A Makerspace project for an arcade machine in the school
 
 ### Description
-_This is the main software of the arcade machine, which controls
+This is the main software of the arcade machine, which controls
 all games and provides a menu. The gaming machine is a project of the 
-Makerspace for the Bodensee Gymnasium Lindau in Germany._
+Makerspace for the Bodensee Gymnasium Lindau in Germany.
 
 ### Details
-Version: _1.2.0_\
-Author: _Makerspace_\
-Framework: _Nikocraft (v0.0.4)_\
-Database: _Lernplattform Mebis Bayern (Moodle)_
+Version: 1.2.0\
+Author: Makerspace\
+Framework: Nikocraft (v0.0.4)\
+Database: Lernplattform Mebis Bayern (Moodle)
 
 ### Team
 Management: Dr. Andre Scherl\
-Software: Nikogenia _(Nikolas)_\
-Hardware: Valis World _(Valentin)_\
-Games: _checkout the menu_
+Software: Nikogenia (Nikolas Beyer)\
+Hardware: Valis World (Valentin Sutter)\
+Games: checkout the menu
 
 \
 **Makerspace © 2024**\
