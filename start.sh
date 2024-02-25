@@ -1,5 +1,5 @@
 #!/bin/bash
 export DISPLAY=:0
-cd /home/maker/MspArcade
+cd /home/maker/MspArcade || exit
 source venv/bin/activate
-python main.py
+python3 main.py

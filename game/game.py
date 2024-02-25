@@ -44,7 +44,7 @@ class Game:
             "short_description_split": ((), int),
             "description": ((), str),
             "author": ((), str),
-            "owners": ((), list[int]),
+            "owners": ((), list),
             "image_name": ((), str),
             "url": (("web", "makecode", "scratch"), str)
         }

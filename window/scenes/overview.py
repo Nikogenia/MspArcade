@@ -172,7 +172,7 @@ class OverviewScene(nc.Scene):
         text = font.render(content, True, nc.RGB.WHITE if self.player.time > 5 else nc.RGB.INDIANRED1)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
         if self.player.time > 5:
-            draw_button(self.screen, font, 21, (self.width - text.get_width()) / 2, height, CONFIRM_BUTTON)
+            draw_button(self.screen, font, 21, (self.width - text.get_width()) / 2, height, BUTTON_A_COLOR)
 
         # Render activity request
         if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
@@ -184,7 +184,7 @@ class OverviewScene(nc.Scene):
             font = self.window.font.get("text", 35)
             text = font.render("Bestätige deine Anwesenheit mit  !", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
-            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, ACTIVITY_BUTTON)
+            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, BUTTON_C_COLOR)
 
     def update(self) -> None:
 
@@ -238,7 +238,7 @@ class OverviewScene(nc.Scene):
                 if self.player.time > 5:
                     self.window.change_scene("play", transition_duration=12, transition_pause=7)
 
-            if event.key == pg.K_r:
+            if event.key == pg.K_m:
                 self.window.main.user_manager.current = ""
                 self.window.main.game_manager.current = None
                 self.window.change_scene("idle", transition_duration=12, transition_pause=7)

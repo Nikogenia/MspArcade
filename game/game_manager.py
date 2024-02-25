@@ -21,10 +21,10 @@ if TYPE_CHECKING:
 CODE = """
 export DISPLAY=:0
 
-sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/kiosk/.config/chromium/Default/Preferences
-sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' /home/kiosk/.config/chromium/Default/Preferences
+sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/maker/.config/chromium/Default/Preferences
+sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' /home/maker/.config/chromium/Default/Preferences
 
-exec /usr/bin/chromium --window-size=1920,1080 --kiosk --window-position=0,0 #URL#
+exec /usr/bin/chromium --start-fullscreen #URL#
 """
 
 
@@ -78,7 +78,8 @@ class GameManager(th.Thread):
                 if self.start_game:
 
                     self.logger.info(f"Start game '{self.current.name}' ...")
-                    self.open_browser()
+                    if self.current.type in ("web", "makecode", "scratch"):
+                        self.open_browser()
                     self.start_game = False
                     self.main.window.background_video_update = False
 
@@ -91,7 +92,8 @@ class GameManager(th.Thread):
                         admin = self.main.user_manager.is_admin(player.user_id) or \
                             player.user_id in self.current.owners
                         if player.time <= 0:
-                            self.close_browser()
+                            if self.current.type in ("web", "makecode", "scratch"):
+                                self.close_browser()
                         else:
                             if not admin:
                                 player.time -= 1

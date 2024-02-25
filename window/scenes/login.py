@@ -170,7 +170,7 @@ class LoginScene(nc.Scene):
             font = self.window.font.get("text", 35)
             text = font.render("Bestätige deine Anwesenheit mit  !", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
-            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, ACTIVITY_BUTTON)
+            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, BUTTON_C_COLOR)
 
     def update(self) -> None:
 
@@ -242,7 +242,7 @@ class LoginScene(nc.Scene):
             if event.key == pg.K_LEFT:
                 self.window.change_scene(self.args["back"], transition_duration=12, transition_pause=7)
                 self.back_x = -1
-            if event.key == pg.K_r:
+            if event.key == pg.K_m:
                 self.window.main.game_manager.current = None
                 self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 

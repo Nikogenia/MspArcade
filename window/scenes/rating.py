@@ -175,7 +175,7 @@ class RatingScene(nc.Scene):
         text = font.render(info, True, nc.RGB.WHITE)
         self.screen.blit(text, (1362 - text.get_width() / 2, 780))
         if info == "Speichern  ":
-            draw_button(self.screen, font, 10, 1362 - text.get_width() / 2, 780, CONFIRM_BUTTON)
+            draw_button(self.screen, font, 10, 1362 - text.get_width() / 2, 780, BUTTON_A_COLOR)
 
         # Rating prompt
         font = self.window.font.get("text", 35)
@@ -193,7 +193,7 @@ class RatingScene(nc.Scene):
             font = self.window.font.get("text", 35)
             text = font.render("Bestätige deine Anwesenheit mit  !", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
-            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, ACTIVITY_BUTTON)
+            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, BUTTON_C_COLOR)
 
     def update(self) -> None:
 
@@ -251,7 +251,7 @@ class RatingScene(nc.Scene):
                 if self.stars:
                     self.window.main.user_manager.set_rating(self.player.auth_id, self.game.id, self.stars)
                     self.save_tick = self.tick
-            if event.key == pg.K_r:
+            if event.key == pg.K_m:
                 self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 
             if event.key == pg.K_UP:

@@ -92,7 +92,7 @@ class BannedScene(nc.Scene):
             font = self.window.font.get("text", 35)
             text = font.render("Bestätige deine Anwesenheit mit  !", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
-            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, ACTIVITY_BUTTON)
+            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, BUTTON_C_COLOR)
 
     def update(self) -> None:
 

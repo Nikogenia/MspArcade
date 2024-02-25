@@ -116,7 +116,7 @@ class MenuScene(nc.Scene):
         height = math.sin(self.tick / 10) * 15 + 960
         text = font.render("Wähle mit   ein Spiel aus!", True, nc.RGB.WHITE)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
-        draw_button(self.screen, font, 10, (self.width - text.get_width()) / 2, height, CONFIRM_BUTTON)
+        draw_button(self.screen, font, 10, (self.width - text.get_width()) / 2, height, BUTTON_A_COLOR)
 
         # Render activity request
         if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
@@ -128,7 +128,7 @@ class MenuScene(nc.Scene):
             font = self.window.font.get("text", 35)
             text = font.render("Bestätige deine Anwesenheit mit  !", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
-            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, ACTIVITY_BUTTON)
+            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, BUTTON_C_COLOR)
 
     def render_menu(self) -> None:
 
@@ -360,7 +360,7 @@ class MenuScene(nc.Scene):
             if event.key == pg.K_RETURN:
                 self.window.change_scene("login", {"back": "menu"}, transition_duration=12, transition_pause=7)
 
-            if event.key == pg.K_r:
+            if event.key == pg.K_m:
                 self.window.main.game_manager.current = None
                 self.window.change_scene("idle", transition_duration=12, transition_pause=7)
 

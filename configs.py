@@ -90,6 +90,7 @@ class GameConfig(nc.Config):
                 "short_description_split": 0,
                 "description": "This is a template game!",
                 "author": "Makerspace",
+                "owners": [],
                 "image_name": "Template.png",
                 "url": "https://www.bodensee-gymnasium.de/"
             }

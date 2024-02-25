@@ -125,7 +125,7 @@ class DetailsScene(nc.Scene):
         height = math.sin(self.tick / 10) * 15 + 950
         text = font.render("Drücke  , um mit diesem Spiel fortzufahren!", True, nc.RGB.WHITE)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
-        draw_button(self.screen, font, 7, (self.width - text.get_width()) / 2, height, CONFIRM_BUTTON)
+        draw_button(self.screen, font, 7, (self.width - text.get_width()) / 2, height, BUTTON_A_COLOR)
 
         # Render activity request
         if self.activity_request_tick != self.activity_request_tick_target or self.activity_request_tick == 20:
@@ -137,7 +137,7 @@ class DetailsScene(nc.Scene):
             font = self.window.font.get("text", 35)
             text = font.render("Bestätige deine Anwesenheit mit  !", True, nc.RGB.WHITE)
             self.screen.blit(text, ((self.width - text.get_width()) / 2, height + 140))
-            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, ACTIVITY_BUTTON)
+            draw_button(self.screen, font, 32, (self.width - text.get_width()) / 2, height + 140, BUTTON_C_COLOR)
 
     def update(self) -> None:
 
@@ -186,6 +186,6 @@ class DetailsScene(nc.Scene):
                 self.back_x = -1
             if event.key == pg.K_RETURN:
                 self.window.change_scene("login", {"back": "details"}, transition_duration=12, transition_pause=7)
-            if event.key == pg.K_r:
+            if event.key == pg.K_m:
                 self.window.main.game_manager.current = None
                 self.window.change_scene("idle", transition_duration=12, transition_pause=7)

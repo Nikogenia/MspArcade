@@ -7,8 +7,12 @@ This is the main software of the arcade machine, which controls
 all games and provides a menu. The gaming machine is a project of the 
 Makerspace for the Bodensee Gymnasium Lindau in Germany.
 
+### Trailer
+Here is a trailer of our project:\
+https://www.youtube.com/watch?v=8V85Eo9Pjnc
+
 ### Details
-Version: 1.2.0\
+Version: 1.3.0\
 Author: Makerspace\
 Framework: Nikocraft (v0.0.4)\
 Database: Lernplattform Mebis Bayern (Moodle)
@@ -17,7 +21,7 @@ Database: Lernplattform Mebis Bayern (Moodle)
 Management: Dr. Andre Scherl\
 Software: Nikogenia (Nikolas Beyer)\
 Hardware: Valis World (Valentin Sutter)\
-Games: checkout the menu
+Games: Makerspace (see menu)
 
 \
 **Makerspace © 2024**\
