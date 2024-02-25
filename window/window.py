@@ -415,7 +415,7 @@ class Window(nc.Window):
         font = self.font.get("text", 40)
         text = font.render("Schließen  ", True, nc.RGB.WHITE)
         self.screen.blit(text, (self.width - text.get_width() - 40, 40))
-        draw_button(self.screen, font, 10, self.width - text.get_width() - 40, 40 - 2, HELP_BUTTON)
+        draw_button(self.screen, font, 10, self.width - text.get_width() - 40, 40 - 2, BUTTON_D_COLOR)
 
         font = self.font.get("title", 130)
         text = font.render("Hilfe", True, nc.RGB.WHITE)

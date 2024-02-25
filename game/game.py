@@ -14,6 +14,7 @@ class Game:
     short_description_split: int
     description: str
     author: str
+    owners: list[str]
     image_name: str
     data: dict[str, Any]
 
@@ -27,6 +28,7 @@ class Game:
             "short_description_split": self.short_description_split,
             "description": self.description,
             "author": self.author,
+            "owners": self.owners,
             "image_name": self.image_name
         } | self.data
 
@@ -35,15 +37,16 @@ class Game:
 
         # Name: Required, Type
         fields = {
-            "id": ("", int),
-            "name": ("", str),
-            "type": ("", str),
-            "short_description": ("", str),
-            "short_description_split": ("", int),
-            "description": ("", str),
-            "author": ("", str),
-            "image_name": ("", str),
-            "url": ("web", str)
+            "id": ((), int),
+            "name": ((), str),
+            "type": ((), str),
+            "short_description": ((), str),
+            "short_description_split": ((), int),
+            "description": ((), str),
+            "author": ((), str),
+            "owners": ((), list[str]),
+            "image_name": ((), str),
+            "url": (("web", "makecode", "scratch"), str)
         }
 
         # Additional data
@@ -54,7 +57,7 @@ class Game:
         for f_name, f_data in fields.items():
 
             # Required field
-            if f_data[0] in ("", game_type):
+            if [t for t in f_data[0] if t == game_type] or not f_data[0]:
 
                 # Field not available
                 if f_name not in json:
@@ -73,8 +76,8 @@ class Game:
                     return None
 
                 # Check for additional field
-                if f_data[0] != "":
+                if not f_data[0]:
                     data[f_name] = json[f_name]
 
         return cls(json["id"], json["name"], json["type"], json["short_description"], json["short_description_split"],
-                   json["description"], json["author"], json["image_name"], data)
+                   json["description"], json["author"], json["owners"], json["image_name"], data)
