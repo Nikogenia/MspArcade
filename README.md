@@ -1,5 +1,5 @@
 ![Arcade Logo](resources/images/arcade_logo.png "Arcade Logo")
-# Msp Arcade
+# Makerspace Arcade
 A Makerspace project for an arcade machine in the school
 
 ### Description

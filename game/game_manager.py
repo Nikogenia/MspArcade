@@ -9,6 +9,7 @@ import os
 
 # External
 import nikocraft as nc
+from pynput.mouse import Controller as MouseController
 
 # Local
 from configs import ConfigError
@@ -80,6 +81,11 @@ class GameManager(th.Thread):
                     self.logger.info(f"Start game '{self.current.name}' ...")
                     if self.current.type in ("web", "makecode", "scratch"):
                         self.open_browser()
+                    if self.current.type == "makecode":
+                        mouse = MouseController()
+                        mouse.move(-10, -10)
+                        nc.time.wait(0.1)
+                        mouse.move(10, 10)
                     self.start_game = False
                     self.main.window.background_video_update = False
 

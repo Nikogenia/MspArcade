@@ -320,6 +320,8 @@ class UserManager(th.Thread):
         for player in self.players:
             self.main.cache_config.players.append(player.json())
 
+        self.main.cache_config.save()
+
     def update(self, data: dict) -> None:
 
         self.logger.info("Update and merge data into database ...")
