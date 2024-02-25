@@ -46,23 +46,33 @@ class MainConfig(nc.Config):
         self.show_offline_warning: bool = True
 
         self.email_active: bool = False
-        self.email_server_address: str = ""
+        self.email_server_address: str = "mail.nikogenia.de"
         self.email_server_port: int = 465
-        self.email_server_user: str = ""
+        self.email_server_user: str = "arcade@nikogenia.de"
         self.email_server_password: str = ""
-        self.email_sender: str = ""
-        self.email_targets: list[str] = []
+        self.email_sender: str = "arcade@nikogenia.de"
+        self.email_targets: list[str] = [
+            "arcade@nikogenia.de"
+        ]
 
-        self.key_left: str = "j"
-        self.key_right: str = "l"
-        self.key_up: str = "i"
-        self.key_down: str = "k"
-        self.key_reset: str = "n"
-        self.key_quit: str = "m"
-        self.key_b1: str = "x"
-        self.key_b2: str = "c"
-        self.key_b3: str = "v"
-        self.key_b4: str = "b"
+        self.key_p1_up: str = "w"
+        self.key_p1_left: str = "a"
+        self.key_p1_down: str = "s"
+        self.key_p1_right: str = "d"
+        self.key_p1_a: str = "q"
+        self.key_p1_b: str = "e"
+        self.key_p1_c: str = "g"
+        self.key_p1_d: str = "f"
+        self.key_p2_up: str = "i"
+        self.key_p2_left: str = "j"
+        self.key_p2_down: str = "k"
+        self.key_p2_right: str = "l"
+        self.key_p2_a: str = "u"
+        self.key_p2_b: str = "o"
+        self.key_p2_c: str = "r"
+        self.key_p2_d: str = "p"
+        self.key_quit: str = "t"
+        self.key_reset: str = "z"
 
 
 class GameConfig(nc.Config):
@@ -78,8 +88,8 @@ class GameConfig(nc.Config):
                 "type": "web",
                 "short_description": "Hello World",
                 "short_description_split": 0,
-                "description": "This is a cool game!",
-                "author": "Maker Space",
+                "description": "This is a template game!",
+                "author": "Makerspace",
                 "image_name": "Template.png",
                 "url": "https://www.bodensee-gymnasium.de/"
             }

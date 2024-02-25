@@ -27,7 +27,7 @@ class Listener(th.Thread):
         self.port: int = self.main.main_config.listener_port
         self.key: str = self.main.main_config.listener_key
 
-        if self.key == "DefaultKey":
+        if self.key == "makerspace":
             self.logger.warning("Using default key for listening! Please change for safety!")
 
         self.conn_listener: ConnectionListener | None = None
@@ -108,7 +108,7 @@ class Listener(th.Thread):
             self.logger.info("Connection successful! Restart ...")
             conn.send((0, ""))
             self.main.running = False
-            self.main.exit_code = 2
+            self.main.exit_code = 1
 
         elif task["type"].lower() == "reload":
             self.logger.info("Connection successful! Reload ...")
@@ -117,6 +117,7 @@ class Listener(th.Thread):
             nc.time.wait(0.1)
             self.main.main_config.load()
             self.main.game_config.load()
+            self.main.user_config.load()
             self.main.game_manager.reload = True
             self.main.user_manager.reload = True
             self.reload = True
@@ -157,7 +158,7 @@ class Listener(th.Thread):
         self.port: int = self.main.main_config.listener_port
         self.key: str = self.main.main_config.listener_key
 
-        if self.key == "DefaultKey":
+        if self.key == "makerspace":
             self.logger.warning("Using default key for listening! Please change for safety!")
 
         self.logger.info(f"Close listener ...")

@@ -96,16 +96,30 @@ class Main(nc.App):
             self.window.open()
 
         except Exception:
+
+            # Handle crash
             self.handle_crash()
+
+            # Quit window
             self.logger.info("Close window ...")
             self.window.scene.quit()
             self.window.scene.deactivate_event_hooks()
             self.window.quit()
+
         except KeyboardInterrupt:
+
+            # Log warning
             self.logger.warning("Keyboard interrupted! Shutting down!")
-            self.logger.info("Close window ...")
+
+            # Quit all components
             self.running = False
             self.window.running = False
+            self.game_manager.running = False
+            self.user_manager.running = False
+            self.listener.running = False
+
+            # Quit window
+            self.logger.info("Close window ...")
             self.window.scene.quit()
             self.window.scene.deactivate_event_hooks()
             self.window.quit()
@@ -137,11 +151,7 @@ class Main(nc.App):
         self.logger.critical("\n" +
                              "----------------------------------------\n" +
                              "       CRITICAL UNEXPECTED ERROR\n" +
-                             (
-                                "                Restart\n"
-                                if self.main_config.restart_on_crash else
-                                "                 Exit\n"
-                             ) +
+                             "                 Exit\n" +
                              "----------------------------------------\n" +
                              tb.format_exc() +
                              "----------------------------------------")
@@ -153,8 +163,8 @@ class Main(nc.App):
         self.user_manager.running = False
         self.listener.running = False
 
-        # Send email, if activated
-        if self.main_config.email_send:
+        # Send email
+        if self.main_config.email_active:
             email_utils.send_error(self.main_config, tb.format_exc().strip("\n"))
 
 
@@ -169,13 +179,8 @@ def main():
     # Start main
     exit_code = m.start()
 
-    # Check for restart
-    if exit_code == 2 or (exit_code == 1 and m.main_config.restart_on_crash and nc.time.run_time() > 8):
-        print("")
-        print("RESTART")
-        print("")
-        nc.time.wait(3)
-        main()
+    # Exit
+    sys.exit(exit_code)
 
 
 # Main

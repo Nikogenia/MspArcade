@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    key = "DefaultKey" if args.key == "-" else args.key
+    key = "makerspace" if args.key == "-" else args.key
 
     if args.verbose:
         print(f"Try to open connection with port {args.port} ...")

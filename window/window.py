@@ -129,7 +129,8 @@ class Window(nc.Window):
         self.up_arrow: pg.Surface = pg.Surface((40, 40))
         self.left_arrow: pg.Surface = pg.Surface((40, 40))
         self.right_arrow: pg.Surface = pg.Surface((40, 40))
-        self.github_code: pg.Surface = pg.Surface((155, 155))
+        self.github_code: pg.Surface = pg.Surface((180, 180))
+        self.youtube_code: pg.Surface = pg.Surface((180, 180))
 
         # FPS log
         self.fps_log = []
@@ -142,17 +143,25 @@ class Window(nc.Window):
         self.input_controller_proc: mp.Process = mp.Process(
             target=input_controller.run, args=(self.input_controller_queue,), name="Input Controller", daemon=True)
 
-        # Controller input data
-        self.controller_left: bool = False
-        self.controller_right: bool = False
-        self.controller_up: bool = False
-        self.controller_down: bool = False
-        self.controller_reset: bool = False
-        self.controller_quit: bool = False
-        self.controller_b1: bool = False
-        self.controller_b2: bool = False
-        self.controller_b3: bool = False
-        self.controller_b4: bool = False
+        # Input data
+        self.input_p1_up: bool = False
+        self.input_p1_left: bool = False
+        self.input_p1_down: bool = False
+        self.input_p1_right: bool = False
+        self.input_p1_a: bool = False
+        self.input_p1_b: bool = False
+        self.input_p1_c: bool = False
+        self.input_p1_d: bool = False
+        self.input_p2_up: bool = False
+        self.input_p2_left: bool = False
+        self.input_p2_down: bool = False
+        self.input_p2_right: bool = False
+        self.input_p2_a: bool = False
+        self.input_p2_b: bool = False
+        self.input_p2_c: bool = False
+        self.input_p2_d: bool = False
+        self.input_quit: bool = False
+        self.input_reset: bool = False
 
     def render(self) -> None:
 
@@ -164,14 +173,6 @@ class Window(nc.Window):
         # Render scene content
         self.render_scene()
 
-        # Offline info
-        if self.main.main_config.show_offline_warning and not self.main.user_manager.online:
-            font = self.font.get("text", 16)
-            text = font.render("HINWEIS: Die Datenbank kann aktuell nicht erreicht werden!", True, nc.RGB.RED1)
-            black_rect(self.screen, -10,
-                       self.height - 37, text.get_width() + 20, 50, 220, True, 1)
-            self.screen.blit(text, (7, self.height - 25))
-
         # Help info
         if self.help_tick < 0.85:
             font = self.font.get("text", 20)
@@ -179,7 +180,7 @@ class Window(nc.Window):
             black_rect(self.screen, self.width - text.get_width() - 10,
                        self.height - 37, text.get_width() + 20, 50, 220, True, 1)
             self.screen.blit(text, (self.width - text.get_width(), self.height - 27))
-            draw_button(self.screen, font, 14, self.width - text.get_width(), self.height - 27, HELP_BUTTON)
+            draw_button(self.screen, font, 14, self.width - text.get_width(), self.height - 27, BUTTON_D_COLOR)
         self.draw_help_popup()
 
         # Render debug screen
@@ -276,6 +277,8 @@ class Window(nc.Window):
             pg.image.load(f"{PATH_IMAGE}/right_arrow.png").convert(), (40, 40))
         self.github_code: pg.Surface = pg.transform.smoothscale(
             pg.image.load(f"{PATH_IMAGE}/github.png").convert(), (180, 180))
+        self.youtube_code: pg.Surface = pg.transform.smoothscale(
+            pg.image.load(f"{PATH_IMAGE}/youtube.png").convert(), (180, 180))
 
     def quit(self) -> None:
 
@@ -323,7 +326,7 @@ class Window(nc.Window):
     @staticmethod
     def reset() -> None:
 
-        pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_r}))
+        pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_m}))
 
     def update_input(self) -> None:
 
@@ -337,52 +340,60 @@ class Window(nc.Window):
 
                 match key:
 
-                    case self.main.main_config.key_b1:
+                    case self.main.main_config.key_p1_a | self.main.main_config.key_p2_a:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_RETURN}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_b1 = state
-                    case self.main.main_config.key_b2:
+                        self.input_p1_a = state
+                        self.input_p2_a = state
+                    case self.main.main_config.key_p1_b | self.main.main_config.key_p2_b:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_b2 = state
-                    case self.main.main_config.key_b3:
+                        self.input_p1_b = state
+                        self.input_p2_b = state
+                    case self.main.main_config.key_p1_c | self.main.main_config.key_p2_c:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_b3 = state
-                    case self.main.main_config.key_b4:
+                        self.input_p1_c = state
+                        self.input_p2_c = state
+                    case self.main.main_config.key_p1_d | self.main.main_config.key_p2_d:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_h}))
-                        self.controller_b4 = state
+                        self.input_p1_d = state
+                        self.input_p2_d = state
                     case self.main.main_config.key_reset:
                         if state:
                             self.reset()
-                        self.controller_reset = state
+                        self.input_reset = state
                     case self.main.main_config.key_quit:
                         if state:
-                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_q}))
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_n}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_quit = state
-                    case self.main.main_config.key_left:
-                        if state:
-                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_LEFT}))
-                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_left = state
-                    case self.main.main_config.key_right:
-                        if state:
-                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_RIGHT}))
-                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_right = state
-                    case self.main.main_config.key_up:
+                        self.input_quit = state
+                    case self.main.main_config.key_p1_up | self.main.main_config.key_p2_up:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_UP}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_up = state
-                    case self.main.main_config.key_down:
+                        self.input_p1_up = state
+                        self.input_p2_up = state
+                    case self.main.main_config.key_p1_left | self.main.main_config.key_p2_left:
+                        if state:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_LEFT}))
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                        self.input_p1_left = state
+                        self.input_p2_left = state
+                    case self.main.main_config.key_p1_down | self.main.main_config.key_p2_down:
                         if state:
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_DOWN}))
                             pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
-                        self.controller_down = state
+                        self.input_p1_down = state
+                        self.input_p2_down = state
+                    case self.main.main_config.key_p1_right | self.main.main_config.key_p2_right:
+                        if state:
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_RIGHT}))
+                            pg.event.post(pg.event.Event(pg.KEYDOWN, {"key": pg.K_SPACE}))
+                        self.input_p1_right = state
+                        self.input_p2_right = state
 
         except Empty:
             pass
@@ -420,9 +431,9 @@ class Window(nc.Window):
 
         text = font.render("Die farbigen Buttons werden mit Punkten markiert:", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 210))
-        draw_button(self.screen, font, 50, 50, 210, CONFIRM_BUTTON)
-        draw_button(self.screen, font, 52, 50, 210, HELP_BUTTON)
-        draw_button(self.screen, font, 54, 50, 210, ACTIVITY_BUTTON)
+        draw_button(self.screen, font, 50, 50, 210, BUTTON_A_COLOR)
+        draw_button(self.screen, font, 52, 50, 210, BUTTON_D_COLOR)
+        draw_button(self.screen, font, 54, 50, 210, BUTTON_C_COLOR)
 
         text = font.render("Lesen hilft in den meisten Fällen! Sollten dennoch Fragen offenbleiben,", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 270))
@@ -435,10 +446,11 @@ class Window(nc.Window):
         text = font.render("Valentin Sutter und Nikolas Beyer", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 450))
 
-        text = font.render("Info: Nach aktuellem Stand ist der Automat ohne Internetverbindung nicht", True, nc.RGB.RED1)
-        self.screen.blit(text, (50, 520))
-        text = font.render("      funktionsfähig. Also nicht wundern, wenn es gerade kein Netz gibt.", True, nc.RGB.RED1)
-        self.screen.blit(text, (50, 560))
+        if self.main.main_config.show_offline_warning and not self.main.user_manager.online:
+            text = font.render("Info: Nach aktuellem Stand ist der Automat ohne Internetverbindung nicht", True, nc.RGB.RED1)
+            self.screen.blit(text, (50, 520))
+            text = font.render("      funktionsfähig. Also nicht wundern, wenn es gerade kein Netz gibt.", True, nc.RGB.RED1)
+            self.screen.blit(text, (50, 560))
 
         font = self.font.get("title", 100)
         text = font.render("Credits", True, nc.RGB.WHITE)
@@ -454,13 +466,15 @@ class Window(nc.Window):
         text = font.render("Spiele     Makerspace (siehe Menü)", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 850))
 
-        text = font.render("Github", True, nc.RGB.WHITE)
+        text = font.render("GitHub", True, nc.RGB.WHITE)
+        self.screen.blit(text, (1618, 700))
+        text = font.render("YouTube", True, nc.RGB.WHITE)
         self.screen.blit(text, (1618, 700))
 
         self.screen.blit(self.github_code, (1600, 750))
 
         font = self.font.get("text", 24)
-        text = font.render("MAKERSPACE © 2024 - Open Source (MIT Licence)", True, nc.RGB.WHITE)
+        text = font.render("Makerspace © 2024 - Open Source (MIT Licence)", True, nc.RGB.WHITE)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 980))
         font = self.font.get("text", 16)
         text = font.render("Bodensee-Gymnasium Lindau", True, nc.RGB.WHITE)
