@@ -79,27 +79,22 @@ class GameManager(th.Thread):
                 if self.start_game:
 
                     self.logger.info(f"Start game '{self.current.name}' ...")
-                    if self.current.type in ("web", "makecode", "scratch"):
-                        self.open_browser()
-                    if self.current.type == "makecode":
-                        mouse = MouseController()
-                        mouse.move(-10, -10)
-                        nc.time.wait(0.1)
-                        mouse.move(10, 10)
+                    self.open()
                     self.start_game = False
                     self.main.window.background_video_update = False
 
                     while self.running_game:
                         if (not self.running) or self.reload:
-                            break
+                            self.close()
+                            continue
                         player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
                         if player is None:
-                            break
+                            self.close()
+                            continue
                         admin = self.main.user_manager.is_admin(player.user_id) or \
                             player.user_id in self.current.owners
                         if player.time <= 0:
-                            if self.current.type in ("web", "makecode", "scratch"):
-                                self.close_browser()
+                            self.close()
                         else:
                             if not admin:
                                 player.time -= 1
@@ -114,6 +109,22 @@ class GameManager(th.Thread):
 
         except Exception:
             self.main.handle_crash()
+
+    def open(self) -> None:
+
+        if self.current.type in ("web", "makecode", "scratch"):
+            self.open_browser()
+
+        if self.current.type == "makecode":
+            mouse = MouseController()
+            mouse.move(-10, -10)
+            nc.time.wait(0.1)
+            mouse.move(10, 10)
+
+    def close(self) -> None:
+
+        if self.current.type in ("web", "makecode", "scratch"):
+            self.close_browser()
 
     def open_browser(self) -> None:
 

@@ -1,3 +1,2 @@
 - Add listener commands
-- Game shutdown on quit
 - Scratch support
