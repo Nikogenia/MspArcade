@@ -76,7 +76,7 @@ class Game:
                     return None
 
                 # Check for additional field
-                if not f_data[0]:
+                if [t for t in f_data[0] if t == game_type]:
                     data[f_name] = json[f_name]
 
         return cls(json["id"], json["name"], json["type"], json["short_description"], json["short_description_split"],
