@@ -326,9 +326,10 @@ class Window(nc.Window):
         if not self.main.running:
             self.running = False
 
-    def focus(self) -> None:
+    @staticmethod
+    def focus() -> None:
 
-        sdl.get_grabbed_window().focus(False)
+        sdl.Window.from_display_module().focus(False)
 
     @staticmethod
     def reset() -> None:
