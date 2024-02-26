@@ -131,8 +131,8 @@ class LoginScene(nc.Scene):
         info_font = self.window.font.get("text", 13)
         text = font.render("1. Scanne und öffne den QR-Code links.", True, nc.RGB.WHITE)
         self.screen.blit(text, (1475 - text.get_width() / 2, 515))
-        text = link_font.render("https://lernplattform.mebis.bayern.de/mod/data/view?d=146523", True, nc.RGB.WHITE)
-        self.screen.blit(text, (1475 - text.get_width() / 2, 540))
+        text = link_font.render("https://lernplattform.mebis.bycs.de/mod/data/view?d=146523", True, nc.RGB.WHITE)
+        self.screen.blit(text, (1475 - text.get_width() / 2, 542))
         text = font.render("2. Melde dich, wenn nötig, mit   ", True, nc.RGB.WHITE)
         self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 570))
         text = font.render("   deinem Mebis Account an.      ", True, nc.RGB.WHITE)
@@ -150,9 +150,9 @@ class LoginScene(nc.Scene):
         text = font.render("   nutzen kannst. Glückwunsch!   ", True, nc.RGB.WHITE)
         self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 775))
         text = info_font.render("Es kann unter Umständen einige Minuten  ", True, nc.RGB.ORANGE)
-        self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 810))
+        self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 805))
         text = info_font.render("dauern, bis der QR-Code funktioniert!   ", True, nc.RGB.ORANGE)
-        self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 830))
+        self.screen.blit(text, (1475 - text.get_width() / 2 + 50, 825))
 
         # Login prompt
         font = self.window.font.get("text", 35)
