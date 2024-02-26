@@ -366,11 +366,11 @@ class UserManager(th.Thread):
                 self.logger.debug(f"New player {player.id} [{player.auth_id}] ({player.name}) added.")
                 if player.time is None:
                     player.time = self.main.main_config.account_default_time
-                    if self.is_admin(player.user_id):
-                        player.time = 86400
                     if self.get_user(player.user_id) is not None and \
                             nc.time.epoch_time() - self.get_user(player.user_id).last_login < self.main.main_config.account_reset_timeout:
                         player.time = 0
+                if self.is_admin(player.user_id):
+                    player.time = 86400
                 self.players.append(player)
                 new = True
             else:
