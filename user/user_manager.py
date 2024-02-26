@@ -221,11 +221,11 @@ class UserManager(th.Thread):
         self.logger.info("Entry successfully updated.")
 
     def refresh_time(self) -> None:
-        last_refresh = dt.datetime.fromtimestamp(self.main.user_config.last_refresh)
+        last_refresh = dt.datetime.fromtimestamp(self.main.cache_config.last_refresh)
         now = dt.datetime.now()
         if (last_refresh - dt.timedelta(last_refresh.weekday())).date() != (now - dt.timedelta(now.weekday())).date():
 
-            self.main.user_config.last_refresh = int(now.timestamp())
+            self.main.cache_config.last_refresh = int(now.timestamp())
 
             self.logger.info("Refresh time ...")
 
