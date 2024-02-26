@@ -10,6 +10,7 @@ import math
 # External
 import nikocraft as nc
 import pygame as pg
+from pygame import _sdl2 as sdl
 import cv2
 
 # Local
@@ -262,6 +263,8 @@ class Window(nc.Window):
 
     def init(self) -> None:
 
+        pg.mouse.set_visible(False)
+
         self.input_controller_proc.start()
 
         if self.background_mode == "video":
@@ -322,6 +325,10 @@ class Window(nc.Window):
 
         if not self.main.running:
             self.running = False
+
+    def focus(self) -> None:
+
+        sdl.get_grabbed_window().focus(False)
 
     @staticmethod
     def reset() -> None:

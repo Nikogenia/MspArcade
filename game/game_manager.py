@@ -156,6 +156,8 @@ class GameManager(th.Thread):
             self.logger.debug("Kill browser ...")
             self.browser.kill()
 
+        self.main.window.focus()
+
     @property
     def running_game(self) -> bool:
 
