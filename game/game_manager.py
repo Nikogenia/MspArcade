@@ -84,15 +84,25 @@ class GameManager(th.Thread):
                     self.main.window.background_video_update = False
 
                     while self.running_game:
+
                         if (not self.running) or self.reload:
                             self.close()
                             continue
+
+                        if self.current.type == "makecode":
+                            mouse = MouseController()
+                            mouse.move(-10, -10)
+                            nc.time.wait(0.1)
+                            mouse.move(10, 10)
+
                         player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
                         if player is None:
                             self.close()
                             continue
+
                         admin = self.main.user_manager.is_admin(player.user_id) or \
                             player.user_id in self.current.owners
+
                         if player.time <= 0:
                             self.close()
                         else:
@@ -114,12 +124,6 @@ class GameManager(th.Thread):
 
         if self.current.type in ("web", "makecode", "scratch"):
             self.open_browser()
-
-        if self.current.type == "makecode":
-            mouse = MouseController()
-            mouse.move(-10, -10)
-            nc.time.wait(0.1)
-            mouse.move(10, 10)
 
     def close(self) -> None:
 
