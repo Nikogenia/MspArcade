@@ -329,7 +329,9 @@ class Window(nc.Window):
     @staticmethod
     def focus() -> None:
 
-        sdl.Window.from_display_module().focus(False)
+        window = sdl.Window.from_display_module()
+        window.restore()
+        window.focus(False)
 
     @staticmethod
     def reset() -> None:

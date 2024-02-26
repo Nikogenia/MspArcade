@@ -25,7 +25,7 @@ export DISPLAY=:0
 sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/maker/.config/chromium/Default/Preferences
 sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' /home/maker/.config/chromium/Default/Preferences
 
-exec /usr/bin/chromium --start-fullscreen #URL#
+exec /usr/bin/chromium --kiosk #URL#
 """
 
 
