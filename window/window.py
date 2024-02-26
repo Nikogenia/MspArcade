@@ -203,7 +203,7 @@ class Window(nc.Window):
                 self.debug_screen_active = not self.debug_screen_active
 
             # Toggle help popup
-            if not self.help_open:
+            if self.help_tick == 0 and not self.help_open:
                 if event.key == pg.K_h:
                     self.help_open = True
                     self.help_timeout = nc.time.bench_time()
