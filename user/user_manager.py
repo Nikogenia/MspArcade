@@ -17,6 +17,7 @@ from user.player import Player
 from window.scenes.login import LoginScene
 from window.scenes.idle import IdleScene
 from window.scenes.loading import LoadingScene
+from window.scenes.menu import MenuScene
 if TYPE_CHECKING:
     from main import Main
 
@@ -74,7 +75,7 @@ class UserManager(th.Thread):
 
                 if ((nc.time.epoch_time() - self.last_update > self.main.main_config.database_auto_update) or
                         (nc.time.epoch_time() - self.last_update > self.main.main_config.database_fast_update and self.fast_update)) and \
-                        isinstance(self.main.window.scene, (IdleScene, LoadingScene)):
+                        isinstance(self.main.window.scene, (IdleScene, LoadingScene, MenuScene, LoginScene)):
                     if self.main.main_config.account_time_refresh:
                         self.refresh_time()
                     self.fast_update = False

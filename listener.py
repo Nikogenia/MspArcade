@@ -33,8 +33,6 @@ class Listener(th.Thread):
 
         self.conn_listener: ConnectionListener | None = None
 
-        self.reload: bool = False
-
     # PROPERTIES
 
     @property
@@ -53,9 +51,6 @@ class Listener(th.Thread):
             self.conn_listener._listener._socket.settimeout(1)
 
             while self.running:
-
-                if self.reload:
-                    self.do_reload()
 
                 try:
                     conn = self.conn_listener.accept()
@@ -121,7 +116,6 @@ class Listener(th.Thread):
             self.main.user_config.load()
             self.main.game_manager.reload = True
             self.main.user_manager.reload = True
-            self.reload = True
 
         elif task["type"].lower() == "reset":
             self.logger.info("Connection successful! Reset ...")
@@ -213,23 +207,3 @@ class Listener(th.Thread):
         else:
             self.logger.info("Connection failed! Invalid task!")
             conn.send((4, "Invalid task!"))
-
-    def do_reload(self):
-
-        self.port: int = self.main.main_config.listener_port
-        self.key: str = self.main.main_config.listener_key
-
-        if self.key == "makerspace":
-            self.logger.warning("Using default key for listening! Please change for safety!")
-
-        self.logger.info(f"Close listener ...")
-        self.conn_listener.close()
-
-        nc.time.wait(0.5)
-
-        self.logger.info(f"Listening on port {self.port} ...")
-        self.conn_listener = ConnectionListener(("localhost", self.port),
-                                                authkey=self.key.encode("utf-8"))
-        self.conn_listener._listener._socket.settimeout(1)
-
-        self.reload = False
