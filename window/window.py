@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 import threading as th
 import multiprocessing as mp
+import subprocess as sp
 from queue import Empty
 import os
 import math
@@ -10,7 +11,6 @@ import math
 # External
 import nikocraft as nc
 import pygame as pg
-from pygame import _sdl2 as sdl
 import cv2
 
 # Local
@@ -326,12 +326,10 @@ class Window(nc.Window):
         if not self.main.running:
             self.running = False
 
-    @staticmethod
-    def focus() -> None:
+    def focus(self) -> None:
 
-        window = sdl.Window.from_display_module()
-        window.restore()
-        window.focus(False)
+        self.logger.info("Try to get focus")
+        sp.run("wmctrl -a pygame", shell=True)
 
     @staticmethod
     def reset() -> None:
