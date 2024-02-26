@@ -150,10 +150,14 @@ class Listener(th.Thread):
                     if not player:
                         self.logger.info("Connection failed! Player not found ...")
                         conn.send((7, "Player not found!"))
-                    self.logger.info(f"Connection successful! Change time for player {player} ...")
-                    conn.send((0, ""))
-                    player.time = time
-                    self.main.user_manager.save()
+                    try:
+                        player.time = int(time)
+                        self.main.user_manager.save()
+                        self.logger.info(f"Connection successful! Change time for player {player} ...")
+                        conn.send((0, ""))
+                    except ValueError:
+                        self.logger.info("Connection failed! Invalid time ...")
+                        conn.send((8, "Invalid time!"))
                 case ["refresh"]:
                     self.logger.info("Connection successful! Refresh time ...")
                     conn.send((0, ""))
