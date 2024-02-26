@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from multiprocessing.connection import Listener as ConnectionListener
 from multiprocessing import AuthenticationError
 import threading as th
+import datetime as dt
 from logging import Logger
 
 # External
@@ -127,6 +128,40 @@ class Listener(th.Thread):
             conn.send((0, ""))
             self.main.window.reset()
 
+        elif task["type"].lower() == "time":
+            match task["args"]:
+                case [] | None:
+                    last_refresh = dt.datetime.fromtimestamp(self.main.cache_config.last_refresh).strftime('%d.%m.%y %H:%M:%S')
+                    self.logger.info("Connection successful! Send last time refresh ...")
+                    conn.send((0, f"The last time refresh happened at {last_refresh}."))
+                case ["set"]:
+                    self.logger.info("Connection failed! Missing arguments ...")
+                    conn.send((6, "Missing arguments!"))
+                case ["set", player_id]:
+                    self.logger.info("Connection failed! Missing arguments ...")
+                    conn.send((6, "Missing arguments!"))
+                case ["set", player_id, time]:
+                    player = self.main.user_manager.get_player_by_auth_id(player_id)
+                    if not player:
+                        try:
+                            player = self.main.user_manager.get_player_by_id(int(player_id))
+                        except ValueError:
+                            pass
+                    if not player:
+                        self.logger.info("Connection failed! Player not found ...")
+                        conn.send((7, "Player not found!"))
+                    self.logger.info(f"Connection successful! Change time for player {player} ...")
+                    conn.send((0, ""))
+                    player.time = time
+                    self.main.user_manager.save()
+                case ["refresh"]:
+                    self.logger.info("Connection successful! Refresh time ...")
+                    conn.send((0, ""))
+                    self.main.user_manager.refresh_time()
+                case _:
+                    self.logger.info("Connection failed! Invalid arguments!")
+                    conn.send((5, "Invalid arguments!"))
+
         elif task["type"].lower() == "debug":
             match task["args"]:
                 case [] | None:
@@ -149,6 +184,28 @@ class Listener(th.Thread):
                     self.logger.info("Connection failed! Invalid arguments!")
                     conn.send((5, "Invalid arguments!"))
 
+        elif task["type"].lower() == "users":
+            match task["args"]:
+                case [] | None:
+                    self.logger.info("Connection successful! Send debug screen show users state ...")
+                    conn.send((0, "The debug screen is showing users."
+                               if self.main.window.debug_screen_show_users else "The debug screen is hiding users."))
+                case ["on"]:
+                    self.logger.info("Connection successful! Activate debug screen show users ...")
+                    conn.send((0, ""))
+                    self.main.window.debug_screen_show_users = True
+                case ["off"]:
+                    self.logger.info("Connection successful! Deactivate debug screen show users ...")
+                    conn.send((0, ""))
+                    self.main.window.debug_screen_show_users = False
+                case ["toggle"]:
+                    self.logger.info("Connection successful! Toggle debug screen show users ...")
+                    conn.send((0, ""))
+                    self.main.window.debug_screen_show_users = not self.main.window.debug_screen_show_users
+                case _:
+                    self.logger.info("Connection failed! Invalid arguments!")
+                    conn.send((5, "Invalid arguments!"))
+
         else:
             self.logger.info("Connection failed! Invalid task!")
             conn.send((4, "Invalid task!"))
@@ -163,6 +220,8 @@ class Listener(th.Thread):
 
         self.logger.info(f"Close listener ...")
         self.conn_listener.close()
+
+        nc.time.wait(0.5)
 
         self.logger.info(f"Listening on port {self.port} ...")
         self.conn_listener = ConnectionListener(("localhost", self.port),

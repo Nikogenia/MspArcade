@@ -76,6 +76,7 @@ class Window(nc.Window):
         self.debug_screen_left: list[str] = []
         self.debug_screen_right: list[str] = []
         self.debug_screen_active: bool = self.main.main_config.debug_screen_show_default
+        self.debug_screen_show_users: bool = self.main.main_config.debug_screen_show_users
 
         # Load background
         if self.main.main_config.background_mode == "image":
@@ -245,7 +246,7 @@ class Window(nc.Window):
             self.debug_screen_right.append(
                 f"{nc.time.epoch_time() - self.main.user_manager.last_update:.1f} seconds")
 
-        if self.main.main_config.debug_screen_show_users:
+        if self.debug_screen_show_users:
             current_player = self.main.user_manager.current
             self.debug_screen_right.append("")
             self.debug_screen_right.append("Current Player")
