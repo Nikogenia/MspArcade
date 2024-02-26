@@ -220,10 +220,10 @@ class UserManager(th.Thread):
 
         self.logger.info("Entry successfully updated.")
 
-    def refresh_time(self) -> None:
+    def refresh_time(self, force: bool = False) -> None:
         last_refresh = dt.datetime.fromtimestamp(self.main.cache_config.last_refresh)
         now = dt.datetime.now()
-        if (last_refresh - dt.timedelta(last_refresh.weekday())).date() != (now - dt.timedelta(now.weekday())).date():
+        if (last_refresh - dt.timedelta(last_refresh.weekday())).date() != (now - dt.timedelta(now.weekday())).date() or force:
 
             self.main.cache_config.last_refresh = int(now.timestamp())
 

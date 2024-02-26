@@ -161,7 +161,7 @@ class Listener(th.Thread):
                 case ["refresh"]:
                     self.logger.info("Connection successful! Refresh time ...")
                     conn.send((0, ""))
-                    self.main.user_manager.refresh_time()
+                    self.main.user_manager.refresh_time(True)
                 case _:
                     self.logger.info("Connection failed! Invalid arguments!")
                     conn.send((5, "Invalid arguments!"))
