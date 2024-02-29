@@ -46,7 +46,6 @@ class PlayScene(nc.Scene):
         if not self.window.main.game_manager.running_game:
             if self.reset:
                 self.window.main.user_manager.current = ""
-                self.window.main.game_manager.current = None
                 self.window.change_scene("idle", transition_duration=12, transition_pause=7)
             else:
                 self.window.change_scene("rating", transition_duration=12, transition_pause=7)
