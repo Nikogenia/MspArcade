@@ -166,12 +166,15 @@ class OverviewScene(nc.Scene):
         self.screen.blit(text, (1375 - text.get_width() / 2, 860))
 
         # Continue or sorry prompt
-        content = "Starte das Spiel mit  !" if self.player.time > 5 else "Du hast leider nicht mehr genug Zeit übrig!"
+        admin = self.window.main.user_manager.is_admin(self.player.user_id) or \
+                self.player.user_id in self.game.owners
+        start = self.player.time > 5 or admin
+        content = "Starte das Spiel mit  !" if start else "Du hast leider nicht mehr genug Zeit übrig!"
         font = self.window.font.get("text", 35)
         height = math.sin(self.tick / 10) * 15 + 960
-        text = font.render(content, True, nc.RGB.WHITE if self.player.time > 5 else nc.RGB.INDIANRED1)
+        text = font.render(content, True, nc.RGB.WHITE if start else nc.RGB.INDIANRED1)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, height))
-        if self.player.time > 5:
+        if start:
             draw_button(self.screen, font, 21, (self.width - text.get_width()) / 2, height, BUTTON_A_COLOR)
 
         # Render activity request
@@ -235,7 +238,9 @@ class OverviewScene(nc.Scene):
                 self.back_x = -1
 
             if event.key == pg.K_RETURN:
-                if self.player.time > 5:
+                admin = self.window.main.user_manager.is_admin(self.player.user_id) or \
+                        self.player.user_id in self.game.owners
+                if self.player.time > 5 or admin:
                     self.window.change_scene("play", transition_duration=12, transition_pause=7)
 
             if event.key == pg.K_m:
