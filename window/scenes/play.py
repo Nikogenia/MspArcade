@@ -58,6 +58,9 @@ class PlayScene(nc.Scene):
         # by Linicus
         # Hello World
 
+        # by Fef
+        # 42
+
         # Debug screen
         self.window.debug_screen_left.append("")
         self.window.debug_screen_left.append(f"Tick: {self.tick:.1f}")
