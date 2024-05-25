@@ -1,11 +1,11 @@
 ![Arcade Logo](resources/images/arcade_logo.png "Arcade Logo")
 # Makerspace Arcade
-A Makerspace project for an arcade machine in the school
+DIY arcade machine as school project
 
 ### Description
 This is the main software of the arcade machine, which controls
 all games and provides a menu. The gaming machine is a project of the 
-Makerspace for the Bodensee Gymnasium Lindau in Germany.
+Makerspace for the Bodensee-Gymnasium Lindau in Germany.
 
 ### Homepage
 https://arcade.bodensee-gymnasium.de
