@@ -7,8 +7,10 @@ This is the main software of the arcade machine, which controls
 all games and provides a menu. The gaming machine is a project of the 
 Makerspace for the Bodensee Gymnasium Lindau in Germany.
 
+### Homepage
+https://arcade.bodensee-gymnasium.de
+
 ### Trailer
-Here is a trailer of our project:\
 https://www.youtube.com/watch?v=8V85Eo9Pjnc
 
 ### Details
@@ -19,10 +21,10 @@ Database: Lernplattform Mebis Bayern (Moodle)
 
 ### Team
 Management: Dr. Andre Scherl\
-Software: Nikogenia (Nikolas Beyer)\
-Hardware: Valis World (Valentin Sutter)\
-Games: Makerspace (see menu)
+Software: Nikolas Beyer ([Nikogenia](https://github.com/Nikogenia))\
+Hardware: Valentin Sutter ([Valis World](https://github.com/Valis-World))\
+Games: Makerspace (see [catalog](https://arcade.bodensee-gymnasium.de/spiele))
 
 \
-**Makerspace © 2024**\
+**© 2024 Bodensee-Gymnasium Lindau**\
 ![Bogy Logo](resources/images/bogy_logo.jpg "Bogy Logo")
