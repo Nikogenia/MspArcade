@@ -27,4 +27,5 @@ Games: Makerspace (see [catalog](https://arcade.bodensee-gymnasium.de/spiele))
 
 \
 **© 2024 Bodensee-Gymnasium Lindau**\
+\
 ![Bogy Logo](resources/images/bogy_logo.jpg "Bogy Logo")
