@@ -22,7 +22,7 @@ Database: Lernplattform Mebis Bayern (Moodle)
 ### Team
 Management: Dr. Andre Scherl\
 Software: Nikolas Beyer ([Nikogenia](https://github.com/Nikogenia))\
-Hardware: Valentin Sutter ([Valis World](https://github.com/Valis-World))\
+Hardware: Valentin Sutter ([valis-world](https://github.com/Valis-World))\
 Games: Makerspace (see [catalog](https://arcade.bodensee-gymnasium.de/spiele))
 
 \
