@@ -100,7 +100,7 @@ class UserManager(th.Thread):
     def request(self, params: dict) -> dict | None:
 
         try:
-            response = rq.post(self.main.main_config.database_url, params=params, timeout=2)
+            response = rq.post(self.main.main_config.database_url, params=params, timeout=5)
         except (rq.ConnectionError, rq.Timeout, TimeoutError) as e:
             self.logger.error("Failed to connect to database! Error message:")
             self.logger.error(e)
@@ -132,7 +132,7 @@ class UserManager(th.Thread):
 
         return data
 
-    def get_entries(self) -> dict | None:
+    def get_entries(self, page: int = 0) -> dict | None:
 
         self.logger.info(f"Start get entries request to database {self.db_id} ...")
 
@@ -142,7 +142,8 @@ class UserManager(th.Thread):
             "moodlewsrestformat": "json",
             "databaseid": self.db_id,
             "returncontents": 1,
-            "perpage": 10000
+            "perpage": 10,
+            "page": page
         }
 
         data = self.request(params)
@@ -153,9 +154,11 @@ class UserManager(th.Thread):
             self.logger.error(f"Failed to get entries! Missing in dictionary ...")
             return None
 
-        self.logger.info("Received and decoded entries from database.")
+        if not data["entries"]:
+            self.logger.info("Received and decoded entries from database.")
+            return []
 
-        return data["entries"]
+        return [*data["entries"], self.get_entries(page + 1)]
 
     def get_fields(self) -> bool:
 

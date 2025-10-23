@@ -14,7 +14,7 @@ https://arcade.bodensee-gymnasium.de
 https://www.youtube.com/watch?v=8V85Eo9Pjnc
 
 ### Details
-Version: 1.3.0\
+Version: 1.4.0\
 Author: Makerspace\
 Framework: Nikocraft (v0.0.4)\
 Database: Lernplattform Mebis Bayern (Moodle)
@@ -26,6 +26,6 @@ Hardware: Valentin Sutter ([valis-world](https://github.com/Valis-World))\
 Games: Makerspace (see [catalog](https://arcade.bodensee-gymnasium.de/spiele))
 
 \
-**© 2024 Bodensee-Gymnasium Lindau**\
+**© 2025 Bodensee-Gymnasium Lindau**\
 \
 ![Bogy Logo](resources/images/bogy_logo.jpg "Bogy Logo")
