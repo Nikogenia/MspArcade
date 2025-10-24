@@ -10,6 +10,7 @@ import os
 # External
 import nikocraft as nc
 from pynput.mouse import Controller as MouseController
+from pynput.mouse import Button
 
 # Local
 from configs import ConfigError
@@ -49,6 +50,8 @@ class GameManager(th.Thread):
 
         self.time_display_proc: mp.Process | None = None
         self.time_display_queue: mp.Queue = mp.Queue()
+        self.info_display_proc: mp.Process | None = None
+        self.info_display_queue: mp.Queue = mp.Queue()
 
         self.sim_running_browser: bool = False
 
@@ -85,14 +88,20 @@ class GameManager(th.Thread):
 
                     while self.running_game:
 
+                        delay = 0
+
                         if (not self.running) or self.reload:
                             self.close()
                             continue
 
                         if self.current.type == "makecode":
+                            BUTTON_X = 500
+                            BUTTON_Y = 300
                             mouse = MouseController()
-                            mouse.move(-10, -10)
-                            nc.time.wait(0.1)
+                            mouse.move(BUTTON_X - mouse.position[0], BUTTON_Y - mouse.position[1])
+                            nc.time.wait(0.5)
+                            delay += 0.5
+                            mouse.click(Button.left, 1)
                             mouse.move(10, 10)
 
                         player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
@@ -109,9 +118,10 @@ class GameManager(th.Thread):
                             if not admin:
                                 player.time -= 1
                             self.time_display_queue.put(86400 if admin else player.time)
-                            nc.time.wait(1)
+                            nc.time.wait(1 - delay)
 
                     self.time_display_queue.put("QUIT")
+                    self.info_display_queue.put("QUIT")
                     self.main.window.background_video_update = True
                     self.logger.info("Game closed.")
 
@@ -146,6 +156,12 @@ class GameManager(th.Thread):
             self.time_display_proc: mp.Process = mp.Process(
                 target=time_display.run, args=(self.time_display_queue,), name="Time Display", daemon=True)
             self.time_display_proc.start()
+
+            if self.current.type == "scratch":
+                self.logger.debug("Open info display ...")
+                self.info_display_proc: mp.Process = mp.Process(
+                    target=info_display.run, args=(self.info_display_queue,), name="Info Display", daemon=True)
+                self.info_display_proc.start()
 
     def close_browser(self) -> None:
 
@@ -191,3 +207,16 @@ class GameManager(th.Thread):
         for game in self.games:
             if game.name == name:
                 return game
+
+    def reset_button(self) -> bool:
+
+        if self.running_game and self.current.type == "scratch":
+            BUTTON_X = 500
+            BUTTON_Y = 300
+            mouse = MouseController()
+            mouse.move(BUTTON_X - mouse.position[0], BUTTON_Y - mouse.position[1])
+            nc.time.wait(0.5)
+            mouse.click(Button.left, 1)
+            return False
+        
+        return True

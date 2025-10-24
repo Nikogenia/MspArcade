@@ -71,8 +71,9 @@ class PlayScene(nc.Scene):
             if event.key == pg.K_n:
                 self.window.main.game_manager.close_browser()
             if event.key == pg.K_m:
-                self.window.main.game_manager.close_browser()
-                self.reset = True
+                if self.window.main.game_manager.reset_button():
+                    self.window.main.game_manager.close_browser()
+                    self.reset = True
 
     def init(self) -> None:
 

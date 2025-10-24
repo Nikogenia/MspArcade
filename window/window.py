@@ -494,7 +494,7 @@ class Window(nc.Window):
         self.screen.blit(self.youtube_code, (1650, 620))
 
         font = self.font.get("text", 24)
-        text = font.render("Makerspace © 2024 - Open Source (MIT Licence)", True, nc.RGB.WHITE)
+        text = font.render("Makerspace © 2025 - Open Source (MIT Licence)", True, nc.RGB.WHITE)
         self.screen.blit(text, ((self.width - text.get_width()) / 2, 980))
         font = self.font.get("text", 16)
         text = font.render("Bodensee-Gymnasium Lindau", True, nc.RGB.WHITE)
