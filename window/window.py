@@ -450,7 +450,7 @@ class Window(nc.Window):
         self.screen.blit(text, (50, 310))
         text = font.render("E-Mail                      Microsoft Teams             ByCS-Messenger", True, nc.RGB.GRAY60)
         self.screen.blit(text, (50, 370))
-        text = font.render("info@valis-world.de          sutter.valentin             nikola.beyer", True, nc.RGB.WHITE)
+        text = font.render("info@valis-world.de         sutter.valentin             nikola.beyer", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 410))
         text = font.render("arcade@nikogenia.de         nikolas.beyer               vale.sutter", True, nc.RGB.WHITE)
         self.screen.blit(text, (50, 450))

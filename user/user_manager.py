@@ -134,7 +134,7 @@ class UserManager(th.Thread):
 
     def get_entries(self, page: int = 0) -> dict | None:
 
-        self.logger.info(f"Start get entries request to database {self.db_id} ...")
+        self.logger.info(f"Start get entries request to database {self.db_id} for page {page} ...")
 
         params = {
             "wstoken": self.token,
@@ -158,7 +158,7 @@ class UserManager(th.Thread):
             self.logger.info("Received and decoded entries from database.")
             return []
 
-        return [*data["entries"], self.get_entries(page + 1)]
+        return [*data["entries"], *self.get_entries(page + 1)]
 
     def get_fields(self) -> bool:
 
