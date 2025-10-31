@@ -88,7 +88,7 @@ class GameManager(th.Thread):
                     self.open()
                     self.start_game = False
                     self.main.window.background_video_update = False
-                    start_time = nc.time.time()
+                    start_time = nc.time.bench_time()
                     self.scratch_initial_reset = False
 
                     while self.running_game:
@@ -99,7 +99,7 @@ class GameManager(th.Thread):
                             self.close()
                             continue
 
-                        if self.current.type == "makecode" and nc.time.time() - start_time >= 3:
+                        if self.current.type == "makecode" and nc.time.bench_time() - start_time >= 3:
                             BUTTON_X = 1850
                             BUTTON_Y = 800
                             mouse = MouseController()
@@ -109,7 +109,7 @@ class GameManager(th.Thread):
                             mouse.click(Button.left, 1)
                             mouse.move(5, 5)
 
-                        if self.current.type == "scratch" and not self.scratch_initial_reset and nc.time.time() - start_time >= 10:
+                        if self.current.type == "scratch" and not self.scratch_initial_reset and nc.time.bench_time() - start_time >= 10:
                             self.scratch_initial_reset = True
                             BUTTON_X = 297
                             BUTTON_Y = 27
