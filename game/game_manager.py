@@ -16,6 +16,7 @@ from pynput.mouse import Button
 from configs import ConfigError
 from game.game import Game
 from game import time_display
+from game import info_display
 if TYPE_CHECKING:
     from main import Main
 
@@ -121,7 +122,8 @@ class GameManager(th.Thread):
                             nc.time.wait(1 - delay)
 
                     self.time_display_queue.put("QUIT")
-                    self.info_display_queue.put("QUIT")
+                    if self.current.type == "scratch":
+                        self.info_display_queue.put("QUIT")
                     self.main.window.background_video_update = True
                     self.logger.info("Game closed.")
 
@@ -211,8 +213,8 @@ class GameManager(th.Thread):
     def reset_button(self) -> bool:
 
         if self.running_game and self.current.type == "scratch":
-            BUTTON_X = 500
-            BUTTON_Y = 300
+            BUTTON_X = 300
+            BUTTON_Y = 100
             mouse = MouseController()
             mouse.move(BUTTON_X - mouse.position[0], BUTTON_Y - mouse.position[1])
             nc.time.wait(0.5)
