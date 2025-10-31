@@ -46,7 +46,8 @@ class Game:
             "author": ((), str),
             "owners": ((), list),
             "image_name": ((), str),
-            "url": (("web", "makecode", "scratch"), str)
+            "url": (("web", "makecode", "scratch"), str),
+            "command": (("exec",), str)
         }
 
         # Additional data

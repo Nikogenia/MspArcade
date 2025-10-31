@@ -2,6 +2,7 @@
 import sys
 import threading as th
 import traceback as tb
+import signal
 import shutil
 
 # External
@@ -81,6 +82,10 @@ class Main(nc.App):
 
     def run(self):
 
+        # Register signal handlers
+        signal.signal(signal.SIGINT, self.shutdown)
+        signal.signal(signal.SIGTERM, self.shutdown)
+
         # Start user manager
         self.user_manager.start()
 
@@ -108,21 +113,26 @@ class Main(nc.App):
 
         except KeyboardInterrupt:
 
-            # Log warning
-            self.logger.warning("Keyboard interrupted! Shutting down!")
-
-            # Quit all components
-            self.running = False
-            self.window.running = False
-            self.game_manager.running = False
-            self.user_manager.running = False
-            self.listener.running = False
+            # Handle shutdown
+            self.shutdown(signal.SIGINT, None)
 
             # Quit window
             self.logger.info("Close window ...")
             self.window.scene.quit()
             self.window.scene.deactivate_event_hooks()
             self.window.quit()
+
+    def shutdown(self, signum, frame):
+
+        # Log warning
+        self.logger.warning(f"Received signal {signum}! Shutting down!")
+
+        # Quit all components
+        self.running = False
+        self.window.running = False
+        self.game_manager.running = False
+        self.user_manager.running = False
+        self.listener.running = False
 
     def quit(self):
 

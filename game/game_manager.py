@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from main import Main
 
 
-CODE = """
+BROWSER_CODE = """
 export DISPLAY=:0
 
 sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/maker/.config/chromium/Default/Preferences
@@ -47,16 +47,18 @@ class GameManager(th.Thread):
 
         self.start_game: bool = False
 
-        self.browser: sp.Popen | None = None
+        self.game_process: sp.Popen | None = None
 
         self.time_display_proc: mp.Process | None = None
         self.time_display_queue: mp.Queue = mp.Queue()
         self.info_display_proc: mp.Process | None = None
         self.info_display_queue: mp.Queue = mp.Queue()
 
-        self.sim_running_browser: bool = False
+        self.sim_running_game: bool = False
 
         self.reload: bool = False
+
+        self.scratch_initial_reset: bool = False
 
     # PROPERTIES
 
@@ -86,6 +88,8 @@ class GameManager(th.Thread):
                     self.open()
                     self.start_game = False
                     self.main.window.background_video_update = False
+                    start_time = nc.time.time()
+                    self.scratch_initial_reset = False
 
                     while self.running_game:
 
@@ -95,15 +99,26 @@ class GameManager(th.Thread):
                             self.close()
                             continue
 
-                        if self.current.type == "makecode":
-                            BUTTON_X = 500
-                            BUTTON_Y = 300
+                        if self.current.type == "makecode" and nc.time.time() - start_time >= 3:
+                            BUTTON_X = 1850
+                            BUTTON_Y = 800
                             mouse = MouseController()
                             mouse.move(BUTTON_X - mouse.position[0], BUTTON_Y - mouse.position[1])
-                            nc.time.wait(0.5)
-                            delay += 0.5
+                            nc.time.wait(0.1)
+                            delay += 0.1
                             mouse.click(Button.left, 1)
-                            mouse.move(10, 10)
+                            mouse.move(5, 5)
+
+                        if self.current.type == "scratch" and not self.scratch_initial_reset and nc.time.time() - start_time >= 10:
+                            self.scratch_initial_reset = True
+                            BUTTON_X = 297
+                            BUTTON_Y = 27
+                            mouse = MouseController()
+                            mouse.move(BUTTON_X - mouse.position[0], BUTTON_Y - mouse.position[1])
+                            self.logger.info(f"Mouse click at position ({mouse.position[0]}, {mouse.position[1]}) for game restart")
+                            nc.time.wait(0.1)
+                            delay += 0.1
+                            mouse.click(Button.left, 1)
 
                         player = self.main.user_manager.get_player_by_auth_id(self.main.user_manager.current)
                         if player is None:
@@ -134,23 +149,14 @@ class GameManager(th.Thread):
 
     def open(self) -> None:
 
-        if self.current.type in ("web", "makecode", "scratch"):
-            self.open_browser()
-
-    def close(self) -> None:
-
-        if self.current.type in ("web", "makecode", "scratch"):
-            self.close_browser()
-
-    def open_browser(self) -> None:
-
         if os.name == "nt":
             self.logger.debug("Running on windows. Use simulation ...")
-            self.sim_running_browser = True
+            self.sim_running_game = True
         else:
-            url = self.current.data["url"] if "url" in self.current.data else "https://bodensee-gymnasium.de/"
-            self.logger.debug(f"Open URL {url} ...")
-            self.browser = sp.Popen(CODE.replace("#URL#", url), shell=True)
+            if self.current.type in ("web", "makecode", "scratch"):
+                self.open_browser()
+            if self.current.type == "exec":
+                self.open_exec()
 
             nc.time.wait(2.5)
 
@@ -165,24 +171,53 @@ class GameManager(th.Thread):
                     target=info_display.run, args=(self.info_display_queue,), name="Info Display", daemon=True)
                 self.info_display_proc.start()
 
-    def close_browser(self) -> None:
+    def close(self) -> None:
 
         if os.name == "nt":
             self.logger.debug("Stop simulation ...")
-            self.sim_running_browser = False
+            self.sim_running_game = False
         else:
-            self.logger.debug("Kill browser ...")
-            self.browser.kill()
+            if self.current.type in ("web", "makecode", "scratch"):
+                self.close_browser()
+            if self.current.type == "exec":
+                self.close_exec()
 
         self.main.window.focus()
+
+    def open_browser(self) -> None:
+
+        url = self.current.data["url"] if "url" in self.current.data else "https://bodensee-gymnasium.de/"
+        self.logger.debug(f"Open URL {url} ...")
+        self.game_process = sp.Popen(BROWSER_CODE.replace("#URL#", url), shell=True)
+
+    def open_exec(self) -> None:
+
+        command = self.current.data["command"] if "command" in self.current.data else ""
+        command = f"export DISPLAY=:0 && {command}"
+        self.logger.debug(f"Execute command {command} ...")
+        self.game_process = sp.Popen(command, shell=True)
+
+    def close_browser(self) -> None:
+
+        self.logger.debug("Kill browser ...")
+        self.game_process.kill()
+
+    def close_exec(self) -> None:
+
+        self.logger.debug("Terminate game ...")
+        self.game_process.terminate()
+        nc.time.wait(2)
+        if self.game_process.poll() is None:
+            self.logger.debug("Kill game ...")
+            self.game_process.kill()
 
     @property
     def running_game(self) -> bool:
 
         if os.name == "nt":
-            return self.start_game or self.sim_running_browser
+            return self.start_game or self.sim_running_game
 
-        return self.start_game or (self.browser is not None and self.browser.poll() is None)
+        return self.start_game or (self.game_process is not None and self.game_process.poll() is None)
 
     def load(self) -> None:
 
@@ -213,11 +248,13 @@ class GameManager(th.Thread):
     def reset_button(self) -> bool:
 
         if self.running_game and self.current.type == "scratch":
-            BUTTON_X = 300
-            BUTTON_Y = 100
+            self.scratch_initial_reset = True
+            BUTTON_X = 297
+            BUTTON_Y = 27
             mouse = MouseController()
             mouse.move(BUTTON_X - mouse.position[0], BUTTON_Y - mouse.position[1])
-            nc.time.wait(0.5)
+            self.logger.info(f"Mouse click at position ({mouse.position[0]}, {mouse.position[1]}) for game restart")
+            nc.time.wait(0.1)
             mouse.click(Button.left, 1)
             return False
         

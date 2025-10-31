@@ -9,6 +9,7 @@ class InfoDisplay:
 
     def __init__(self, queue: mp.Queue):
 
+        print("1")
         self.root: tk.Tk = tk.Tk()
         self.queue: mp.Queue = queue
 
@@ -20,27 +21,32 @@ class InfoDisplay:
         self.canvas = tk.Canvas(self.root, width=198, height=263, background="black")
         self.canvas.place(x=0, y=0)
 
-        self.title = tk.Label(self.root, text="Zeit", background="black", foreground="white",
+        self.title = tk.Label(self.root, text="Spiel", background="black", foreground="white",
                               font=("Arial", 38))
         self.title.pack(pady=(8, 0))
-        self.time = tk.Label(self.root, text="00:00:00", background="black", foreground="white",
+        self.time = tk.Label(self.root, text="starten", background="black", foreground="white",
                              font=("Arial", 30))
         self.time.pack(pady=(2, 0))
 
-        self.hint1 = tk.Label(self.root, text="Spiel beenden", background="black", foreground="white",
+        self.hint1 = tk.Label(self.root, text="neustarten", background="black", foreground="white",
                               font=("Arial", 20))
         self.hint1.pack(pady=(20, 4))
         self.hint2 = tk.Label(self.root, text="RESET", background="white", foreground="black",
                               font=("Arial", 28))
         self.hint2.pack(ipadx=6, pady=(1, 1))
+        print("2")
 
     def run(self):
+
+        print("3")
 
         self.root.after(10, self.update)
 
         self.root.mainloop()
 
     def update(self):
+
+        print("4")
 
         try:
             cmd = self.queue.get(True, timeout=5)
@@ -59,6 +65,7 @@ class InfoDisplay:
 
 
 def run(queue: mp.Queue):
+    print("0")
 
     display = InfoDisplay(queue)
     display.run()
