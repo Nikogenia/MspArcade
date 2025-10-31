@@ -99,8 +99,8 @@ class GameManager(th.Thread):
                             self.close()
                             continue
 
-                        if self.current.type == "makecode" and nc.time.bench_time() - start_time >= 3:
-                            BUTTON_X = 1850
+                        if self.current.type == "makecode" and nc.time.bench_time() - start_time >= 2:
+                            BUTTON_X = 1890
                             BUTTON_Y = 800
                             mouse = MouseController()
                             mouse.move(BUTTON_X - mouse.position[0], BUTTON_Y - mouse.position[1])
@@ -109,7 +109,7 @@ class GameManager(th.Thread):
                             mouse.click(Button.left, 1)
                             mouse.move(5, 5)
 
-                        if self.current.type == "scratch" and not self.scratch_initial_reset and nc.time.bench_time() - start_time >= 10:
+                        if self.current.type == "scratch" and not self.scratch_initial_reset and nc.time.bench_time() - start_time >= 8:
                             self.scratch_initial_reset = True
                             BUTTON_X = 297
                             BUTTON_Y = 27
@@ -150,6 +150,15 @@ class GameManager(th.Thread):
         except Exception:
             self.main.handle_crash()
 
+        if self.time_display_proc is not None:
+            self.time_display_proc.join(1)
+            if self.time_display_proc.is_alive():
+                self.time_display_proc.kill()
+        if self.info_display_proc is not None:
+            self.info_display_proc.join(1)
+            if self.info_display_proc.is_alive():
+                self.info_display_proc.kill()
+
     def open(self) -> None:
 
         if os.name == "nt":
@@ -185,6 +194,7 @@ class GameManager(th.Thread):
             if self.current.type == "exec":
                 self.close_exec()
 
+        nc.time.wait(0.2)
         self.main.window.focus()
 
     def open_browser(self) -> None:
