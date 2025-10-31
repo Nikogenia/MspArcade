@@ -134,12 +134,15 @@ class GameManager(th.Thread):
                             if not admin:
                                 player.time -= 1
                             self.time_display_queue.put(86400 if admin else player.time)
+                            self.info_display_queue.put("PING")
                             nc.time.wait(1 - delay)
 
                     self.time_display_queue.put("QUIT")
                     if self.current.type == "scratch":
                         self.info_display_queue.put("QUIT")
                     self.main.window.background_video_update = True
+                    nc.time.wait(1)
+                    self.main.window.focus()
                     self.logger.info("Game closed.")
 
                 nc.time.wait(0.6)
@@ -206,7 +209,7 @@ class GameManager(th.Thread):
 
         self.logger.debug("Terminate game ...")
         self.game_process.terminate()
-        nc.time.wait(2)
+        nc.time.wait(1)
         if self.game_process.poll() is None:
             self.logger.debug("Kill game ...")
             self.game_process.kill()
