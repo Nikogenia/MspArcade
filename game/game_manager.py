@@ -99,7 +99,7 @@ class GameManager(th.Thread):
                             self.close()
                             continue
 
-                        if self.current.type == "makecode" and nc.time.bench_time() - start_time >= 2:
+                        if self.current.type == "makecode":
                             BUTTON_X = 1890
                             BUTTON_Y = 800
                             mouse = MouseController()
@@ -141,7 +141,14 @@ class GameManager(th.Thread):
                     if self.current.type == "scratch":
                         self.info_display_queue.put("QUIT")
                     self.main.window.background_video_update = True
-                    nc.time.wait(1)
+                    self.main.window.focus()
+                    nc.time.wait(0.2)
+                    self.main.window.focus()
+                    nc.time.wait(0.2)
+                    self.main.window.focus()
+                    nc.time.wait(0.2)
+                    self.main.window.focus()
+                    nc.time.wait(2)
                     self.main.window.focus()
                     self.logger.info("Game closed.")
 
@@ -193,9 +200,6 @@ class GameManager(th.Thread):
                 self.close_browser()
             if self.current.type == "exec":
                 self.close_exec()
-
-        nc.time.wait(0.2)
-        self.main.window.focus()
 
     def open_browser(self) -> None:
 

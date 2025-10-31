@@ -9,16 +9,15 @@ class InfoDisplay:
 
     def __init__(self, queue: mp.Queue):
 
-        print("1")
         self.root: tk.Tk = tk.Tk()
         self.queue: mp.Queue = queue
 
         self.root.overrideredirect(True)
         self.root.configure(background="black")
-        self.root.geometry("200x265+1692+70")
+        self.root.geometry("200x245+1692+70")
         self.root.wm_attributes("-topmost", 1)
 
-        self.canvas = tk.Canvas(self.root, width=198, height=263, background="black")
+        self.canvas = tk.Canvas(self.root, width=198, height=243, background="black")
         self.canvas.place(x=0, y=0)
 
         self.title = tk.Label(self.root, text="Spiel", background="black", foreground="white",
@@ -30,11 +29,10 @@ class InfoDisplay:
 
         self.hint1 = tk.Label(self.root, text="neustarten", background="black", foreground="white",
                               font=("Arial", 26))
-        self.hint1.pack(pady=(2, 4))
+        self.hint1.pack(pady=(0, 6))
         self.hint2 = tk.Label(self.root, text="RESET", background="white", foreground="black",
                               font=("Arial", 28))
         self.hint2.pack(ipadx=6, pady=(1, 1))
-        print("2")
 
     def run(self):
 
